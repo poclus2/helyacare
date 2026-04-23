@@ -71,7 +71,7 @@ export default function MissionPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
               </div>
               <div className="absolute -bottom-5 -left-5 bg-[#0F3D3E] text-white px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-widest shadow-lg">
-                Fondé en 2024 · Dakar
+                Fondé en 2024 · Bahrein
               </div>
             </div>
           </div>
