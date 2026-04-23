@@ -1,0 +1,115 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+
+const products = [
+  {
+    id: 1,
+    badge: "Best seller",
+    badgeColor: "#E56B2D",
+    name: "Crave Control",
+    subtitle: "Bouclier Neuro-Métabolique",
+    image: "/crave-control.png",
+  },
+  {
+    id: 2,
+    badge: "New",
+    badgeColor: "#3CA0A0",
+    name: "Helya Vigor",
+    subtitle: "Énergie & Endurance",
+    image: "/crave-control.png",
+  },
+  {
+    id: 3,
+    badge: "New",
+    badgeColor: "#3CA0A0",
+    name: "Helya Hydrate",
+    subtitle: "Électrolytes & Hydratation",
+    image: "/crave-control.png",
+  },
+  {
+    id: 4,
+    badge: "New",
+    badgeColor: "#3CA0A0",
+    name: "Satiety Shot",
+    subtitle: "Régulateur Gastrique",
+    image: "/crave-control.png",
+  },
+];
+
+export default function SolutionsSection() {
+  const t = useTranslations("Solutions");
+
+  return (
+    <section className="w-full bg-[#0F3D3E] py-16 px-8">
+      <div className="max-w-[1280px] mx-auto">
+        {/* Header row */}
+        <div className="flex items-start justify-between mb-3">
+          <h2 className="text-[2.6rem] font-extrabold text-white leading-tight tracking-tight">
+            {t("title")}
+          </h2>
+          <Link
+            href="/boutique"
+            className="text-white font-semibold text-sm underline underline-offset-4 decoration-2 hover:opacity-70 transition-opacity mt-3 flex-shrink-0"
+          >
+            {t("seeAll")}
+          </Link>
+        </div>
+
+        {/* Subtitle */}
+        <p className="text-white/60 text-sm leading-relaxed mb-10 max-w-[420px]">
+          {t("desc")}
+        </p>
+
+        {/* Cards grid */}
+        <div className="grid grid-cols-4 gap-5">
+          {products.map((product) => (
+            <div
+              key={product.id}
+              className="group rounded-2xl p-5 flex flex-col items-center text-center cursor-pointer transition-transform duration-300 ease-out hover:scale-[1.04] hover:shadow-2xl"
+              style={{ backgroundColor: "rgba(217,217,217,0.26)" }}
+            >
+              {/* Badge */}
+              <div className="self-start mb-3">
+                <span
+                  className="text-white text-[0.65rem] font-bold px-3 py-1 rounded-full"
+                  style={{ backgroundColor: product.badgeColor }}
+                >
+                  {product.badge}
+                </span>
+              </div>
+
+              {/* Name & subtitle */}
+              <div className="w-full text-center mb-4">
+                <h3 className="text-white text-[1.15rem] font-bold leading-snug">
+                  {product.name}
+                </h3>
+                <p className="text-white/55 text-[0.75rem] mt-0.5">
+                  {t(`products.p${product.id}_subtitle`)}
+                </p>
+              </div>
+
+              {/* Product image */}
+              <div className="w-full flex items-center justify-center my-2" style={{ height: "240px" }}>
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  width={230}
+                  height={240}
+                  className="h-full w-auto object-contain transition-transform duration-300 ease-out group-hover:scale-110"
+                />
+              </div>
+
+              {/* CTA button */}
+              <button className="mt-5 w-full bg-[#0F3D3E] text-white text-sm font-semibold py-3 rounded-[5px] transition-all duration-300 group-hover:bg-white group-hover:text-[#0F3D3E]">
+                {t("discoverBtn")}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

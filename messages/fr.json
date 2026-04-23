@@ -1,0 +1,105 @@
+{
+  "Header": {
+    "boutique": "Boutique",
+    "experience": "L'Expérience Helyacare",
+    "mission": "Notre Mission",
+    "ambassadeur": "Devenir Ambassadeur",
+    "login": "Connexion"
+  },
+  "Hero": {
+    "title1": "Votre bien-être",
+    "title2": "est notre",
+    "title3": "mission.",
+    "subtitle": "Des compléments alimentaires de haute qualité (gummies, électrolytes et comprimés), formulés avec soin pour soutenir votre santé au quotidien.",
+    "discoverBtn": "Découvrir",
+    "videoBtn": "Voir la vidéo",
+    "stats": {
+      "clients": "Clients\naccompagnés",
+      "formulas": "Formules\nexclusives",
+      "years": "Années\nd'expertise"
+    }
+  },
+  "Footer": {
+    "missionText": "Redéfinir le futur du bien-être et de la longévité à travers le monde, en fusionnant la science clinique avec ce que la nature a de meilleur à offrir.",
+    "boutiqueTitle": "Boutique",
+    "allProducts": "Tous les produits",
+    "subscription": "Abonnement",
+    "brandTitle": "La Marque",
+    "ourMission": "Notre Mission",
+    "science": "La Science",
+    "journal": "Le Journal",
+    "faq": "FAQ",
+    "joinMovement": "Rejoignez le mouvement",
+    "newsletterText": "Inscrivez-vous à notre newsletter pour recevoir nos conseils santé, nos nouveautés et des offres exclusives.",
+    "emailPlaceholder": "Votre adresse email",
+    "subscribeBtn": "S'inscrire",
+    "rights": "Helyacare. Tous droits réservés.",
+    "privacy": "Politique de confidentialité",
+    "legal": "Mentions légales",
+    "cgv": "CGV"
+  },
+  "Boutique2": {
+    "promoBanner": "Crave Control est-il fait pour vous ? ➔",
+    "heroTitle1": "Votre santé globale,",
+    "heroTitle2": "optimisée par la précision.",
+    "featuredBadge": "Best seller",
+    "featuredCategory": "Nutrition",
+    "featuredTitle": "Crave Control",
+    "featuredDesc": "Un bouclier neuro-métabolique qui régule l'appétit, aide à limiter les fringales et soutient le métabolisme au quotidien.",
+    "discoverBtn": "Découvrir",
+    "addBtn": "Ajouter au panier",
+    "quizText": "Crave Control est-il adapté à vos objectifs ?",
+    "quizBtn": "Faire le test"
+  },
+  "Solutions": {
+    "title": "Nos Solutions",
+    "seeAll": "Voir tout >",
+    "desc": "Une sélection de formules expertes pour répondre à vos besoins spécifiques.",
+    "discoverBtn": "Découvrir",
+    "products": {
+      "p1_subtitle": "Bouclier Neuro-Métabolique",
+      "p2_subtitle": "Énergie & Endurance",
+      "p3_subtitle": "Électrolytes & Hydratation",
+      "p4_subtitle": "Régulateur Gastrique"
+    }
+  },
+  "Ecosystem": {
+    "title": "L'Écosystème Helyacare.",
+    "desc": "Une approche holistique alliant science et technologie pour redéfinir les standards du bien-être à l'échelle mondiale.",
+    "cards": {
+      "c1_title": "L'Excellence\nScientifique",
+      "c1_desc": "Chaque formule est le résultat de mois de recherche clinique et de tests rigoureux.",
+      "c2_title": "L'Intelligence\nArtificielle",
+      "c2_desc": "Notre algorithme analyse vos données pour adapter vos doses en temps réel.",
+      "c3_title": "La Force\nCommunautaire",
+      "c3_desc": "Rejoignez des milliers de membres partageant les mêmes objectifs de longévité."
+    }
+  },
+  "AppExperience": {
+    "eyebrow": "Application mobile",
+    "title": "Votre cure, augmentée par l'IA",
+    "downloadApp": "Télécharger l'app",
+    "heroBadge": "Disponible maintenant",
+    "heroTitle1": "L'expérience",
+    "heroTitle2": "HelyaCare App",
+    "heroDesc": "Votre nutritionniste IA dans la poche — personnalisé, clinique, toujours disponible.",
+    "scoreTitle": "Score Bien-être",
+    "scoreDesc": "Calculé chaque matin à partir de vos données biologiques",
+    "scoreEnergy": "Énergie",
+    "scoreSleep": "Sommeil",
+    "resultsBadge": "Résultats prouvés",
+    "resultsStat": "14j",
+    "resultsDesc": "pour observer les premières améliorations mesurables",
+    "resultsEvolution": "Évolution moyenne sur 3 mois",
+    "chatName": "Coach Helyacare IA",
+    "chatMsg1": "Je me sens moins fatigué depuis 3 jours 🙏",
+    "chatMsg2": "C'est exactement ce qu'on anticipe à J+3. Votre taux d'absorption est optimal.",
+    "chatMsg3": "Dois-je augmenter la dose ?",
+    "checkListTitle": "Inclus dans l'app",
+    "check1": "Protocole personnalisé dès J1",
+    "check2": "Rappels & suivi quotidien",
+    "check3": "Analyse de vos biomarqueurs",
+    "check4": "Accès coach IA illimité",
+    "startBtn": "Commencer gratuitement"
+  }
+}

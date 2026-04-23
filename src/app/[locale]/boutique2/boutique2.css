@@ -1,0 +1,715 @@
+/* =========================================================
+   Boutique Alternative – Seed-inspired design
+   Using Poppins and matching the exact visual structure
+   ========================================================= */
+
+   .seed-page {
+    font-family: var(--font-poppins), sans-serif;
+    color: #1A1A1A;
+    background-color: #F7F6F2; /* The exact pale cream */
+    min-height: 100vh;
+  }
+  
+  /* =========================================================
+     PROMO BANNER
+     ========================================================= */
+  .seed-promo-banner {
+    background-color: #CBF27A; /* Bright lime green */
+    color: #173620; /* Dark green text */
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    position: relative;
+    z-index: 50;
+    letter-spacing: 0.2px;
+  }
+  
+  .seed-arrow {
+    margin-left: 6px;
+    font-size: 14px;
+    vertical-align: middle;
+  }
+  
+
+  .seed-hero {
+    position: relative;
+    padding-top: 40px; /* Space above hero content */
+    padding-bottom: 0;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Align content to bottom of hero */
+  }
+  
+  .seed-hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    overflow: hidden;
+  }
+  
+  .seed-hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+  
+  .seed-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.4) 100%);
+  }
+  
+  .seed-hero-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 40px;
+    padding-bottom: 20px; /* Touches the grid section below */
+  }
+  
+  .seed-hero-title {
+    color: #FFFFFF; /* Back to white to layer over dark background */
+    font-size: 46px;
+    line-height: 1.1;
+    font-weight: 500;
+    margin-bottom: 40px;
+    max-width: 600px;
+    letter-spacing: -0.5px;
+  }
+  
+  .seed-hero-cards {
+    display: flex;
+    gap: 20px;
+    align-items: stretch;
+    height: 380px; /* Fixed height to match screenshot proportion */
+  }
+  
+  /* =========================================================
+     HERO FEATURED CARD (LEFT)
+     ========================================================= */
+  .seed-featured-card {
+    flex: 3;
+    background-color: #0F3D3E; /* HelyaCare dark green */
+    border-radius: 20px; /* Match homepage AppExperienceSection */
+    padding: 40px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .seed-badge-featured {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: #E56B2D; /* HelyaCare accent orange */
+    color: #FFFFFF;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+  
+  .seed-featured-layout {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    height: 100%;
+  }
+  
+  .seed-featured-img-wrap {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .seed-featured-img-wrap img {
+    height: 100%;
+    max-height: 280px;
+    object-fit: contain;
+  }
+  
+  .seed-featured-details {
+    flex: 1.5;
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .seed-sku-pill {
+    display: inline-block;
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #FFFFFF;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 30px;
+    margin-bottom: 12px;
+    width: fit-content;
+  }
+  
+  .seed-featured-title {
+    font-size: 26px;
+    font-weight: 400;
+    margin: 0 0 15px 0;
+  }
+  
+  .seed-featured-desc {
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.9);
+    margin: 0 0 20px 0;
+    max-width: 400px;
+  }
+  
+  .seed-featured-price {
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0 0 25px 0;
+  }
+  
+  .seed-featured-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .seed-btn-primary-white {
+    background-color: #E56B2D; /* Match Hero Section button */
+    color: #FFFFFF;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px; /* Match homepage buttons */
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .seed-btn-primary-white:hover {
+    background-color: #cf5c22;
+  }
+  
+  .seed-btn-text-white {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  
+  /* =========================================================
+     QUIZ CARD (RIGHT)
+     ========================================================= */
+  .seed-quiz-card {
+    flex: 1;
+    background-color: #0F3D3E;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .seed-quiz-img {
+    width: 100%;
+    height: 75%;
+    object-fit: cover;
+  }
+  
+  .seed-quiz-text {
+    background-color: rgba(255,255,255,0.1);
+    backdrop-filter: blur(5px);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    color: #FFFFFF;
+  }
+  
+  .seed-quiz-text p {
+    font-size: 13px;
+    margin: 0 0 5px 0;
+  }
+  
+  .seed-quiz-link {
+    color: #FFFFFF;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  
+  /* =========================================================
+     PRODUCT GRID SECTION
+     ========================================================= */
+  .seed-grid-section {
+    background-color: #FFFFFF; /* Pure white as container background */
+    padding: 60px 40px;
+  }
+  
+  .seed-grid-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  
+  .seed-card {
+    background-color: #F7F6F2; /* Cream background — inverted from before */
+    border-radius: 20px; /* Match homepage border-radius */
+    padding: 40px;
+    position: relative;
+    min-height: 280px;
+  }
+  
+  .seed-card-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: #8C998B; /* Exact olive-gray color from badge */
+    color: #FFFFFF;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+  
+  .seed-card-layout {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    height: 100%;
+  }
+  
+  .seed-card-image-col {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .seed-card-image-col img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+  }
+  
+  .seed-card-content-col {
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .seed-sku-light {
+    display: inline-block;
+    border: 1px solid #C4C4C4;
+    color: #4A4A4A;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 30px;
+    margin-bottom: 12px;
+    width: fit-content;
+  }
+  
+  .seed-card-title {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0 0 10px 0;
+    color: #173620;
+  }
+  
+  .seed-card-desc {
+    font-size: 12px;
+    line-height: 1.5;
+    color: #4A4A4A;
+    margin: 0 0 15px 0;
+  }
+  
+  .seed-save-badge {
+    background-color: #CBF27A;
+    color: #173620;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 10px;
+    width: fit-content;
+  }
+  
+  .seed-card-price {
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0 0 20px 0;
+    color: #173620;
+  }
+  
+  .seed-strikethrough {
+    text-decoration: line-through;
+    color: #8C998B;
+    font-size: 13px;
+    margin-left: 5px;
+  }
+  
+  .seed-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .seed-btn-primary-dark {
+    background-color: #E56B2D; /* HelyaCare orange CTA */
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px; /* Match homepage buttons */
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .seed-btn-primary-dark:hover {
+    background-color: #cf5c22;
+  }
+  
+  .seed-btn-text-dark {
+    background: none;
+    border: none;
+    color: #173620;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  
+  /* =========================================================
+     FOOTER
+     ========================================================= */
+  .seed-footer {
+    background-color: #112F1C; /* Very dark green */
+    color: #FFFFFF;
+    padding-top: 60px;
+  }
+  
+  .seed-footer-top {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    gap: 60px;
+  }
+  
+  .seed-footer-newsletter-col {
+    flex: 1.5;
+  }
+  
+  .seed-footer-logo {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 25px;
+  }
+  
+  .seed-footer-pioneering {
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.3;
+    margin-bottom: 30px;
+    max-width: 400px;
+  }
+  
+  .seed-icon {
+    font-size: 18px;
+  }
+  
+  .seed-newsletter-text {
+    font-size: 11px;
+    color: #8C998B;
+    margin-bottom: 10px;
+  }
+  
+  .seed-input-group {
+    display: flex;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 6px;
+    overflow: hidden;
+    max-width: 350px;
+    margin-bottom: 30px;
+  }
+  
+  .seed-input-group input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #FFFFFF;
+    padding: 12px 15px;
+    font-size: 13px;
+    outline: none;
+  }
+  
+  .seed-input-group input::placeholder {
+    color: #8C998B;
+  }
+  
+  .seed-input-group button {
+    background: transparent;
+    border: none;
+    color: #FFFFFF;
+    padding: 0 15px;
+    cursor: pointer;
+  }
+  
+  .seed-disclaimer {
+    font-size: 9px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.4;
+    max-width: 350px;
+    margin-bottom: 40px;
+  }
+  
+  /* Footer Links Grid */
+  .seed-footer-links-grid {
+    flex: 2;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) 1.5fr; /* Matches the irregular visual column widths */
+    gap: 20px;
+  }
+  
+  .seed-footer-nav-col h4 {
+    font-size: 9px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    margin: 0 0 15px 0;
+    letter-spacing: 0.5px;
+  }
+  
+  .seed-footer-nav-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .seed-footer-nav-col li {
+    margin-bottom: 10px;
+  }
+  
+  .seed-footer-nav-col a {
+    color: #FFFFFF;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 400;
+  }
+  
+  .seed-footer-nav-col a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Footer Decorative Bottom */
+  .seed-footer-bottom {
+    position: relative;
+    margin-top: 40px;
+    height: 300px;
+    overflow: hidden;
+  }
+  
+  .seed-footer-pattern img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+  }
+  
+  .seed-copyright {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    color: rgba(255,255,255,0.6);
+  }
+  
+  /* =========================================================
+     SCIENCE JOURNAL + PROTOCOLS SECTION
+     ========================================================= */
+  .seed-science-section {
+    background-color: #FFFFFF;
+    padding: 0 40px 60px;
+  }
+
+  .seed-science-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  /* Left: Journal Card */
+  .seed-journal-card {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    min-height: 380px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .seed-journal-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+  }
+
+  .seed-journal-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(15,61,62,0.35) 0%, rgba(15,61,62,0.85) 100%);
+    z-index: 1;
+  }
+
+  .seed-journal-content {
+    position: relative;
+    z-index: 2;
+    padding: 36px;
+    color: #FFFFFF;
+  }
+
+  .seed-journal-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 14px;
+  }
+
+  .seed-journal-title {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0 0 14px 0;
+    letter-spacing: -0.5px;
+  }
+
+  .seed-journal-desc {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.8);
+    margin: 0 0 26px 0;
+    max-width: 400px;
+  }
+
+  .seed-journal-btn {
+    background-color: #FFFFFF;
+    color: #0F3D3E;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .seed-journal-btn:hover {
+    background-color: #F7F6F2;
+  }
+
+  /* Right: Protocols Card */
+  .seed-protocols-card {
+    background-color: #F4F3EE;
+    border-radius: 20px;
+    padding: 50px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 18px;
+  }
+
+  .seed-protocols-icon {
+    font-size: 32px;
+    color: #0F3D3E;
+    line-height: 1;
+  }
+
+  .seed-protocols-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0F3D3E;
+    margin: 0;
+    letter-spacing: -0.4px;
+    line-height: 1.2;
+  }
+
+  .seed-protocols-desc {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #5A6A5C;
+    margin: 0;
+    max-width: 280px;
+  }
+
+  .seed-protocols-btn {
+    background-color: transparent;
+    color: #0F3D3E;
+    border: 1.5px solid #0F3D3E;
+    padding: 12px 32px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    margin-top: 8px;
+    width: 100%;
+  }
+
+  .seed-protocols-btn:hover {
+    background-color: #0F3D3E;
+    color: #FFFFFF;
+  }
+
+  /* =========================================================
+     RESPONSIVE TWEAKS
+     ========================================================= */
+  @media (max-width: 1024px) {
+    .seed-hero-title { font-size: 36px; }
+    .seed-hero-cards { flex-direction: column; height: auto; }
+    .seed-featured-card, .seed-quiz-card { height: 300px; }
+    .seed-grid-container { grid-template-columns: 1fr; }
+    .seed-footer-top { flex-direction: column; }
+    .seed-footer-links-grid { grid-template-columns: repeat(2, 1fr); }
+  }

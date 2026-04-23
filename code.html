@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Plus+Jakarta+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline": "#717978",
+                    "on-surface-variant": "#404848",
+                    "primary-fixed": "#beebeb",
+                    "surface-container-low": "#f4f3f0",
+                    "primary-container": "#0f3d3e",
+                    "on-primary-container": "#7da8a8",
+                    "on-primary-fixed-variant": "#224d4e",
+                    "surface-bright": "#faf9f6",
+                    "tertiary-fixed-dim": "#ffb787",
+                    "on-secondary-container": "#1b6c75",
+                    "surface-container": "#efeeeb",
+                    "primary-fixed-dim": "#a3cfcf",
+                    "primary": "#002627",
+                    "surface-tint": "#3b6566",
+                    "inverse-primary": "#a3cfcf",
+                    "on-error": "#ffffff",
+                    "surface-container-highest": "#e3e2df",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#a6eef9",
+                    "background": "#faf9f6",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffdcc7",
+                    "on-tertiary-container": "#f48121",
+                    "on-secondary-fixed-variant": "#004f56",
+                    "on-secondary-fixed": "#001f23",
+                    "inverse-on-surface": "#f2f1ee",
+                    "surface-variant": "#e3e2df",
+                    "outline-variant": "#c0c8c8",
+                    "surface": "#faf9f6",
+                    "inverse-surface": "#2f312f",
+                    "on-primary-fixed": "#002020",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface": "#1b1c1a",
+                    "on-background": "#1b1c1a",
+                    "error": "#ba1a1a",
+                    "surface-container-high": "#e9e8e5",
+                    "on-error-container": "#93000a",
+                    "secondary-container": "#a3ecf6",
+                    "on-primary": "#ffffff",
+                    "surface-dim": "#dbdad7",
+                    "tertiary-container": "#5a2900",
+                    "on-tertiary-fixed": "#311300",
+                    "secondary": "#146871",
+                    "secondary-fixed-dim": "#8ad2dc",
+                    "on-tertiary-fixed-variant": "#723600",
+                    "tertiary": "#3a1800",
+                    "on-tertiary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Plus Jakarta Sans"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .dna-gradient-text {
+            background: linear-gradient(90deg, #146871 0%, #3b6566 25%, #f48121 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .dna-gradient-btn {
+            background: linear-gradient(135deg, #002627 0%, #146871 100%);
+        }
+        .dna-gradient-btn:hover {
+            background: linear-gradient(135deg, #146871 0%, #f48121 100%);
+        }
+        .blur-accent {
+            filter: blur(80px);
+            opacity: 0.4;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-secondary-container">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-primary-container/80 backdrop-blur-xl shadow-sm dark:shadow-none transition-colors duration-300">
+<div class="flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-bold tracking-tighter text-primary dark:text-white">Helyacare</div>
+<div class="hidden md:flex items-center space-x-10">
+<a class="font-inter tracking-tight font-medium text-sm text-primary dark:text-white font-semibold border-b-2 border-secondary pb-1" href="#">Shop</a>
+<a class="font-inter tracking-tight font-medium text-sm text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors" href="#">Science</a>
+<a class="font-inter tracking-tight font-medium text-sm text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors" href="#">Learn</a>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors relative">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="absolute -top-1 -right-1 bg-secondary text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center">2</span>
+</button>
+<button class="bg-primary text-white px-6 py-2 rounded-full font-label text-sm font-semibold hover:opacity-80 transition-opacity active:scale-95 duration-150">
+                    Get Started
+                </button>
+</div>
+</div>
+</nav>
+<main class="pt-32 pb-20 relative overflow-hidden">
+<!-- Background Accents -->
+<div class="absolute top-40 -left-20 w-96 h-96 bg-secondary-container blur-accent rounded-full"></div>
+<div class="absolute bottom-40 -right-20 w-80 h-80 bg-tertiary-fixed blur-accent rounded-full"></div>
+<header class="max-w-screen-2xl mx-auto px-8 mb-16">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
+<div class="max-w-2xl">
+<span class="font-label text-secondary font-bold tracking-widest uppercase text-xs mb-4 block">The Biological Standard</span>
+<h1 class="text-6xl md:text-7xl font-headline font-black tracking-tighter text-primary leading-none mb-6">Precision <span class="dna-gradient-text">Wellness</span></h1>
+<p class="text-lg text-on-surface-variant leading-relaxed font-medium">Molecular-grade supplements engineered for longevity and cognitive resilience. Backed by clinical trials, refined by AI.</p>
+</div>
+<!-- Filter Cluster -->
+<div class="flex items-center gap-4 bg-surface-container-low p-2 rounded-full border border-outline-variant/10">
+<button class="px-6 py-2 bg-surface-container-lowest text-primary shadow-sm rounded-full font-label text-sm font-semibold">All Protocols</button>
+<button class="px-6 py-2 text-on-surface-variant hover:text-primary rounded-full font-label text-sm font-semibold transition-colors">Cognition</button>
+<button class="px-6 py-2 text-on-surface-variant hover:text-primary rounded-full font-label text-sm font-semibold transition-colors">Longevity</button>
+<button class="px-6 py-2 text-on-surface-variant hover:text-primary rounded-full font-label text-sm font-semibold transition-colors">Metabolism</button>
+<div class="w-[1px] h-6 bg-outline-variant/30 mx-2"></div>
+<button class="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:text-primary font-label text-sm font-semibold">
+<span class="material-symbols-outlined text-lg">tune</span>
+                        Sort
+                    </button>
+</div>
+</div>
+</header>
+<!-- Product Grid -->
+<section class="max-w-screen-2xl mx-auto px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+<!-- Card 1 -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_40px_rgba(15,61,62,0.08)]">
+<div class="relative h-96 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Premium minimalist white supplement bottle on a clean reflective surface with soft teal studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdyR79Q6Ekq27YWx9M6aZ7cLLV6dDVvvebktBEFc8s3glSumVs3vAoczRnHfS-dO67VzGrFwp1co1aDOOXfkxCcVXdYw0XYyB5BiS9eWYiJvK6Cr7HH-cPze_LcyQLBXnChcHG1gz-bSkgkue-vgxaT-l9yW3B_lveePAbV3cYZp9LcFWOVsFwc1gsTclRe_ndnwZbwlpR6qi7diakscBgKdln7kmb8oL4JlGptveFZuEuqI0vvxUmr5kD2G9UYziCgJ1W8x_wU_c"/>
+<div class="absolute top-6 left-6 flex flex-col gap-2">
+<span class="bg-secondary/90 backdrop-blur-md text-white font-label text-[10px] font-bold tracking-widest px-3 py-1 rounded-full">MOST POPULAR</span>
+<span class="bg-surface/90 backdrop-blur-md text-primary font-label text-[10px] font-bold tracking-widest px-3 py-1 rounded-full">DNA-CERTIFIED</span>
+</div>
+</div>
+<div class="p-10 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-3xl font-headline font-bold text-primary tracking-tight mb-1">Neuro-Flow 01</h3>
+<p class="font-label text-secondary text-sm font-semibold uppercase tracking-wider">Cognitive Optimization</p>
+</div>
+<span class="text-2xl font-headline font-bold text-primary">$89</span>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-8">Enhanced synaptic plasticity using a proprietary blend of Lion's Mane and Bacopa Monnieri. Designed for deep work and executive clarity.</p>
+<div class="space-y-3 mb-10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">science</span>
+<span class="text-xs font-label text-on-surface-variant">98% Bio-availability Index</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-xs font-label text-on-surface-variant">Clinical Trial Phase III Validated</span>
+</div>
+</div>
+<div class="mt-auto flex items-center gap-4">
+<button class="flex-grow dna-gradient-btn text-white py-4 rounded-full font-label text-sm font-bold transition-all shadow-lg shadow-secondary/10">
+                            Add to Cart
+                        </button>
+<button class="px-6 py-4 rounded-full border border-outline-variant/30 text-primary font-label text-sm font-bold hover:bg-surface-container-low transition-colors">
+                            Learn More
+                        </button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_40px_rgba(15,61,62,0.08)]">
+<div class="relative h-96 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Elegant amber glass vial containing supplement powder against a soft cream background with organic shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDTnG1VF40h3u0OBExyqlOrKgX3UxXtHBykk2puFPXpKwA9FQKlQeAYOe0lzPLgy8kSGVDKIlZtVuzoQr1VFgDE0cWorhIkrNBO9-Lo3SazTXpxE-TiH-iLKxQ_GfgefkncmklqvhgXDmFuJYefi8yDLSFZnb3d2DnSQUajlPMV2c7b02zvR0pz-VHFOgNqRhf1Ot5Box358mlDPTEJpxu12-g_TRPYMqomlCzQjpNDdmTlxBjE4ZYx9O6wsFrcQ9G4aqsNV3E310"/>
+<div class="absolute top-6 left-6 flex flex-col gap-2">
+<span class="bg-primary/90 backdrop-blur-md text-white font-label text-[10px] font-bold tracking-widest px-3 py-1 rounded-full">NEW FORMULA</span>
+</div>
+</div>
+<div class="p-10 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-3xl font-headline font-bold text-primary tracking-tight mb-1">Cellular Regen</h3>
+<p class="font-label text-secondary text-sm font-semibold uppercase tracking-wider">Longevity Protocol</p>
+</div>
+<span class="text-2xl font-headline font-bold text-primary">$124</span>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-8">NMN and Resveratrol complex formulated to support NAD+ levels and mitochondrial health at the systemic level.</p>
+<div class="space-y-3 mb-10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">database</span>
+<span class="text-xs font-label text-on-surface-variant">AI-optimized nutrient delivery</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">eco</span>
+<span class="text-xs font-label text-on-surface-variant">100% Sustainably Sourced</span>
+</div>
+</div>
+<div class="mt-auto flex items-center gap-4">
+<button class="flex-grow dna-gradient-btn text-white py-4 rounded-full font-label text-sm font-bold transition-all shadow-lg shadow-secondary/10">
+                            Add to Cart
+                        </button>
+<button class="px-6 py-4 rounded-full border border-outline-variant/30 text-primary font-label text-sm font-bold hover:bg-surface-container-low transition-colors">
+                            Learn More
+                        </button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group flex flex-col bg-surface-container-lowest rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_40px_rgba(15,61,62,0.08)]">
+<div class="relative h-96 overflow-hidden">
+<img class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="Artistic close up of crystalline structure of supplement minerals under microscopic lens with iridescent colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtEpywdHTb24fLVrX4lhkQDcjeUTYIVjngY5Ez0umHyEn3rgyjQCUrgVGfAkA3q1_xvQpZC605RPrG0uO9V0Z2gKL3lCSSYCP64lY5GET_1Ri-P7VdKYYXA9Gi7XrnBS055Q8f4YvxXuqXmqdYPBqXOkK6w5W-QNu-wm8k26Wx9mt5UyA0onIYTE3mmNupQpYMr31NTk58-Z5ylksnFIM3f-Iros321UwWKEO2kkoHTxyIOTW1GX2Yl2OgKeeO0AO7Op-lw5kcMXA"/>
+<div class="absolute top-6 left-6 flex flex-col gap-2">
+<span class="bg-tertiary-container/90 backdrop-blur-md text-white font-label text-[10px] font-bold tracking-widest px-3 py-1 rounded-full">EDITOR'S CHOICE</span>
+</div>
+</div>
+<div class="p-10 flex flex-col flex-grow">
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-3xl font-headline font-bold text-primary tracking-tight mb-1">Metabolic Core</h3>
+<p class="font-label text-secondary text-sm font-semibold uppercase tracking-wider">Vitality &amp; Energy</p>
+</div>
+<span class="text-2xl font-headline font-bold text-primary">$75</span>
+</div>
+<p class="text-on-surface-variant text-sm leading-relaxed mb-8">Stabilize glucose response and enhance fat oxidation through high-potency Berberine and trace mineral complexes.</p>
+<div class="space-y-3 mb-10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<span class="text-xs font-label text-on-surface-variant">Instant Metabolic Uplift</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">biotech</span>
+<span class="text-xs font-label text-on-surface-variant">Purity Tested: 99.9%</span>
+</div>
+</div>
+<div class="mt-auto flex items-center gap-4">
+<button class="flex-grow dna-gradient-btn text-white py-4 rounded-full font-label text-sm font-bold transition-all shadow-lg shadow-secondary/10">
+                            Add to Cart
+                        </button>
+<button class="px-6 py-4 rounded-full border border-outline-variant/30 text-primary font-label text-sm font-bold hover:bg-surface-container-low transition-colors">
+                            Learn More
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Editorial Section (Bento Style) -->
+<section class="max-w-screen-2xl mx-auto px-8 mt-32">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 h-auto md:h-[600px]">
+<div class="md:col-span-8 bg-primary-container rounded-[2rem] p-12 relative overflow-hidden flex flex-col justify-end group">
+<img class="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay transition-transform duration-1000 group-hover:scale-110" data-alt="Scientific researcher in high-end laboratory analyzing complex molecular structures on a glass display" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4ySQZN-k5tGooQ56AACUNQDfFJ3D682A99PL1Zy06T7r3a2dKt1kBP2FnWeZxiFC7t9xTiY_4Fe0yPqxAWuUqZIGMrQRxmex7QI75PvdhK20wRi5GjjT6OMGMpv6-uLtVniLLMMCyYKJeEBk0JSC8DYj38gvOBYiaeM-eDgo0Uh4aIT4V6y1X32KFH-QkxjMT7l200ZTyl5-NJ-prZKiKGVEXc9UTRb2uOXUJBr2fdPZv9_Zzhp7EvYeFn47UsGu23Qs7x3k37vc"/>
+<div class="relative z-10 max-w-lg">
+<span class="font-label text-secondary-fixed font-bold tracking-widest uppercase text-xs mb-4 block">Research Deep-Dive</span>
+<h2 class="text-5xl font-headline font-bold text-white tracking-tight mb-6">The Helyacare <br/>Scientific Journal</h2>
+<p class="text-on-primary-container text-lg mb-8">Explore our library of peer-reviewed studies and the AI methodology that powers every capsule.</p>
+<button class="bg-white text-primary px-8 py-3 rounded-full font-label text-sm font-bold hover:bg-secondary-container transition-colors">Read Current Edition</button>
+</div>
+</div>
+<div class="md:col-span-4 bg-surface-container-high rounded-[2rem] p-12 flex flex-col justify-center text-center">
+<div class="mb-8">
+<span class="material-symbols-outlined text-6xl text-secondary mb-6">health_metrics</span>
+<h3 class="text-3xl font-headline font-bold text-primary tracking-tight mb-4">Personalized Protocols</h3>
+<p class="text-on-surface-variant text-sm leading-relaxed">Connect your wearable data to receive an AI-generated supplement stack tailored to your unique biology.</p>
+</div>
+<button class="w-full py-4 rounded-full border border-primary text-primary font-label text-sm font-bold hover:bg-primary hover:text-white transition-all">Take Assessment</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-surface-container-low dark:bg-primary-container rounded-t-[2rem] mt-20">
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-12 px-12 py-20 max-w-screen-2xl mx-auto">
+<div class="col-span-2">
+<span class="text-xl font-black tracking-tighter text-primary dark:text-white mb-4 block">Helyacare</span>
+<p class="text-on-surface-variant dark:text-surface-variant font-inter text-sm leading-relaxed max-w-xs">Redefining human performance through the convergence of high-molecular science and generative AI.</p>
+</div>
+<div class="flex flex-col gap-4">
+<span class="text-primary dark:text-white font-label font-bold text-xs uppercase tracking-widest">Shop</span>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-secondary transition-colors font-inter text-sm leading-relaxed" href="#">Shop All</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-secondary transition-colors font-inter text-sm leading-relaxed" href="#">Clinical Studies</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="text-primary dark:text-white font-label font-bold text-xs uppercase tracking-widest">About</span>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-secondary transition-colors font-inter text-sm leading-relaxed" href="#">Our Story</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-secondary transition-colors font-inter text-sm leading-relaxed" href="#">Journal</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="text-primary dark:text-white font-label font-bold text-xs uppercase tracking-widest">Legal</span>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-secondary transition-colors font-inter text-sm leading-relaxed" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-secondary transition-colors font-inter text-sm leading-relaxed" href="#">Terms of Service</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="text-primary dark:text-white font-label font-bold text-xs uppercase tracking-widest">Connect</span>
+<div class="flex gap-4">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined">mail</span></a>
+</div>
+</div>
+</div>
+<div class="px-12 py-8 border-t border-outline-variant/10 max-w-screen-2xl mx-auto flex justify-between items-center">
+<span class="text-on-surface-variant dark:text-surface-variant font-inter text-xs">© 2024 Helyacare. All rights reserved.</span>
+<div class="flex gap-6">
+<span class="text-on-surface-variant dark:text-surface-variant font-inter text-xs">ISO 9001 Certified</span>
+<span class="text-on-surface-variant dark:text-surface-variant font-inter text-xs">GMP Facility</span>
+</div>
+</div>
+</footer>
+</body></html>

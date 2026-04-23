@@ -1,0 +1,105 @@
+{
+  "Header": {
+    "boutique": "Shop",
+    "experience": "HelyaCare Experience",
+    "mission": "Our Mission",
+    "ambassadeur": "Become an Ambassador",
+    "login": "Login"
+  },
+  "Hero": {
+    "title1": "Your wellbeing",
+    "title2": "is our",
+    "title3": "mission.",
+    "subtitle": "High-quality dietary supplements (gummies, electrolytes, and tablets), carefully formulated to support your daily health.",
+    "discoverBtn": "Discover",
+    "videoBtn": "Watch Video",
+    "stats": {
+      "clients": "Clients\nsupported",
+      "formulas": "Exclusive\nformulas",
+      "years": "Years of\nexpertise"
+    }
+  },
+  "Footer": {
+    "missionText": "Redefining the future of wellness and longevity worldwide, by blending clinical science with the best nature has to offer.",
+    "boutiqueTitle": "Shop",
+    "allProducts": "All products",
+    "subscription": "Subscription",
+    "brandTitle": "The Brand",
+    "ourMission": "Our Mission",
+    "science": "Science",
+    "journal": "The Journal",
+    "faq": "FAQ",
+    "joinMovement": "Join the movement",
+    "newsletterText": "Subscribe to our newsletter to receive health tips, news, and exclusive offers.",
+    "emailPlaceholder": "Your email address",
+    "subscribeBtn": "Subscribe",
+    "rights": "Helyacare. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "legal": "Legal Notice",
+    "cgv": "Terms & Conditions"
+  },
+  "Boutique2": {
+    "promoBanner": "Is Crave Control right for you? ➔",
+    "heroTitle1": "Whole Body Health,",
+    "heroTitle2": "Made Possible by your Microbiome.",
+    "featuredBadge": "Bestseller",
+    "featuredCategory": "Nutrition",
+    "featuredTitle": "Crave Control",
+    "featuredDesc": "A neuro-metabolic shield that regulates appetite, helps limit cravings, and supports daily metabolism.",
+    "discoverBtn": "Learn More",
+    "addBtn": "Add To Cart",
+    "quizText": "Is Crave Control right for you?",
+    "quizBtn": "Take the Quiz"
+  },
+  "Solutions": {
+    "title": "Our Solutions",
+    "seeAll": "See All >",
+    "desc": "A selection of expert formulas to meet your specific needs.",
+    "discoverBtn": "Discover",
+    "products": {
+      "p1_subtitle": "Neuro-Metabolic Shield",
+      "p2_subtitle": "Energy & Endurance",
+      "p3_subtitle": "Electrolytes & Hydration",
+      "p4_subtitle": "Gastric Regulator"
+    }
+  },
+  "Ecosystem": {
+    "title": "The Helyacare Ecosystem.",
+    "desc": "A holistic approach combining science and technology to redefine wellness standards worldwide.",
+    "cards": {
+      "c1_title": "Scientific\nExcellence",
+      "c1_desc": "Each formula is the result of months of clinical research and rigorous testing.",
+      "c2_title": "Artificial\nIntelligence",
+      "c2_desc": "Our algorithm analyzes your data to adjust your doses in real-time.",
+      "c3_title": "Community\nStrength",
+      "c3_desc": "Join thousands of members sharing the same longevity goals."
+    }
+  },
+  "AppExperience": {
+    "eyebrow": "Mobile App",
+    "title": "Your regimen, augmented by AI",
+    "downloadApp": "Download App",
+    "heroBadge": "Available Now",
+    "heroTitle1": "The HelyaCare",
+    "heroTitle2": "App Experience",
+    "heroDesc": "Your AI nutritionist in your pocket — personalized, clinical, always available.",
+    "scoreTitle": "Wellness Score",
+    "scoreDesc": "Calculated every morning from your biological data",
+    "scoreEnergy": "Energy",
+    "scoreSleep": "Sleep",
+    "resultsBadge": "Proven Results",
+    "resultsStat": "14d",
+    "resultsDesc": "to observe the first measurable improvements",
+    "resultsEvolution": "Average evolution over 3 months",
+    "chatName": "Helyacare AI Coach",
+    "chatMsg1": "I feel less tired since 3 days ago 🙏",
+    "chatMsg2": "That's exactly what we anticipate on Day 3. Your absorption rate is optimal.",
+    "chatMsg3": "Should I increase the dose?",
+    "checkListTitle": "Included in the app",
+    "check1": "Personalized protocol from Day 1",
+    "check2": "Daily reminders & tracking",
+    "check3": "Biomarker analysis",
+    "check4": "Unlimited AI coach access",
+    "startBtn": "Start for Free"
+  }
+}
