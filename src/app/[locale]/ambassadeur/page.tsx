@@ -10,12 +10,14 @@ import {
   Share2, Zap, CheckCircle, ArrowRight, Lock,
   AtSign, Smartphone
 } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/navigation";
+import { useTranslations } from "next-intl";
 
 const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700", "800", "900"] });
 const pjs = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
 export default function AmbassadeurPage() {
+  const t = useTranslations("Ambassadeur");
   const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "", confirmPassword: "", referralCode: "" });
   const [submitted, setSubmitted] = useState(false);
   const [pwError, setPwError] = useState(false);
@@ -56,16 +58,16 @@ export default function AmbassadeurPage() {
               {/* Eyebrow */}
               <div className="inline-flex items-center gap-2 bg-[#E56B2D]/15 border border-[#E56B2D]/30 rounded-full px-4 py-1.5 mb-8">
                 <Award className="w-4 h-4 text-[#E56B2D]" />
-                <span className="text-[#E56B2D] text-xs font-bold uppercase tracking-widest">Programme Ambassadeur</span>
+                <span className="text-[#E56B2D] text-xs font-bold uppercase tracking-widest">{t("badge")}</span>
               </div>
 
               <h1 className={`text-4xl md:text-5xl lg:text-[3.8rem] font-black text-white leading-[1.05] tracking-tight mb-6 ${inter.className}`}>
-                Monétisez<br />votre influence.<br />
-                <span className="text-[#CBF27A]">Devenez pionnier<br />HelyaCare.</span>
+                {t("hero.title1")}<br />{t("hero.title2")}<br />
+                <span className="text-[#CBF27A]">{t("hero.title3")}<br />{t("hero.title4")}</span>
               </h1>
 
               <p className="text-white/65 text-lg font-light leading-relaxed mb-10 max-w-lg">
-                Rejoignez l&apos;élite de la Health Tech. Partagez l&apos;innovation, générez des revenus récurrents et construisez votre indépendance financière.
+                {t("hero.desc")}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">
@@ -73,13 +75,13 @@ export default function AmbassadeurPage() {
                   href="#inscription"
                   className={`px-8 py-4 bg-white text-[#0F3D3E] font-bold text-sm rounded-xl text-center hover:bg-gray-100 hover:shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ${pjs.className}`}
                 >
-                  Rejoindre le réseau →
+                  {t("hero.btn1")}
                 </a>
                 <a
                   href="#processus"
                   className={`px-8 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white font-semibold text-sm rounded-xl text-center hover:bg-white/20 transition-colors ${pjs.className}`}
                 >
-                  Comment ça marche ?
+                  {t("hero.btn2")}
                 </a>
               </div>
 
@@ -87,17 +89,17 @@ export default function AmbassadeurPage() {
               <div className="flex items-center gap-8 mt-12 pt-10 border-t border-white/10">
                 <div>
                   <div className={`text-3xl font-black text-white ${inter.className}`}>4.8★</div>
-                  <div className="text-white/50 text-xs mt-1">Satisfaction ambassadeurs</div>
+                  <div className="text-white/50 text-xs mt-1">{t("hero.social1_label")}</div>
                 </div>
                 <div className="w-px h-12 bg-white/10" />
                 <div>
                   <div className={`text-3xl font-black text-[#CBF27A] ${inter.className}`}>150K+</div>
-                  <div className="text-white/50 text-xs mt-1">FCFA/mois en moyenne</div>
+                  <div className="text-white/50 text-xs mt-1">{t("hero.social2_label")}</div>
                 </div>
                 <div className="w-px h-12 bg-white/10" />
                 <div>
                   <div className={`text-3xl font-black text-white ${inter.className}`}>3 niv.</div>
-                  <div className="text-white/50 text-xs mt-1">Commissions MLM</div>
+                  <div className="text-white/50 text-xs mt-1">{t("hero.social3_label")}</div>
                 </div>
               </div>
             </div>
@@ -109,15 +111,15 @@ export default function AmbassadeurPage() {
                 <div className="absolute -inset-4 bg-[#CBF27A]/10 rounded-3xl blur-2xl" />
                 <div className="relative bg-[#0F3D3E]/90 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-2xl">
                   <div className="flex items-center justify-between mb-5">
-                    <div className="text-xs font-bold text-white/50 uppercase tracking-widest">Dashboard Live</div>
+                    <div className="text-xs font-bold text-white/50 uppercase tracking-widest">{t("hero.dashboard_label")}</div>
                     <div className="flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                      <span className="text-xs text-green-400">Actif</span>
+                      <span className="text-xs text-green-400">{t("hero.dashboard_active")}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 mb-2">
                     <Wallet className="w-4 h-4 text-[#E56B2D]" />
-                    <span className="text-white/60 text-xs">Trésorerie Disponible</span>
+                    <span className="text-white/60 text-xs">{t("hero.dashboard_wallet")}</span>
                   </div>
                   <div className={`text-4xl font-black text-white mb-1 ${inter.className}`}>
                     150 000 <span className="text-lg text-white/40">FCFA</span>
@@ -131,12 +133,12 @@ export default function AmbassadeurPage() {
                     <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
                       <Users className="w-5 h-5 text-[#CBF27A] mb-2" />
                       <div className={`text-2xl font-bold text-white ${inter.className}`}>24</div>
-                      <div className="text-white/50 text-xs mt-1">Filleuls actifs</div>
+                      <div className="text-white/50 text-xs mt-1">{t("hero.dashboard_affiliates")}</div>
                     </div>
                     <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
                       <BarChart3 className="w-5 h-5 text-[#E56B2D] mb-2" />
                       <div className={`text-2xl font-bold text-white ${inter.className}`}>89%</div>
-                      <div className="text-white/50 text-xs mt-1">Taux rétention</div>
+                      <div className="text-white/50 text-xs mt-1">{t("hero.dashboard_retention")}</div>
                     </div>
                   </div>
                 </div>
@@ -149,9 +151,9 @@ export default function AmbassadeurPage() {
         <section className="bg-[#F2F0EB] py-24 md:py-32 px-6">
           <div className="max-w-[1200px] mx-auto">
             <div className="text-center mb-16">
-              <p className="text-[10px] font-bold text-[#E56B2D] uppercase tracking-[0.2em] mb-4">Vos avantages</p>
+              <p className="text-[10px] font-bold text-[#E56B2D] uppercase tracking-[0.2em] mb-4">{t("proof.eyebrow")}</p>
               <h2 className={`text-4xl md:text-5xl font-bold text-[#0F3D3E] leading-tight ${inter.className}`}>
-                Un revenu passif,<br />sans plafond.
+                {t("proof.title1")}<br />{t("proof.title2")}
               </h2>
             </div>
 
@@ -165,11 +167,11 @@ export default function AmbassadeurPage() {
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-8">
                     <div className="w-2 h-2 rounded-full bg-green-400" />
-                    <span className="text-white/50 text-xs uppercase tracking-widest font-bold">Helya Business Hub</span>
+                    <span className="text-white/50 text-xs uppercase tracking-widest font-bold">{t("proof.dashboard_label")}</span>
                   </div>
                   
                   <div className="mb-8">
-                    <p className="text-white/50 text-sm mb-2">Trésorerie Disponible</p>
+                    <p className="text-white/50 text-sm mb-2">{t("proof.dashboard_available")}</p>
                     <p className={`text-5xl md:text-6xl font-black text-white ${inter.className}`}>
                       150 000 <span className="text-2xl text-white/40">FCFA</span>
                     </p>
@@ -181,9 +183,9 @@ export default function AmbassadeurPage() {
 
                   <div className="grid grid-cols-3 gap-3">
                     {[
-                      { label: "Niveau 1", val: "10%", sub: "Ventes directes" },
-                      { label: "Niveau 2", val: "5%", sub: "Filleuls filleuls" },
-                      { label: "Niveau 3", val: "2%", sub: "Réseau étendu" },
+                      { label: t("proof.tier1"), val: "10%", sub: t("proof.tier1_sub") },
+                      { label: t("proof.tier2"), val: "5%", sub: t("proof.tier2_sub") },
+                      { label: t("proof.tier3"), val: "2%", sub: t("proof.tier3_sub") },
                     ].map((tier, i) => (
                       <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-4">
                         <p className="text-[#CBF27A] text-xs font-bold uppercase mb-2">{tier.label}</p>
@@ -200,18 +202,18 @@ export default function AmbassadeurPage() {
                 {[
                   {
                     icon: <Users className="w-6 h-6 text-[#0F3D3E]" />,
-                    title: "Commissions multi-niveaux",
-                    desc: "Gagnez sur 3 niveaux de votre réseau. Plus vous recrutez, plus vos revenus passifs augmentent exponentiellement."
+                    title: t("proof.c1_title"),
+                    desc: t("proof.c1_desc")
                   },
                   {
                     icon: <TrendingUp className="w-6 h-6 text-[#E56B2D]" />,
-                    title: "Revenus récurrents",
-                    desc: "Chaque abonnement de votre réseau vous génère une commission mensuelle automatique, mois après mois."
+                    title: t("proof.c2_title"),
+                    desc: t("proof.c2_desc")
                   },
                   {
                     icon: <BarChart3 className="w-6 h-6 text-[#0F3D3E]" />,
-                    title: "Dashboard temps réel",
-                    desc: "Suivez vos performances, votre réseau et vos gains au centime près depuis votre espace Ambassadeur."
+                    title: t("proof.c3_title"),
+                    desc: t("proof.c3_desc")
                   },
                 ].map((card, i) => (
                   <div key={i} className="bg-white border border-[#E8E3DC] rounded-2xl p-6 flex items-start gap-4 hover:shadow-md transition-shadow">
@@ -233,9 +235,9 @@ export default function AmbassadeurPage() {
         <section id="processus" className="bg-[#0F3D3E] py-24 md:py-32 px-6">
           <div className="max-w-[1000px] mx-auto">
             <div className="text-center mb-16">
-              <p className="text-[10px] font-bold text-[#CBF27A]/60 uppercase tracking-[0.2em] mb-4">La Méthode</p>
+              <p className="text-[10px] font-bold text-[#CBF27A]/60 uppercase tracking-[0.2em] mb-4">{t("process.eyebrow")}</p>
               <h2 className={`text-4xl md:text-5xl font-bold text-white leading-tight ${inter.className}`}>
-                Simple. Puissant. Récurrent.
+                {t("process.title")}
               </h2>
             </div>
 
@@ -247,20 +249,20 @@ export default function AmbassadeurPage() {
                 {
                   step: "01",
                   icon: <Lock className="w-7 h-7 text-[#CBF27A]" />,
-                  title: "Rejoignez",
-                  desc: "Postulez en 2 minutes. Recevez votre lien affilié unique, votre kit de démarrage digital et accédez à votre dashboard instantanément."
+                  title: t("process.s1_title"),
+                  desc: t("process.s1_desc")
                 },
                 {
                   step: "02",
                   icon: <Share2 className="w-7 h-7 text-[#E56B2D]" />,
-                  title: "Partagez",
-                  desc: "Diffusez l'expérience Crave Control et le coach IA Botpress à votre communauté. Votre lien trackera chaque vente automatiquement."
+                  title: t("process.s2_title"),
+                  desc: t("process.s2_desc")
                 },
                 {
                   step: "03",
                   icon: <Smartphone className="w-7 h-7 text-[#CBF27A]" />,
-                  title: "Encaissez",
-                  desc: "Recevez vos commissions directement sur votre Mobile Money (Orange, MTN) ou votre compte bancaire, chaque fin de mois."
+                  title: t("process.s3_title"),
+                  desc: t("process.s3_desc")
                 },
               ].map((step, i) => (
                 <div key={i} className="flex flex-col items-center text-center gap-4 relative">
@@ -282,12 +284,12 @@ export default function AmbassadeurPage() {
         <section className="bg-[#F2F0EB] py-24 md:py-32 px-6">
           <div className="max-w-[1200px] mx-auto">
             <div className="text-center mb-16">
-              <p className="text-[10px] font-bold text-[#E56B2D] uppercase tracking-[0.2em] mb-4">L'outil de vente</p>
+              <p className="text-[10px] font-bold text-[#E56B2D] uppercase tracking-[0.2em] mb-4">{t("product.eyebrow")}</p>
               <h2 className={`text-4xl md:text-5xl font-bold text-[#0F3D3E] leading-tight ${inter.className}`}>
-                Un produit qui<br />se vend tout seul.
+                {t("product.title1")}<br />{t("product.title2")}
               </h2>
               <p className="text-gray-500 text-lg font-light mt-4 max-w-xl mx-auto">
-                Crave Control n&apos;est pas juste un complément. C&apos;est un système de santé avec une IA embarquée — une expérience inédite en Afrique.
+                {t("product.desc")}
               </p>
             </div>
 
@@ -302,9 +304,9 @@ export default function AmbassadeurPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0F3D3E]/80 via-transparent to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-8">
-                  <p className="text-[#CBF27A] text-xs font-bold uppercase tracking-widest mb-2">Produit phare</p>
-                  <h3 className={`text-2xl font-bold text-white ${inter.className}`}>Crave Control</h3>
-                  <p className="text-white/70 text-sm mt-1">Régulation glycémique · 30 jours</p>
+                  <p className="text-[#CBF27A] text-xs font-bold uppercase tracking-widest mb-2">{t("product.product_badge")}</p>
+                  <h3 className={`text-2xl font-bold text-white ${inter.className}`}>{t("product.product_name")}</h3>
+                  <p className="text-white/70 text-sm mt-1">{t("product.product_sub")}</p>
                 </div>
               </div>
 
@@ -321,14 +323,14 @@ export default function AmbassadeurPage() {
                   <div className="w-10 h-10 rounded-xl bg-[#CBF27A]/20 border border-[#CBF27A]/30 flex items-center justify-center mb-4">
                     <Zap className="w-5 h-5 text-[#CBF27A]" />
                   </div>
-                  <p className="text-[#CBF27A] text-xs font-bold uppercase tracking-widest mb-2">IA embarquée</p>
-                  <h3 className={`text-2xl font-bold text-white ${inter.className}`}>Coach Botpress</h3>
-                  <p className="text-white/60 text-sm mt-1">Recommandations IA · WhatsApp</p>
+                  <p className="text-[#CBF27A] text-xs font-bold uppercase tracking-widest mb-2">{t("product.ai_badge")}</p>
+                  <h3 className={`text-2xl font-bold text-white ${inter.className}`}>{t("product.ai_title")}</h3>
+                  <p className="text-white/60 text-sm mt-1">{t("product.ai_sub")}</p>
                 </div>
 
                 {/* 3 selling points */}
                 <div className="absolute top-6 right-6 flex flex-col gap-2">
-                  {["WhatsApp natif", "Données privées", "Temps réel"].map((tag, i) => (
+                  {[t("product.tag1"), t("product.tag2"), t("product.tag3")].map((tag, i) => (
                     <div key={i} className="flex items-center gap-1.5 bg-white/10 border border-white/10 backdrop-blur-sm rounded-full px-3 py-1">
                       <CheckCircle className="w-3 h-3 text-[#CBF27A]" />
                       <span className="text-white text-[11px] font-medium">{tag}</span>
@@ -341,17 +343,17 @@ export default function AmbassadeurPage() {
             {/* Commission rate callout */}
             <div className="mt-6 bg-white border border-[#E8E3DC] rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
               <div>
-                <p className="text-gray-500 text-sm mb-1">Commission sur chaque vente directe</p>
+                <p className="text-gray-500 text-sm mb-1">{t("product.commission_label")}</p>
                 <div className="flex items-baseline gap-3">
                   <span className={`text-5xl font-black text-[#0F3D3E] ${inter.className}`}>10%</span>
-                  <span className="text-gray-400 text-sm">= <strong className="text-[#E56B2D]">2 000 FCFA</strong> par cure vendue</span>
+                  <span className="text-gray-400 text-sm">{t("product.commission_desc")}</span>
                 </div>
               </div>
               <a
                 href="#inscription"
                 className={`px-8 py-4 bg-[#0F3D3E] text-white font-bold text-sm rounded-xl hover:bg-[#1a5556] transition-colors whitespace-nowrap ${pjs.className}`}
               >
-                Créer mon compte →
+                {t("product.commission_cta")}
               </a>
             </div>
           </div>
@@ -361,12 +363,12 @@ export default function AmbassadeurPage() {
         <section id="inscription" className="bg-[#0F3D3E] py-24 md:py-32 px-6">
           <div className="max-w-[640px] mx-auto">
             <div className="text-center mb-12">
-              <p className="text-[10px] font-bold text-[#CBF27A]/60 uppercase tracking-[0.2em] mb-4">Inscription</p>
+              <p className="text-[10px] font-bold text-[#CBF27A]/60 uppercase tracking-[0.2em] mb-4">{t("form.eyebrow")}</p>
               <h2 className={`text-4xl md:text-5xl font-bold text-white leading-tight mb-4 ${inter.className}`}>
-                Créez votre compte.<br />Obtenez votre lien.
+                {t("form.title1")}<br />{t("form.title2")}
               </h2>
               <p className={`text-white/50 font-light leading-relaxed ${pjs.className}`}>
-                En 60 secondes, vous aurez votre lien d&apos;affiliation unique et accès à votre dashboard Ambassadeur.
+                {t("form.subtitle")}
               </p>
             </div>
 
@@ -375,13 +377,13 @@ export default function AmbassadeurPage() {
                 <div className="w-16 h-16 rounded-full bg-[#CBF27A]/20 flex items-center justify-center mx-auto mb-6">
                   <CheckCircle className="w-8 h-8 text-[#CBF27A]" />
                 </div>
-                <h3 className={`text-2xl font-bold text-white mb-3 ${inter.className}`}>Compte créé !</h3>
-                <p className={`text-white/60 mb-6 ${pjs.className}`}>Bienvenue dans le réseau HelyaCare. Vérifiez votre email pour activer votre compte et accéder à votre lien d&apos;affiliation.</p>
+                <h3 className={`text-2xl font-bold text-white mb-3 ${inter.className}`}>{t("form.success_title")}</h3>
+                <p className={`text-white/60 mb-6 ${pjs.className}`}>{t("form.success_desc")}</p>
                 <Link
-                  href="/fr/connexion"
+                  href="/connexion"
                   className={`inline-flex items-center justify-center gap-2 w-full py-4 bg-white text-[#0F3D3E] font-bold text-sm rounded-xl hover:bg-gray-100 hover:scale-[1.02] transition-all duration-200 ${pjs.className}`}
                 >
-                  Se connecter à mon espace
+                  {t("form.success_cta")}
                 </Link>
               </div>
             ) : (
@@ -395,7 +397,7 @@ export default function AmbassadeurPage() {
                   {/* Prénom + Nom */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-white/60 text-xs font-semibold uppercase tracking-widest">Prénom *</label>
+                      <label className="text-white/60 text-xs font-semibold uppercase tracking-widest">{t("form.firstName")} *</label>
                       <input
                         type="text" required
                         value={form.firstName}
@@ -405,7 +407,7 @@ export default function AmbassadeurPage() {
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-white/60 text-xs font-semibold uppercase tracking-widest">Nom *</label>
+                      <label className="text-white/60 text-xs font-semibold uppercase tracking-widest">{t("form.lastName")} *</label>
                       <input
                         type="text" required
                         value={form.lastName}

@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { getLocale } from "next-intl/server";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import DashboardNav from "@/components/espace-client/DashboardNav";
 import Footer from "@/components/Footer";
@@ -10,7 +9,6 @@ const pjs = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600"
 
 export default async function EspaceClientLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  const locale = await getLocale();
 
   // Route Protection (TEMPORARILY DISABLED FOR TESTING)
   /*
@@ -42,7 +40,7 @@ export default async function EspaceClientLayout({ children }: { children: React
           </header>
 
           {/* Client-side Navigation Menu */}
-          <DashboardNav locale={locale} />
+          <DashboardNav />
 
           {/* Page Content */}
           <div className="w-full">

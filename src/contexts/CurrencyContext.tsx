@@ -7,45 +7,61 @@ type Currency = "XAF" | "EUR" | "USD" | string;
 interface CurrencyContextProps {
   currency: Currency;
   setCurrency: (currency: Currency) => void;
-  formatPrice: (amountInEur: number) => string;
+  /** Formate un montant exprimé en XAF (devise interne) vers la devise sélectionnée */
+  formatPrice: (amountInXAF: number) => string;
   isReady: boolean;
 }
 
 const CurrencyContext = createContext<CurrencyContextProps | undefined>(undefined);
 
+// ─── Taux de change : tout est exprimé par rapport à 1 XAF ────────────────────
+// 1 EUR ≈ 655.957 XAF  →  1 XAF ≈ 0.001525 EUR
+// 1 USD ≈ 607 XAF      →  1 XAF ≈ 0.001647 USD (ajuster selon le marché)
+const RATES_FROM_XAF: Record<string, number> = {
+  XAF: 1,
+  EUR: 1 / 655.957,
+  USD: 1 / 607,
+};
+
+const CURRENCY_LOCALES: Record<string, string> = {
+  XAF: "fr-FR",
+  EUR: "fr-FR",
+  USD: "en-US",
+};
+
+const MAX_FRACTION_DIGITS: Record<string, number> = {
+  XAF: 0,
+  EUR: 2,
+  USD: 2,
+};
+
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
-  const [currency, setCurrencyState] = useState<Currency>("EUR");
+  const [currency, setCurrencyState] = useState<Currency>("XAF");
   const [isReady, setIsReady] = useState(false);
 
-  // Exchange rates for demonstration (In production, use dynamic API)
-  const EXCHANGE_RATES: Record<string, number> = {
-    EUR: 1,
-    XAF: 655.957,
-    USD: 1.08,
-  };
-
   useEffect(() => {
-    // Check local storage first
+    // 1. Vérifier le localStorage d'abord
     const savedCurrency = localStorage.getItem("helyacare_currency");
-    if (savedCurrency) {
+    if (savedCurrency && RATES_FROM_XAF[savedCurrency]) {
       setCurrencyState(savedCurrency);
       setIsReady(true);
       return;
     }
 
-    // Auto-detect currency based on IP
+    // 2. Détection automatique par IP
     const detectCurrency = async () => {
       try {
         const response = await fetch("https://ipapi.co/currency/");
         if (!response.ok) throw new Error("API call failed");
-        const detectedCurrency = await response.text();
-        
-        if (detectedCurrency && detectedCurrency.length === 3) {
-          setCurrencyState(detectedCurrency.toUpperCase());
-          localStorage.setItem("helyacare_currency", detectedCurrency.toUpperCase());
+        const detectedCurrency = (await response.text()).trim().toUpperCase();
+
+        if (detectedCurrency && detectedCurrency.length === 3 && RATES_FROM_XAF[detectedCurrency]) {
+          setCurrencyState(detectedCurrency);
+          localStorage.setItem("helyacare_currency", detectedCurrency);
         }
-      } catch (error) {
-        console.error("Failed to detect currency:", error);
+        // Si devise non gérée, on reste en XAF
+      } catch {
+        // Silently fail — XAF est la devise par défaut
       } finally {
         setIsReady(true);
       }
@@ -59,14 +75,21 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("helyacare_currency", newCurrency);
   };
 
-  const formatPrice = (amountInEur: number) => {
-    const rate = EXCHANGE_RATES[currency] || 1; // Fallback rate 
-    const converted = amountInEur * rate;
+  /**
+   * Convertit un montant en XAF (prix de référence interne)
+   * vers la devise actuellement sélectionnée et le formate.
+   */
+  const formatPrice = (amountInXAF: number): string => {
+    const rate = RATES_FROM_XAF[currency] ?? RATES_FROM_XAF["XAF"];
+    const converted = amountInXAF * rate;
+    const locale = CURRENCY_LOCALES[currency] ?? "fr-FR";
+    const fractionDigits = MAX_FRACTION_DIGITS[currency] ?? 2;
 
-    return new Intl.NumberFormat(currency === "XAF" ? "fr-FR" : "en-US", {
+    return new Intl.NumberFormat(locale, {
       style: "currency",
       currency: currency,
-      maximumFractionDigits: currency === "XAF" ? 0 : 2,
+      maximumFractionDigits: fractionDigits,
+      minimumFractionDigits: fractionDigits,
     }).format(converted);
   };
 

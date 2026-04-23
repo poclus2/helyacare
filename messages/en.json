@@ -101,5 +101,142 @@
     "check3": "Biomarker analysis",
     "check4": "Unlimited AI coach access",
     "startBtn": "Start for Free"
+  },
+  "Mission": {
+    "hero": { "eyebrow": "Our Mission", "title1": "Redefining", "title2": "longevity." },
+    "origin": {
+      "eyebrow": "The Origin", "title1": "The Living", "title2": "Laboratory.",
+      "p1": "For millennia, African and Asian pharmacopeia has isolated remarkably powerful active compounds. At HelyaCare, we chose not to choose between heritage and innovation.",
+      "p2": "Our predictive Artificial Intelligence platform learns from each user to adapt, in real-time, the composition and dosage of each cure. This is no longer supplementation. This is precision nutrition.",
+      "cta": "Discover our science", "founded": "Founded in 2024 · Bahrain"
+    },
+    "pillars": {
+      "eyebrow": "Our Commitment", "title1": "Three pillars.", "title2": "One promise.",
+      "p1_title": "Ethical Sourcing", "p1_desc": "Every botanical active is sourced directly from certified producers. Full traceability, from the field to the laboratory.",
+      "p2_title": "Clinical Rigor", "p2_desc": "Our formulations are the result of 18 months of research. Each dosage is derived from independent clinical trials, with no compromise on effectiveness.",
+      "p3_title": "Eco-Design", "p3_desc": "Our Doypack refill system reduces plastic waste by 70%. Taking care of yourself shouldn't cost the planet."
+    },
+    "heritage": {
+      "eyebrow": "Our Vision",
+      "quote": "We are building the future of preventive health, rooted in excellence.",
+      "attribution": "The Founders — HelyaCare, 2024"
+    },
+    "cta": {
+      "eyebrow": "Join the movement", "title1": "Health is not", "title2": "a luxury.",
+      "desc": "Every HelyaCare bottle is a statement: medical precision and environmental ethics are not opposites. They are inseparable.",
+      "btn1": "Discover our cures", "btn2": "Create my health space"
+    }
+  },
+  "Experience": {
+    "hero": { "title": "Cutting-Edge Science", "subtitle": "Metabolic nutrition supported by pure data." },
+    "scrolling": { "t1": "+2M Data Points Analyzed", "t2": "Independent Clinical Trials", "t3": "Proven Effectiveness", "t4": "Real-time AI Tracking" },
+    "stats": {
+      "title": "Our ambassadors see tangible improvements in their health.",
+      "s1_label": "report better quality sleep",
+      "s2_label": "notice improved glycemic regulation",
+      "s3_label": "feel sustained energy levels"
+    },
+    "dots": {
+      "title": "Connecting the dots to help you reach your goals",
+      "desc": "Precision nutrition is no longer an abstract promise. By combining clinically tested formulas with Botpress generative AI, HelyaCare creates a continuous feedback loop. Your data shapes your journey.",
+      "step1": "1. Receive your HelyaCare cure", "step2": "2. Scan to share your data",
+      "step3": "3. Fine-tuned dosage adjustment", "step4": "4. AI recommendations by HelyaCare"
+    },
+    "split": {
+      "statDesc": "of our members see a difference after 30 days when linking their cure to AI.",
+      "statBtn": "Read the study", "aiTitle": "Our AI Coach",
+      "aiDesc": "2.4 million data points analyzed to learn metabolic habits and provide ultra-personalized recommendations in real-time.",
+      "aiBtn": "Explore the technology"
+    },
+    "edge": {
+      "title": "Our approach gives you the edge",
+      "desc": "Unlike conventional supplements that linger in the stomach, our formulas are designed for maximum bioavailability and targeted absorption.",
+      "p1_title": "Maximized absorption", "p1_desc": "Crosses gastric acidity to be released in the small intestine.",
+      "p2_title": "More nutrients", "p2_desc": "Each dose is hyper-concentrated without unnecessary fillers.",
+      "p3_title": "Clinical precision", "p3_desc": "Dosages are based on recommendations from our nutrition experts.",
+      "badges": ["Vegan", "Non-GMO", "Gluten-Free", "Sugar-Free", "Certified"]
+    },
+    "experts": {
+      "title": "Recommended by our experts",
+      "doctors": [
+        { "name": "Dr Akim Njimogna", "role": "Endocrinologist", "quote": "A revolutionary approach to glycemic management." },
+        { "name": "Dr. Sarah Ndiaye", "role": "Clinical Nutritionist", "quote": "AI brings the precision that supplementation was missing." },
+        { "name": "Prof. Marc Leblanc", "role": "Research Director", "quote": "The collected data validates the effectiveness of the formulas." },
+        { "name": "Dr. Elena Rossi", "role": "Longevity Expert", "quote": "A perfect synergy between nature and technology." }
+      ]
+    },
+    "clinical": {
+      "title": "Clinical trials: Fast, precise, and real-time.",
+      "desc": "HelyaCare doesn't settle for historical data. By connecting our users via WhatsApp, we conduct the largest ongoing observational study on metabolic health, adjusting our products at scale.",
+      "cta": "Discover our methodology"
+    },
+    "research": {
+      "title": "Research & Publications", "readBtn": "Read the report",
+      "items": [
+        { "tag": "Botanical Study", "title": "The impact of botanical extracts on blood sugar.", "desc": "A conducted study demonstrating significant improvement in glycemic management after 60 days." },
+        { "tag": "Data Science", "title": "AI and predictive metabolic modeling.", "desc": "Data analysis to anticipate energy dips and adapt supplementation in real-time." },
+        { "tag": "Clinical Trial", "title": "Bioavailability of clinical formulations.", "desc": "In vitro tests proving superior nutrient absorption thanks to our micro-encapsulation." },
+        { "tag": "Scientific Review", "title": "Adaptogenic synergy in cortisol reduction.", "desc": "Scientific review on the combined effectiveness of our key ingredients for stress management." }
+      ]
+    },
+    "press": {
+      "label": "They talk about us",
+      "leftTitle": "HelyaCare in the press", "leftQuote": "\"A revolutionary approach to preventive health.\"", "leftBtn": "Read the article",
+      "rightTitle": "Contact Us", "rightDesc": "Press and partnership inquiries.", "rightBtn": "Get in touch"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "tabs": { "all": "All", "product": "Product", "ai": "Artificial Intelligence", "delivery": "Delivery" },
+      "items": [
+        { "q": "What data does the HelyaCare AI analyze?", "a": "Our Botpress AI analyzes your daily feedback, energy levels, sleep quality, and weight fluctuations to adapt its nutritional recommendations." },
+        { "q": "Are the supplements safe?", "a": "Absolutely. Our formulas are developed in a laboratory and clinically tested to ensure maximum safety and effectiveness." },
+        { "q": "How does the QR code work?", "a": "Each HelyaCare product has a unique QR code. By scanning it, you access your metabolic coach directly on WhatsApp." },
+        { "q": "How long before seeing results?", "a": "The majority of our users feel the first effects on their energy and digestion within the first 10 days." },
+        { "q": "Can I cancel my subscription?", "a": "Yes, our model is commitment-free. You can pause or cancel your deliveries at any time from your client space." }
+      ]
+    }
+  },
+  "Ambassadeur": {
+    "badge": "Ambassador Program",
+    "hero": {
+      "title1": "Monetize", "title2": "your influence.", "title3": "Become a HelyaCare", "title4": "pioneer.",
+      "desc": "Join the Health Tech elite. Share the innovation, generate recurring income, and build your financial independence.",
+      "btn1": "Join the network →", "btn2": "How does it work?",
+      "social1_label": "Ambassador satisfaction", "social2_label": "FCFA/month on average", "social3_label": "MLM commissions",
+      "dashboard_label": "Live Dashboard", "dashboard_active": "Active", "dashboard_wallet": "Available Balance", "dashboard_affiliates": "Active referrals", "dashboard_retention": "Retention rate"
+    },
+    "proof": {
+      "eyebrow": "Your benefits", "title1": "Passive income,", "title2": "no ceiling.",
+      "dashboard_label": "Helya Business Hub", "dashboard_available": "Available Balance",
+      "tier1": "Level 1", "tier1_sub": "Direct sales", "tier2": "Level 2", "tier2_sub": "Referrals' referrals", "tier3": "Level 3", "tier3_sub": "Extended network",
+      "c1_title": "Multi-level commissions", "c1_desc": "Earn on 3 levels of your network. The more you recruit, the more your passive income grows exponentially.",
+      "c2_title": "Recurring income", "c2_desc": "Every subscription in your network generates an automatic monthly commission, month after month.",
+      "c3_title": "Real-time dashboard", "c3_desc": "Track your performance, network, and earnings to the cent from your Ambassador space."
+    },
+    "process": {
+      "eyebrow": "The Method", "title": "Simple. Powerful. Recurring.",
+      "s1_title": "Join", "s1_desc": "Apply in 2 minutes. Receive your unique affiliate link, digital starter kit, and access your dashboard instantly.",
+      "s2_title": "Share", "s2_desc": "Spread the Crave Control experience and the Botpress AI coach to your community. Your link will track every sale automatically.",
+      "s3_title": "Earn", "s3_desc": "Receive your commissions directly to your Mobile Money (Orange, MTN) or bank account at the end of each month."
+    },
+    "product": {
+      "eyebrow": "The sales tool", "title1": "A product that", "title2": "sells itself.",
+      "desc": "Crave Control isn't just a supplement. It's a health system with embedded AI — an unprecedented experience in Africa.",
+      "product_badge": "Star product", "product_name": "Crave Control", "product_sub": "Glycemic regulation · 30 days",
+      "ai_badge": "Embedded AI", "ai_title": "Botpress Coach", "ai_sub": "AI recommendations · WhatsApp",
+      "tag1": "Native WhatsApp", "tag2": "Private data", "tag3": "Real-time",
+      "commission_label": "Commission on each direct sale", "commission_desc": "= 2,000 FCFA per cure sold", "commission_cta": "Create my account →"
+    },
+    "form": {
+      "eyebrow": "Registration", "title1": "Create your account.", "title2": "Get your link.",
+      "subtitle": "In 60 seconds, you'll have your unique affiliate link and access to your Ambassador dashboard.",
+      "firstName": "First Name", "lastName": "Last Name", "email": "Email Address",
+      "password": "Password", "confirmPassword": "Confirm",
+      "referral": "Referral Code", "referral_hint": "— if you were invited",
+      "submit": "Create my Ambassador Account",
+      "terms": "By creating an account, you agree to our", "termsLink": "Terms & Conditions", "termsEnd": "Your data will never be sold.",
+      "pwError": "Passwords do not match.",
+      "success_title": "Account created!", "success_desc": "Welcome to the HelyaCare network. Check your email to activate your account and access your affiliate link.", "success_cta": "Log in to my space"
+    }
   }
 }

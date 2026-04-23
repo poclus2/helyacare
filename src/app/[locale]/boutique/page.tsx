@@ -1,91 +1,91 @@
+"use client";
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
+import { useCurrency } from "@/contexts/CurrencyContext";
+import { BOUTIQUE_PRICES } from "@/lib/prices";
 import "./boutique.css";
-
-export const metadata: Metadata = {
-  title: "Boutique - Helyacare",
-  description: "Découvrez nos compléments alimentaires de haute qualité.",
-};
 
 const products = [
   {
     id: 1,
+    priceKey: "crave-control" as const,
     badge: "Nouveau",
     sku: "CC-01™",
     title: "Crave Control",
     desc: "Un bouclier neuro-métabolique qui régule l'appétit, aide à limiter les fringales et soutient le métabolisme au quotidien.",
-    price: "49,99 €",
     image: "/crave-control.png",
     cta: "Ajouter au panier",
     href: "/boutique/crave-control",
+    saveBadge: null as string | null,
   },
   {
     id: 2,
-    badge: null,
-    sku: null,
+    priceKey: "pack-bien-etre" as const,
+    badge: null as string | null,
+    sku: null as string | null,
     title: "Pack Bien-Être Essentiel",
     desc: "Duo quotidien validé cliniquement associant Crave Control et Helya Hydrate pour une santé optimale au quotidien.",
-    saveBadge: "Pack — Économisez 25%",
-    price: (
-      <>
-        67,49 € <span className="seed-strikethrough">89,99 €</span>
-      </>
-    ),
+    saveBadge: "Pack — Économisez 20%",
     image: "/crave-control.png",
     cta: "Ajouter au panier",
     href: "/boutique/pack-bien-etre",
   },
   {
     id: 3,
+    priceKey: "apple-satiety-shot" as const,
     badge: "Nouveau",
     sku: "AS-02™",
     title: "Apple Satiety Shot",
     desc: "Shot de satiété formulé avec des extraits de pomme et de plantes adaptogènes pour couper les envies entre les repas.",
-    price: "34,99 €",
     image: "/crave-control.png",
     cta: "Ajouter au panier",
     href: "/boutique/apple-satiety-shot",
+    saveBadge: null as string | null,
   },
   {
     id: 4,
+    priceKey: "helya-hydrate" as const,
     badge: "Nouveau",
     sku: "HH-03™",
     title: "Helya Hydrate",
     desc: "Électrolytes premium enrichis en minéraux essentiels pour une hydratation cellulaire optimale et une récupération accélérée.",
-    price: "34,99 €",
     image: "/crave-control.png",
     cta: "Ajouter au panier",
     href: "/boutique/helya-hydrate",
+    saveBadge: null as string | null,
   },
   {
     id: 5,
-    badge: null,
+    priceKey: "helya-vigor" as const,
+    badge: null as string | null,
     sku: "HV-04™",
     title: "Helya Vigor",
     desc: "Formule vitalité et énergie à base de plantes et de vitamines B pour soutenir l'endurance physique et mentale.",
-    price: "39,99 €",
     image: "/crave-control.png",
     cta: "Ajouter au panier",
     href: "/boutique/helya-vigor",
+    saveBadge: null as string | null,
   },
   {
     id: 6,
+    priceKey: "helya-perform" as const,
     badge: "Bientôt",
     sku: "HP-05™",
     title: "Helya Perform",
     desc: "Protocole performance avancé, formulé pour les sportifs souhaitant optimiser leur récupération musculaire et leur clarté mentale.",
-    price: "99,00 €",
     image: "/crave-control.png",
     cta: "Rejoindre la liste d'attente",
     href: "/boutique/helya-perform",
+    saveBadge: null as string | null,
   },
 ];
 
 export default function BoutiquePage() {
   const t = useTranslations("Boutique2");
+  const { formatPrice } = useCurrency();
 
   return (
     <div className="seed-page">
@@ -123,7 +123,9 @@ export default function BoutiquePage() {
                   <p className="seed-featured-desc">
                     {t("featuredDesc")}
                   </p>
-                  <p className="seed-featured-price">49,99 €</p>
+                  <p className="seed-featured-price">
+                    {formatPrice(BOUTIQUE_PRICES["crave-control"].normal)}
+                  </p>
                   <div className="seed-featured-actions">
                     <Link href="/boutique/crave-control">
                       <button className="seed-btn-primary-white">{t("discoverBtn")}</button>
@@ -149,37 +151,50 @@ export default function BoutiquePage() {
       {/* Product Grid */}
       <section className="seed-grid-section">
         <div className="seed-grid-container">
-          {products.map((product) => (
-            <div key={product.id} className="seed-card">
-              {product.badge && <div className="seed-card-badge">{product.badge}</div>}
-              
-              <div className="seed-card-layout">
-                <div className="seed-card-image-col">
-                  <Link href={product.href}>
-                    <img src={product.image} alt={product.title} className="cursor-pointer hover:scale-105 transition-transform duration-500" />
-                  </Link>
-                </div>
-                <div className="seed-card-content-col">
-                  {product.sku && <span className="seed-sku-light">{product.sku}</span>}
-                  <h3 className="seed-card-title">{product.title}</h3>
-                  <p className="seed-card-desc">{product.desc}</p>
-                  
-                  {product.saveBadge && (
-                    <div className="seed-save-badge">{product.saveBadge}</div>
-                  )}
-                  
-                  <div className="seed-card-price">{product.price}</div>
-                  
-                  <div className="seed-card-actions">
+          {products.map((product) => {
+            const prices = BOUTIQUE_PRICES[product.priceKey];
+            const displayPrice = formatPrice(prices.subscription ?? prices.normal);
+            const strikePrice = prices.subscription ? formatPrice(prices.normal) : null;
+
+            return (
+              <div key={product.id} className="seed-card">
+                {product.badge && <div className="seed-card-badge">{product.badge}</div>}
+
+                <div className="seed-card-layout">
+                  <div className="seed-card-image-col">
                     <Link href={product.href}>
-                      <button className="seed-btn-primary-dark">Découvrir</button>
+                      <img src={product.image} alt={product.title} className="cursor-pointer hover:scale-105 transition-transform duration-500" />
                     </Link>
-                    <button className="seed-btn-text-dark">{product.cta}</button>
+                  </div>
+                  <div className="seed-card-content-col">
+                    {product.sku && <span className="seed-sku-light">{product.sku}</span>}
+                    <h3 className="seed-card-title">{product.title}</h3>
+                    <p className="seed-card-desc">{product.desc}</p>
+
+                    {product.saveBadge && (
+                      <div className="seed-save-badge">{product.saveBadge}</div>
+                    )}
+
+                    <div className="seed-card-price">
+                      {displayPrice}
+                      {strikePrice && (
+                        <span className="seed-strikethrough ml-2 text-[0.8em] opacity-60">
+                          {strikePrice}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="seed-card-actions">
+                      <Link href={product.href}>
+                        <button className="seed-btn-primary-dark">Découvrir</button>
+                      </Link>
+                      <button className="seed-btn-text-dark">{product.cta}</button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 

@@ -101,5 +101,142 @@
     "check3": "Analyse de vos biomarqueurs",
     "check4": "Accès coach IA illimité",
     "startBtn": "Commencer gratuitement"
+  },
+  "Mission": {
+    "hero": { "eyebrow": "Notre Mission", "title1": "Redéfinir", "title2": "la longévité." },
+    "origin": {
+      "eyebrow": "L'Origine", "title1": "Le Laboratoire", "title2": "Vivant.",
+      "p1": "Depuis des millénaires, la pharmacopée africaine et asiatique a su isoler des actifs d'une puissance remarquable. Chez HelyaCare, nous avons fait le choix de ne pas choisir entre l'héritage et l'innovation.",
+      "p2": "Notre plateforme d'Intelligence Artificielle prédictive apprend de chaque utilisateur pour adapter, en temps réel, la composition et le dosage de chaque cure. Ce n'est plus de la supplémentation. C'est de la nutrition de précision.",
+      "cta": "Découvrir notre science", "founded": "Fondé en 2024 · Bahreïn"
+    },
+    "pillars": {
+      "eyebrow": "Notre Engagement", "title1": "Trois piliers.", "title2": "Une promesse.",
+      "p1_title": "Sourcing Éthique", "p1_desc": "Chaque actif botanique est sourcé directement auprès de producteurs certifiés. Traçabilité absolue, du champ au laboratoire.",
+      "p2_title": "Rigueur Clinique", "p2_desc": "Nos formulations sont le fruit de 18 mois de recherche. Chaque dosage est issu d'essais cliniques indépendants, sans compromis sur l'efficacité.",
+      "p3_title": "Éco-Conception", "p3_desc": "Notre système de recharge Doypack réduit de 70% les déchets plastiques. Prendre soin de soi ne doit pas coûter à la planète."
+    },
+    "heritage": {
+      "eyebrow": "Notre Vision",
+      "quote": "Nous construisons le futur de la santé préventive, ancré dans l'excellence.",
+      "attribution": "Les Fondateurs — HelyaCare, 2024"
+    },
+    "cta": {
+      "eyebrow": "Rejoindre le mouvement", "title1": "La santé n'est pas", "title2": "un luxe.",
+      "desc": "Chaque flacon HelyaCare est une déclaration : la précision médicale et l'éthique environnementale ne sont pas opposées. Elles sont inséparables.",
+      "btn1": "Découvrir nos cures", "btn2": "Créer mon espace santé"
+    }
+  },
+  "Experience": {
+    "hero": { "title": "Science d'avant-garde", "subtitle": "La nutrition métabolique soutenue par des données pures." },
+    "scrolling": { "t1": "+2M Données Analysées", "t2": "Essais Cliniques Indépendants", "t3": "Efficacité Prouvée", "t4": "Suivi IA en temps réel" },
+    "stats": {
+      "title": "Nos ambassadeurs constatent des améliorations tangibles pour leur santé.",
+      "s1_label": "signalent un sommeil de meilleure qualité",
+      "s2_label": "remarquent une meilleure régulation glycémique",
+      "s3_label": "ressentent une hausse d'énergie continue"
+    },
+    "dots": {
+      "title": "Connecter les points pour vous aider à atteindre vos objectifs",
+      "desc": "La nutrition de précision n'est plus une promesse abstraite. En combinant des formules cliniquement testées avec l'intelligence artificielle générative de Botpress, HelyaCare crée une boucle de rétroaction continue. Vos données façonnent votre parcours.",
+      "step1": "1. Recevez votre cure HelyaCare", "step2": "2. Scannez pour partager vos données",
+      "step3": "3. Ajustement de la juste dose", "step4": "4. Recommandations par l'IA HelyaCare"
+    },
+    "split": {
+      "statDesc": "de nos membres voient une différence après 30 jours, lorsqu'ils lient leur cure à l'IA.",
+      "statBtn": "Lire l'étude", "aiTitle": "Notre IA Coach",
+      "aiDesc": "2.4 millions de points de données analysés pour apprendre des habitudes métaboliques et fournir des recommandations ultra-personnalisées en temps réel.",
+      "aiBtn": "Explorer la technologie"
+    },
+    "edge": {
+      "title": "Notre approche vous donne l'avantage",
+      "desc": "Contrairement aux compléments classiques qui stagnent dans l'estomac, nos formules sont conçues pour une biodisponibilité maximale et une absorption ciblée.",
+      "p1_title": "Absorption maximisée", "p1_desc": "Traverse l'acidité gastrique pour se libérer dans l'intestin grêle.",
+      "p2_title": "Plus de nutriments", "p2_desc": "Chaque dose est hyper-concentrée sans agents de remplissage inutiles.",
+      "p3_title": "Précision clinique", "p3_desc": "Les dosages sont fondés sur les recommandations de nos experts en nutrition.",
+      "badges": ["Vegan", "Sans OGM", "Sans Gluten", "Sans Sucre", "Certifié"]
+    },
+    "experts": {
+      "title": "Recommandé par nos experts",
+      "doctors": [
+        { "name": "Dr Akim Njimogna", "role": "Endocrinologue", "quote": "Une approche révolutionnaire de la gestion glycémique." },
+        { "name": "Dr. Sarah Ndiaye", "role": "Nutritionniste Clinique", "quote": "L'IA apporte la précision qui manquait à la supplémentation." },
+        { "name": "Prof. Marc Leblanc", "role": "Directeur de Recherche", "quote": "Les données collectées valident l'efficacité des formules." },
+        { "name": "Dr. Elena Rossi", "role": "Experte Longévité", "quote": "Une synergie parfaite entre nature et technologie." }
+      ]
+    },
+    "clinical": {
+      "title": "Essais cliniques : Rapides, précis et en temps réel.",
+      "desc": "HelyaCare ne se contente pas de données historiques. En connectant nos utilisateurs via WhatsApp, nous menons la plus grande étude d'observation en continu sur la santé métabolique, ajustant nos produits à l'échelle.",
+      "cta": "Découvrir notre méthodologie"
+    },
+    "research": {
+      "title": "Recherches et Publications", "readBtn": "Lire le rapport",
+      "items": [
+        { "tag": "Étude Botanique", "title": "L'impact des extraits botaniques sur la glycémie.", "desc": "Une étude menée démontrant une amélioration significative de la gestion glycémique après 60 jours." },
+        { "tag": "Data Science", "title": "IA et modélisation métabolique prédictive.", "desc": "Analyse de données pour anticiper les baisses d'énergie et adapter la supplémentation en temps réel." },
+        { "tag": "Essai Clinique", "title": "Biodisponibilité des formulations cliniques.", "desc": "Tests in vitro prouvant une absorption supérieure des nutriments grâce à notre micro-encapsulation." },
+        { "tag": "Revue Scientifique", "title": "Synergie adaptogène sur la réduction du cortisol.", "desc": "Revue scientifique sur l'efficacité combinée de nos ingrédients phares pour la gestion du stress." }
+      ]
+    },
+    "press": {
+      "label": "Ils parlent de nous",
+      "leftTitle": "HelyaCare dans la presse", "leftQuote": "\"Une approche révolutionnaire de la santé préventive.\"", "leftBtn": "Lire l'article",
+      "rightTitle": "Contactez-nous", "rightDesc": "Demandes de presse et partenariats.", "rightBtn": "Nous écrire"
+    },
+    "faq": {
+      "title": "Questions Fréquentes",
+      "tabs": { "all": "Tous", "product": "Produit", "ai": "Intelligence Artificielle", "delivery": "Livraison" },
+      "items": [
+        { "q": "Quelles données sont analysées par l'IA HelyaCare ?", "a": "Notre IA Botpress analyse vos retours quotidiens, votre niveau d'énergie, votre qualité de sommeil et vos variations de poids pour adapter ses recommandations nutritionnelles." },
+        { "q": "Les compléments sont-ils sûrs ?", "a": "Absolument. Nos formules sont développées en laboratoire et testées cliniquement pour garantir sécurité et efficacité maximale." },
+        { "q": "Comment le QR code fonctionne-t-il ?", "a": "Chaque produit HelyaCare possède un QR code unique. En le scannant, vous accédez directement à votre coach métabolique sur WhatsApp." },
+        { "q": "Combien de temps avant de voir des résultats ?", "a": "La majorité de nos utilisateurs ressentent les premiers effets sur leur énergie et leur digestion dès les 10 premiers jours." },
+        { "q": "Puis-je annuler mon abonnement ?", "a": "Oui, notre modèle est sans engagement. Vous pouvez suspendre ou annuler vos livraisons à tout moment depuis votre espace client." }
+      ]
+    }
+  },
+  "Ambassadeur": {
+    "badge": "Programme Ambassadeur",
+    "hero": {
+      "title1": "Monétisez", "title2": "votre influence.", "title3": "Devenez pionnier", "title4": "HelyaCare.",
+      "desc": "Rejoignez l'élite de la Health Tech. Partagez l'innovation, générez des revenus récurrents et construisez votre indépendance financière.",
+      "btn1": "Rejoindre le réseau →", "btn2": "Comment ça marche ?",
+      "social1_label": "Satisfaction ambassadeurs", "social2_label": "FCFA/mois en moyenne", "social3_label": "Commissions MLM",
+      "dashboard_label": "Dashboard Live", "dashboard_active": "Actif", "dashboard_wallet": "Trésorerie Disponible", "dashboard_affiliates": "Filleuls actifs", "dashboard_retention": "Taux rétention"
+    },
+    "proof": {
+      "eyebrow": "Vos avantages", "title1": "Un revenu passif,", "title2": "sans plafond.",
+      "dashboard_label": "Helya Business Hub", "dashboard_available": "Trésorerie Disponible",
+      "tier1": "Niveau 1", "tier1_sub": "Ventes directes", "tier2": "Niveau 2", "tier2_sub": "Filleuls filleuls", "tier3": "Niveau 3", "tier3_sub": "Réseau étendu",
+      "c1_title": "Commissions multi-niveaux", "c1_desc": "Gagnez sur 3 niveaux de votre réseau. Plus vous recrutez, plus vos revenus passifs augmentent exponentiellement.",
+      "c2_title": "Revenus récurrents", "c2_desc": "Chaque abonnement de votre réseau vous génère une commission mensuelle automatique, mois après mois.",
+      "c3_title": "Dashboard temps réel", "c3_desc": "Suivez vos performances, votre réseau et vos gains au centime près depuis votre espace Ambassadeur."
+    },
+    "process": {
+      "eyebrow": "La Méthode", "title": "Simple. Puissant. Récurrent.",
+      "s1_title": "Rejoignez", "s1_desc": "Postulez en 2 minutes. Recevez votre lien affilié unique, votre kit de démarrage digital et accédez à votre dashboard instantanément.",
+      "s2_title": "Partagez", "s2_desc": "Diffusez l'expérience Crave Control et le coach IA Botpress à votre communauté. Votre lien trackera chaque vente automatiquement.",
+      "s3_title": "Encaissez", "s3_desc": "Recevez vos commissions directement sur votre Mobile Money (Orange, MTN) ou votre compte bancaire, chaque fin de mois."
+    },
+    "product": {
+      "eyebrow": "L'outil de vente", "title1": "Un produit qui", "title2": "se vend tout seul.",
+      "desc": "Crave Control n'est pas juste un complément. C'est un système de santé avec une IA embarquée — une expérience inédite en Afrique.",
+      "product_badge": "Produit phare", "product_name": "Crave Control", "product_sub": "Régulation glycémique · 30 jours",
+      "ai_badge": "IA embarquée", "ai_title": "Coach Botpress", "ai_sub": "Recommandations IA · WhatsApp",
+      "tag1": "WhatsApp natif", "tag2": "Données privées", "tag3": "Temps réel",
+      "commission_label": "Commission sur chaque vente directe", "commission_desc": "= 2 000 FCFA par cure vendue", "commission_cta": "Créer mon compte →"
+    },
+    "form": {
+      "eyebrow": "Inscription", "title1": "Créez votre compte.", "title2": "Obtenez votre lien.",
+      "subtitle": "En 60 secondes, vous aurez votre lien d'affiliation unique et accès à votre dashboard Ambassadeur.",
+      "firstName": "Prénom", "lastName": "Nom", "email": "Adresse Email",
+      "password": "Mot de passe", "confirmPassword": "Confirmer",
+      "referral": "Code de parrainage", "referral_hint": "— si vous avez été invité",
+      "submit": "Créer mon compte Ambassadeur",
+      "terms": "En créant un compte, vous acceptez nos", "termsLink": "Conditions Générales", "termsEnd": "Vos données ne seront jamais revendues.",
+      "pwError": "Les mots de passe ne correspondent pas.",
+      "success_title": "Compte créé !", "success_desc": "Bienvenue dans le réseau HelyaCare. Vérifiez votre email pour activer votre compte et accéder à votre lien d'affiliation.", "success_cta": "Se connecter à mon espace"
+    }
   }
 }

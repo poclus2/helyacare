@@ -4,9 +4,11 @@ import { useState } from "react";
 import Image from "next/image";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { Check, Info, ArrowRight, Leaf, Shield, Beaker, Bot, QrCode, Sparkles, Star, Pill, Microscope, Dna, Flower2 } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useCurrency } from "@/contexts/CurrencyContext";
+import { PRODUCT_PRICES } from "@/lib/prices";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 const pjs = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
@@ -14,6 +16,8 @@ const pjs = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600"
 export default function CraveControlPage() {
   const [openFaq, setOpenFaq] = useState<number>(0);
   const [purchaseType, setPurchaseType] = useState<"subscription" | "one-time">("subscription");
+  const { formatPrice } = useCurrency();
+  const prices = PRODUCT_PRICES["apple-satiety-shot"];
 
   // Placeholder arrays for the image stack
   const images = [
@@ -101,13 +105,13 @@ export default function CraveControlPage() {
                 {/* Price Display */}
                 <div className="flex items-end gap-3 mb-6">
                   <span className={`text-3xl md:text-4xl font-medium text-gray-900 leading-none ${inter.className}`}>
-                    {purchaseType === "subscription" ? "17 000 FCFA" : "20 000 FCFA"}
+                    {purchaseType === "subscription" ? formatPrice(prices.subscription) : formatPrice(prices.normal)}
                   </span>
                   
                   {purchaseType === "subscription" && (
                     <>
                       <span className={`text-lg text-gray-400 line-through mb-0.5 ${inter.className}`}>
-                        20 000 FCFA
+                        {formatPrice(prices.normal)}
                       </span>
                       <span className={`px-2.5 py-1 bg-[#DCF5CA] text-[#1B3624] text-[11px] font-bold uppercase rounded-full mb-1 tracking-wider ${inter.className}`}>
                         Économisez 15%
@@ -134,8 +138,8 @@ export default function CraveControlPage() {
                       <div className="flex items-center justify-between">
                         <span className={`font-semibold text-gray-900 text-[15px] ${inter.className}`}>Abonnement Mensuel</span>
                         <div className="flex items-center gap-2">
-                          <span className={`text-[13px] text-gray-400 line-through ${inter.className}`}>20 000 FCFA</span>
-                          <span className={`font-bold text-gray-900 text-[15px] ${inter.className}`}>17 000 FCFA</span>
+                          <span className={`text-[13px] text-gray-400 line-through ${inter.className}`}>{formatPrice(prices.normal)}</span>
+                          <span className={`font-bold text-gray-900 text-[15px] ${inter.className}`}>{formatPrice(prices.subscription)}</span>
                         </div>
                       </div>
                       <p className={`text-[13px] text-gray-500 mt-1.5 leading-snug ${inter.className}`}>
@@ -159,7 +163,7 @@ export default function CraveControlPage() {
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
                         <span className={`font-semibold text-gray-900 text-[15px] ${inter.className}`}>Achat Unique</span>
-                        <span className={`font-bold text-gray-900 text-[15px] ${inter.className}`}>20 000 FCFA</span>
+                        <span className={`font-bold text-gray-900 text-[15px] ${inter.className}`}>{formatPrice(prices.normal)}</span>
                       </div>
                     </div>
                   </label>
@@ -218,8 +222,8 @@ export default function CraveControlPage() {
                     </p>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
-                        <span className={`text-[14px] font-semibold text-gray-900 ${inter.className}`}>12 750 FCFA</span>
-                        <span className={`text-[12px] text-gray-400 line-through ${inter.className}`}>17 000 FCFA</span>
+                        <span className={`text-[14px] font-semibold text-gray-900 ${inter.className}`}>{formatPrice(12_750)}</span>
+                        <span className={`text-[12px] text-gray-400 line-through ${inter.className}`}>{formatPrice(prices.subscription)}</span>
                       </div>
                       <button className={`px-4 py-1.5 bg-transparent border border-gray-900 text-gray-900 text-[13px] font-semibold rounded-[6px] hover:bg-gray-100 transition-colors ${inter.className}`}>
                         Ajouter

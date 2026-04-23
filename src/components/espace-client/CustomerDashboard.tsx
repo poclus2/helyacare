@@ -1,5 +1,5 @@
 import { Bot, Package, Activity, ArrowRight, Sparkles, PlusCircle, CheckCircle2, ChevronRight, Moon, Droplets, Zap } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import Image from "next/image";
 
