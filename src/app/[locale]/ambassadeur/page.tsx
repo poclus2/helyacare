@@ -18,18 +18,51 @@ const pjs = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["300", "400", "500"
 
 export default function AmbassadeurPage() {
   const t = useTranslations("Ambassadeur");
-  const [form, setForm] = useState({ firstName: "", lastName: "", email: "", password: "", confirmPassword: "", referralCode: "" });
+  const [form, setForm] = useState({ firstName: "", lastName: "", phone: "", email: "", password: "", confirmPassword: "", referralCode: "" });
   const [submitted, setSubmitted] = useState(false);
   const [pwError, setPwError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setApiError(null);
     if (form.password !== form.confirmPassword) {
       setPwError(true);
       return;
     }
     setPwError(false);
-    setSubmitted(true);
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+          first_name: form.firstName,
+          last_name: form.lastName,
+          phone: form.phone,
+          role: "ambassadeur",
+          referral_code: form.referralCode
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setApiError(data.error || "Une erreur est survenue lors de la création de votre compte ambassadeur.");
+        setLoading(false);
+        return;
+      }
+
+      setSubmitted(true);
+    } catch (err) {
+      setApiError("Erreur de connexion au serveur. Veuillez réessayer.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -394,6 +427,12 @@ export default function AmbassadeurPage() {
                   onSubmit={handleSubmit}
                   className={`relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-10 space-y-5 ${pjs.className}`}
                 >
+                  {apiError && (
+                    <div className="mb-5 bg-red-500/20 border border-red-400/30 text-red-200 px-4 py-3 rounded-xl text-sm leading-snug">
+                      {apiError}
+                    </div>
+                  )}
+
                   {/* Prénom + Nom */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
@@ -418,16 +457,28 @@ export default function AmbassadeurPage() {
                     </div>
                   </div>
 
-                  {/* Email */}
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-white/60 text-xs font-semibold uppercase tracking-widest">Adresse Email *</label>
-                    <input
-                      type="email" required
-                      value={form.email}
-                      onChange={e => setForm({ ...form, email: e.target.value })}
-                      placeholder="vous@exemple.com"
-                      className="bg-white/5 text-white placeholder:text-white/30 border border-white/20 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-white/60 focus:ring-1 focus:ring-white/60 focus:bg-white/10 transition-all duration-200"
-                    />
+                  {/* Email & Phone */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-white/60 text-xs font-semibold uppercase tracking-widest">Adresse Email *</label>
+                      <input
+                        type="email" required
+                        value={form.email}
+                        onChange={e => setForm({ ...form, email: e.target.value })}
+                        placeholder="vous@exemple.com"
+                        className="bg-white/5 text-white placeholder:text-white/30 border border-white/20 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-white/60 focus:ring-1 focus:ring-white/60 focus:bg-white/10 transition-all duration-200"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-white/60 text-xs font-semibold uppercase tracking-widest">{t("form.phone")} *</label>
+                      <input
+                        type="tel" required
+                        value={form.phone}
+                        onChange={e => setForm({ ...form, phone: e.target.value })}
+                        placeholder="+221 XX XXX XX XX"
+                        className="bg-white/5 text-white placeholder:text-white/30 border border-white/20 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-white/60 focus:ring-1 focus:ring-white/60 focus:bg-white/10 transition-all duration-200"
+                      />
+                    </div>
                   </div>
 
                   {/* Mot de passe + Confirmer */}
@@ -476,14 +527,15 @@ export default function AmbassadeurPage() {
                     />
                   </div>
 
-                  {/* Submit */}
+                  {/* Submit CTA */}
                   <div className="pt-2">
                     <button
                       type="submit"
-                      className="mt-1 w-full flex items-center justify-center gap-3 bg-white text-[#0F3D3E] font-bold text-sm rounded-xl px-4 py-4 transition-all duration-200 hover:bg-gray-100 hover:shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:scale-[1.02] active:scale-[0.98]"
+                      disabled={loading}
+                      className="group w-full flex items-center justify-center gap-3 bg-[#CBF27A] text-[#0A192F] font-black text-sm uppercase tracking-wide rounded-xl px-4 py-4 transition-all duration-300 hover:bg-[#d6f592] hover:shadow-[0_0_40px_rgba(203,242,122,0.3)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
                     >
-                      Créer mon compte Ambassadeur
-                      <ArrowRight className="w-4 h-4" />
+                      {loading ? "Création en cours..." : t("form.cta")}
+                      {!loading && <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>}
                     </button>
                     <p className="text-white/25 text-xs text-center mt-4">
                       En créant un compte, vous acceptez nos 

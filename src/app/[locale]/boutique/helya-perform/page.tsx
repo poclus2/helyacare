@@ -9,6 +9,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { PRODUCT_PRICES } from "@/lib/prices";
+import AddToCartButton from "@/components/AddToCartButton";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 const pjs = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
@@ -169,11 +170,19 @@ export default function CraveControlPage() {
                   </label>
                 </div>
 
-                {/* CTA */}
-                <div className="mb-4">
-                  <button className={`w-full py-4 bg-[#E56B2D] text-white text-[15px] font-semibold rounded-[6px] hover:bg-[#cf5c22] transition-all ${inter.className}`}>
-                    Commencer Maintenant
-                  </button>
+                {/* CTA — Bientôt disponible */}
+                <div className="mb-4 space-y-3">
+                  <div className="flex items-center gap-2 px-4 py-2.5 bg-amber-50 border border-amber-200 rounded-xl">
+                    <span className="text-amber-600 font-bold text-xs uppercase tracking-widest">🔔 Bientôt disponible</span>
+                  </div>
+                  <AddToCartButton
+                    productKey="helya-perform"
+                    purchaseType={purchaseType}
+                    title="Helya Perform"
+                    thumbnail="/images/products/crave-control/macro.png"
+                    price={purchaseType === "subscription" ? prices.subscription : prices.normal}
+                    label="Rejoindre la liste d'attente"
+                  />
                 </div>
 
                 {/* Guarantees */}

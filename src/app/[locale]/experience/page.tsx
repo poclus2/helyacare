@@ -110,7 +110,7 @@ export default function ExperiencePage() {
                 <div key={i} className={`flex flex-col text-center ${step.offset ? "mt-0 md:mt-12" : ""}`}>
                   <h4 className={`font-bold text-[#0F3D3E] text-[15px] mb-6 min-h-[40px] px-4 ${inter.className}`}>{step.label}</h4>
                   <div className={`relative aspect-[3/4] ${i === 3 ? "bg-[#0F3D3E]" : "bg-white border border-[#E8E3DC]"} shadow-sm rounded-2xl overflow-hidden group`}>
-                    <Image src={step.img} alt={step.alt} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <Image src={step.img} alt={step.alt} fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                     {i === 3 && <div className="absolute inset-0 bg-gradient-to-t from-[#0F3D3E] via-transparent to-transparent opacity-80" />}
                   </div>
                 </div>
@@ -123,7 +123,7 @@ export default function ExperiencePage() {
         <section className="w-full">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             <div className="relative min-h-[400px] lg:min-h-[500px] flex items-center justify-center overflow-hidden">
-              <Image src="/images/experience/experience_lifestyle_woman.png" alt="Lifestyle HelyaCare" fill className="object-cover object-top" />
+              <Image src="/images/experience/experience_lifestyle_woman.png" alt="Lifestyle HelyaCare" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover object-top" />
               <div className="absolute inset-0 bg-black/40" />
               <div className="relative z-10 text-center px-8 py-12">
                 <h3 className={`text-5xl md:text-6xl font-black text-white mb-4 ${inter.className}`}>92%</h3>
@@ -132,7 +132,7 @@ export default function ExperiencePage() {
               </div>
             </div>
             <div className="relative min-h-[400px] lg:min-h-[500px] flex items-center justify-center overflow-hidden bg-[#0A192F]">
-              <Image src="/images/experience/research_botany_1776849702986.png" alt="Botanical AI" fill className="object-cover opacity-60" />
+              <Image src="/images/experience/research_botany_1776849702986.png" alt="Botanical AI" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover opacity-60" />
               <div className="absolute inset-0 bg-black/30" />
               <div className="relative z-10 text-center px-8 py-12">
                 <div className="w-16 h-16 bg-[#CBF27A]/20 rounded-2xl mx-auto mb-6 flex items-center justify-center border border-[#CBF27A]/50 shadow-[0_0_40px_rgba(203,242,122,0.2)]">
@@ -179,7 +179,7 @@ export default function ExperiencePage() {
               </div>
               <div className="relative">
                 <div className="aspect-square bg-[#0F3D3E] rounded-[3rem] p-12 relative border border-[#CBF27A]/30 shadow-2xl">
-                  <Image src="/images/products/crave-control/ecosystem.png" alt="Crave Control Product" fill className="object-contain drop-shadow-2xl scale-90" />
+                  <Image src="/images/products/crave-control/ecosystem.png" alt="Crave Control Product" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-contain drop-shadow-2xl scale-90" />
                 </div>
               </div>
             </div>
@@ -194,7 +194,7 @@ export default function ExperiencePage() {
               {doctors.map((doc, i) => (
                 <div key={i} className="flex flex-col items-center text-center">
                   <div className="relative w-48 h-48 rounded-2xl overflow-hidden mb-6 bg-gray-200">
-                    <Image src={doctorImages[i]} alt={doc.name} fill className="object-cover" />
+                    <Image src={doctorImages[i]} alt={doc.name} fill sizes="192px" className="object-cover" />
                   </div>
                   <h4 className="font-bold text-[#0F3D3E] text-lg">{doc.name}</h4>
                   <p className="text-gray-500 text-sm mb-4">{doc.role}</p>
@@ -210,7 +210,7 @@ export default function ExperiencePage() {
           <div className="max-w-[1200px] mx-auto px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden bg-white/5 border border-white/10">
-                <Image src="/images/experience/experience_scan_1776847815539.png" alt="Scan QR" fill className="object-cover" />
+                <Image src="/images/experience/experience_scan_1776847815539.png" alt="Scan QR" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-20 h-20 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center shadow-xl">
                     <div className="w-0 h-0 border-y-[12px] border-y-transparent border-l-[20px] border-l-white ml-2" />
@@ -241,7 +241,7 @@ export default function ExperiencePage() {
             {researchItems.map((item, i) => (
               <div key={i} className="min-w-[280px] md:min-w-[340px] w-[280px] md:w-[340px] bg-white p-6 rounded-2xl border border-[#E8E3DC] snap-start shrink-0 group cursor-pointer hover:shadow-lg hover:border-[#0F3D3E]/20 transition-all duration-300 flex flex-col">
                 <div className="relative w-full aspect-[4/3] bg-[#F6F4F1] mb-5 rounded-xl overflow-hidden">
-                  <Image src={researchImages[i]} alt={item.title} fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <Image src={researchImages[i]} alt={item.title} fill sizes="(max-width: 768px) 280px, 340px" className="object-cover transition-transform duration-700 group-hover:scale-105" />
                 </div>
                 <p className="text-[10px] font-bold text-[#E56B2D] uppercase tracking-widest mb-2">{item.tag}</p>
                 <h4 className="font-bold text-[#0F3D3E] text-[17px] mb-3 leading-snug group-hover:text-[#E56B2D] transition-colors flex-1">{item.title}</h4>
@@ -298,7 +298,7 @@ export default function ExperiencePage() {
         <section className="w-full">
           <div className="grid grid-cols-1 md:grid-cols-2">
             <div className="relative h-[400px] md:h-[500px] flex items-end p-12 group overflow-hidden cursor-pointer">
-              <Image src="/images/experience/experience_press_1776847992889.png" alt="Press" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
+              <Image src="/images/experience/experience_press_1776847992889.png" alt="Press" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
               <div className="relative z-10 text-center w-full">
                 <h3 className={`text-3xl md:text-4xl font-bold text-white mb-2 ${inter.className}`}>{t("press.leftTitle")}</h3>
@@ -307,7 +307,7 @@ export default function ExperiencePage() {
               </div>
             </div>
             <div className="relative h-[400px] md:h-[500px] flex items-end p-12 group overflow-hidden cursor-pointer bg-[#0F3D3E]">
-              <Image src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop" alt="Team" fill className="object-cover opacity-50 mix-blend-overlay transition-transform duration-700 group-hover:scale-105" />
+              <Image src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1200&auto=format&fit=crop" alt="Team" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover opacity-50 mix-blend-overlay transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0F3D3E] via-[#0F3D3E]/50 to-transparent" />
               <div className="relative z-10 text-center w-full">
                 <h3 className={`text-3xl md:text-4xl font-bold text-white mb-2 ${inter.className}`}>{t("press.rightTitle")}</h3>

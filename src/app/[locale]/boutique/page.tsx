@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { BOUTIQUE_PRICES } from "@/lib/prices";
+import { useCart } from "@/contexts/CartContext";
+import { useState, useEffect } from "react";
 import "./boutique.css";
 
 const products = [
@@ -86,6 +88,108 @@ const products = [
 export default function BoutiquePage() {
   const t = useTranslations("Boutique2");
   const { formatPrice } = useCurrency();
+  const { addItem } = useCart();
+  const [addedId, setAddedId] = useState<string | number | null>(null);
+  const [liveProducts, setLiveProducts] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchLiveProducts = async () => {
+      try {
+        const backend = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
+        const pubKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "";
+
+        // fields=*variants.prices est obligatoire pour obtenir les prix en Medusa v2
+        const res = await fetch(
+          `${backend}/store/products?fields=*variants.prices&limit=50`,
+          { headers: { ...(pubKey && { "x-publishable-api-key": pubKey }) } }
+        );
+
+        if (!res.ok) {
+          console.error("[Boutique] Medusa store/products error:", res.status);
+          return;
+        }
+
+        const data = await res.json();
+
+        const formatted = (data.products || []).map((mp: any) => {
+          const variant = mp.variants?.[0];
+          // prices est un tableau en Medusa v2 — on prend le premier (XOF)
+          const pricesArr: any[] = Array.isArray(variant?.prices) ? variant.prices : [];
+          const xofPrice = pricesArr.find((p: any) => p.currency_code === "xof") || pricesArr[0];
+          // Medusa stocke en millièmes (3 500 000 → 35 000 XOF), on divise par 100
+          const priceInXOF = xofPrice ? Math.round(Number(xofPrice.amount) / 100) : 0;
+
+          return {
+            id: mp.id,
+            priceKey: mp.handle,
+            badge: "En Ligne",
+            sku: (mp.handle?.substring(0, 6).toUpperCase() || "NEW") + "™",
+            title: mp.title,
+            desc: mp.description || "Produit exclusif HelyaCare.",
+            image: mp.thumbnail || "/crave-control.png",
+            cta: "Ajouter au panier",
+            href: `/boutique/${mp.handle}`,
+            saveBadge: null,
+            medusa_variant_id: variant?.id,
+            price: priceInXOF,
+            handle: mp.handle,
+          };
+        });
+
+        setLiveProducts(formatted);
+      } catch (err) {
+        console.error("[Boutique] Failed to fetch live products:", err);
+      }
+    };
+    fetchLiveProducts();
+  }, []);
+
+  // Fusionner : les produits Medusa priment sur les statiques ayant le même handle
+  const liveHandles = new Set(liveProducts.map(p => p.handle || p.priceKey));
+
+  // Garder uniquement les statiques sans équivalent live
+  const filteredStatic = products.filter(p => !liveHandles.has(p.priceKey));
+  const allProducts = [...liveProducts, ...filteredStatic];
+
+  if (process.env.NODE_ENV === "development" && liveProducts.length > 0) {
+    console.log(`[Boutique] ✅ ${liveProducts.length} produits Medusa chargés · ${filteredStatic.length} statiques conservés`);
+  }
+
+
+  const handleAddToCart = async (product: any) => {
+    if (product.id === 6) return; // Helya Perform — liste d'attente
+    
+    // Si c'est un produit live Medusa
+    if (product.medusa_variant_id) {
+      await addItem({
+        variantId: product.medusa_variant_id,
+        quantity: 1,
+        title: product.title,
+        subtitle: "Achat unique",
+        thumbnail: product.image,
+        unit_price: product.price,
+        currency_code: "XOF",
+      });
+      setAddedId(product.id);
+      setTimeout(() => setAddedId(null), 2000);
+      return;
+    }
+
+    // Produit statique
+    const prices = BOUTIQUE_PRICES[product.priceKey as keyof typeof BOUTIQUE_PRICES];
+    const price = prices?.subscription ?? prices?.normal ?? 0;
+    await addItem({
+      variantId: `${product.priceKey}-subscription-v1`,
+      quantity: 1,
+      title: product.title,
+      subtitle: prices?.subscription ? "Abonnement mensuel" : "Achat unique",
+      thumbnail: product.image,
+      unit_price: price,
+      currency_code: "XOF",
+    });
+    setAddedId(product.id);
+    setTimeout(() => setAddedId(null), 2000);
+  };
 
   return (
     <div className="seed-page">
@@ -130,7 +234,12 @@ export default function BoutiquePage() {
                     <Link href="/boutique/crave-control">
                       <button className="seed-btn-primary-white">{t("discoverBtn")}</button>
                     </Link>
-                    <button className="seed-btn-text-white">{t("addBtn")}</button>
+                    <button
+                      className="seed-btn-text-white"
+                      onClick={() => handleAddToCart(products[0])}
+                    >
+                      {addedId === 1 ? "✓ Ajouté !" : t("addBtn")}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -151,10 +260,17 @@ export default function BoutiquePage() {
       {/* Product Grid */}
       <section className="seed-grid-section">
         <div className="seed-grid-container">
-          {products.map((product) => {
-            const prices = BOUTIQUE_PRICES[product.priceKey];
-            const displayPrice = formatPrice(prices.subscription ?? prices.normal);
-            const strikePrice = prices.subscription ? formatPrice(prices.normal) : null;
+          {allProducts.map((product) => {
+            let displayPrice = "";
+            let strikePrice = null;
+
+            if (product.medusa_variant_id) {
+              displayPrice = formatPrice(product.price);
+            } else {
+              const prices = BOUTIQUE_PRICES[product.priceKey as keyof typeof BOUTIQUE_PRICES];
+              displayPrice = formatPrice(prices?.subscription ?? prices?.normal ?? 0);
+              strikePrice = prices?.subscription ? formatPrice(prices.normal) : null;
+            }
 
             return (
               <div key={product.id} className="seed-card">
@@ -188,7 +304,14 @@ export default function BoutiquePage() {
                       <Link href={product.href}>
                         <button className="seed-btn-primary-dark">Découvrir</button>
                       </Link>
-                      <button className="seed-btn-text-dark">{product.cta}</button>
+                      <button
+                        className="seed-btn-text-dark"
+                        onClick={() => handleAddToCart(product)}
+                        disabled={product.id === 6}
+                        style={product.id === 6 ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+                      >
+                        {addedId === product.id ? "✓ Ajouté !" : product.cta}
+                      </button>
                     </div>
                   </div>
                 </div>

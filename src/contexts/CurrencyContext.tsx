@@ -16,23 +16,30 @@ const CurrencyContext = createContext<CurrencyContextProps | undefined>(undefine
 
 // ─── Taux de change : tout est exprimé par rapport à 1 XAF ────────────────────
 // 1 EUR ≈ 655.957 XAF  →  1 XAF ≈ 0.001525 EUR
-// 1 USD ≈ 607 XAF      →  1 XAF ≈ 0.001647 USD (ajuster selon le marché)
+// 1 USD ≈ 607 XAF      →  1 XAF ≈ 0.001647 USD
+// XOF (FCFA Afrique Ouest) = même parité que XAF
 const RATES_FROM_XAF: Record<string, number> = {
   XAF: 1,
+  XOF: 1,         // FCFA Afrique de l'Ouest — même parité que XAF
   EUR: 1 / 655.957,
   USD: 1 / 607,
+  MAD: 1 / 65.5,  // Dirham marocain (approximatif)
 };
 
 const CURRENCY_LOCALES: Record<string, string> = {
   XAF: "fr-FR",
+  XOF: "fr-FR",
   EUR: "fr-FR",
   USD: "en-US",
+  MAD: "fr-MA",
 };
 
 const MAX_FRACTION_DIGITS: Record<string, number> = {
   XAF: 0,
+  XOF: 0,
   EUR: 2,
   USD: 2,
+  MAD: 0,
 };
 
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {

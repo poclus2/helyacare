@@ -3,12 +3,13 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
-import { Check, Info, ArrowRight, Leaf, Shield, Beaker, Bot, QrCode, Sparkles, Star, Pill, Microscope, Dna, Flower2 } from "lucide-react";
+import { ArrowRight, Star, Pill, Microscope, Dna, Flower2 } from "lucide-react";
 import { Link } from "@/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { PRODUCT_PRICES } from "@/lib/prices";
+import AddToCartButton from "@/components/AddToCartButton";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 const pjs = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
@@ -171,9 +172,13 @@ export default function CraveControlPage() {
 
                 {/* CTA */}
                 <div className="mb-4">
-                  <button className={`w-full py-4 bg-[#E56B2D] text-white text-[15px] font-semibold rounded-[6px] hover:bg-[#cf5c22] transition-all ${inter.className}`}>
-                    Commencer Maintenant
-                  </button>
+                  <AddToCartButton
+                    productKey="helya-hydrate"
+                    purchaseType={purchaseType}
+                    title="Helya Hydrate"
+                    thumbnail="/images/products/crave-control/macro.png"
+                    price={purchaseType === "subscription" ? prices.subscription : prices.normal}
+                  />
                 </div>
 
                 {/* Guarantees */}

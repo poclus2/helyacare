@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "../globals.css";
-import {NextIntlClientProvider} from 'next-intl';
-import {getMessages, setRequestLocale} from 'next-intl/server';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages, setRequestLocale } from 'next-intl/server';
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
+import { AuthSessionProvider } from "@/contexts/AuthSessionProvider";
+import { CartProvider } from "@/contexts/CartContext";
+import CartDrawer from "@/components/CartDrawer";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -28,15 +31,17 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html
-      lang={locale}
-      className={`${poppins.variable} h-full antialiased`}
-    >
+    <html lang={locale} className={`${poppins.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider messages={messages}>
-          <CurrencyProvider>
-            {children}
-          </CurrencyProvider>
+          <AuthSessionProvider>
+            <CurrencyProvider>
+              <CartProvider>
+                {children}
+                <CartDrawer />
+              </CartProvider>
+            </CurrencyProvider>
+          </AuthSessionProvider>
         </NextIntlClientProvider>
       </body>
     </html>

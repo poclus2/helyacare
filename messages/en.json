@@ -230,10 +230,10 @@
     "form": {
       "eyebrow": "Registration", "title1": "Create your account.", "title2": "Get your link.",
       "subtitle": "In 60 seconds, you'll have your unique affiliate link and access to your Ambassador dashboard.",
-      "firstName": "First Name", "lastName": "Last Name", "email": "Email Address",
+      "firstName": "First Name", "lastName": "Last Name", "email": "Email Address", "phone": "Phone Number",
       "password": "Password", "confirmPassword": "Confirm",
       "referral": "Referral Code", "referral_hint": "— if you were invited",
-      "submit": "Create my Ambassador Account",
+      "submit": "Create my Ambassador Account", "cta": "Create my Ambassador Account",
       "terms": "By creating an account, you agree to our", "termsLink": "Terms & Conditions", "termsEnd": "Your data will never be sold.",
       "pwError": "Passwords do not match.",
       "success_title": "Account created!", "success_desc": "Welcome to the HelyaCare network. Check your email to activate your account and access your affiliate link.", "success_cta": "Log in to my space"

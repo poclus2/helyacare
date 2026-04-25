@@ -230,10 +230,10 @@
     "form": {
       "eyebrow": "Inscription", "title1": "Créez votre compte.", "title2": "Obtenez votre lien.",
       "subtitle": "En 60 secondes, vous aurez votre lien d'affiliation unique et accès à votre dashboard Ambassadeur.",
-      "firstName": "Prénom", "lastName": "Nom", "email": "Adresse Email",
+      "firstName": "Prénom", "lastName": "Nom", "email": "Adresse Email", "phone": "Téléphone",
       "password": "Mot de passe", "confirmPassword": "Confirmer",
       "referral": "Code de parrainage", "referral_hint": "— si vous avez été invité",
-      "submit": "Créer mon compte Ambassadeur",
+      "submit": "Créer mon compte Ambassadeur", "cta": "Créer mon compte Ambassadeur",
       "terms": "En créant un compte, vous acceptez nos", "termsLink": "Conditions Générales", "termsEnd": "Vos données ne seront jamais revendues.",
       "pwError": "Les mots de passe ne correspondent pas.",
       "success_title": "Compte créé !", "success_desc": "Bienvenue dans le réseau HelyaCare. Vérifiez votre email pour activer votre compte et accéder à votre lien d'affiliation.", "success_cta": "Se connecter à mon espace"

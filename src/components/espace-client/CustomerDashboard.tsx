@@ -6,49 +6,49 @@ import Image from "next/image";
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 const pjs = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
-export default function CustomerDashboard() {
+export default function CustomerDashboard({ orders = [] }: { orders?: any[] }) {
   return (
     <div className={`space-y-8 ${pjs.className}`}>
       
       {/* 1. METABOLIC VITALS - Top row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Energy */}
-        <div className="bg-white p-6 rounded-2xl border border-[#E8E3DC] shadow-sm flex items-center justify-between">
+        <div className="bg-white p-6 rounded-2xl border border-[#E8E3DC] shadow-sm flex items-center justify-between opacity-70">
           <div>
             <p className="text-gray-500 text-xs font-semibold uppercase tracking-widest mb-1">Niveau d’Énergie</p>
             <div className="flex items-baseline gap-2">
-              <span className={`text-3xl font-black text-[#0F3D3E] ${inter.className}`}>85</span>
-              <span className="text-sm font-medium text-green-500">+12%</span>
+              <span className={`text-3xl font-black text-gray-300 ${inter.className}`}>--</span>
             </div>
+            <p className="text-[10px] text-gray-400 mt-1">Bilan requis</p>
           </div>
           <div className="w-12 h-12 rounded-full bg-[#F6F4F1] flex items-center justify-center">
-            <Zap className="w-6 h-6 text-[#E56B2D]" />
+            <Zap className="w-6 h-6 text-gray-400" />
           </div>
         </div>
         {/* Sleep */}
-        <div className="bg-white p-6 rounded-2xl border border-[#E8E3DC] shadow-sm flex items-center justify-between">
+        <div className="bg-white p-6 rounded-2xl border border-[#E8E3DC] shadow-sm flex items-center justify-between opacity-70">
           <div>
             <p className="text-gray-500 text-xs font-semibold uppercase tracking-widest mb-1">Qualité Sommeil</p>
             <div className="flex items-baseline gap-2">
-              <span className={`text-3xl font-black text-[#0F3D3E] ${inter.className}`}>92</span>
-              <span className="text-sm font-medium text-green-500">+5%</span>
+              <span className={`text-3xl font-black text-gray-300 ${inter.className}`}>--</span>
             </div>
+            <p className="text-[10px] text-gray-400 mt-1">Bilan requis</p>
           </div>
           <div className="w-12 h-12 rounded-full bg-[#F6F4F1] flex items-center justify-center">
-            <Moon className="w-6 h-6 text-[#0F3D3E]" />
+            <Moon className="w-6 h-6 text-gray-400" />
           </div>
         </div>
         {/* Hydration */}
-        <div className="bg-white p-6 rounded-2xl border border-[#E8E3DC] shadow-sm flex items-center justify-between">
+        <div className="bg-white p-6 rounded-2xl border border-[#E8E3DC] shadow-sm flex items-center justify-between opacity-70">
           <div>
             <p className="text-gray-500 text-xs font-semibold uppercase tracking-widest mb-1">Hydratation</p>
             <div className="flex items-baseline gap-2">
-              <span className={`text-3xl font-black text-[#0F3D3E] ${inter.className}`}>68</span>
-              <span className="text-sm font-medium text-red-500">-10%</span>
+              <span className={`text-3xl font-black text-gray-300 ${inter.className}`}>--</span>
             </div>
+            <p className="text-[10px] text-gray-400 mt-1">Bilan requis</p>
           </div>
           <div className="w-12 h-12 rounded-full bg-[#F6F4F1] flex items-center justify-center">
-            <Droplets className="w-6 h-6 text-blue-500" />
+            <Droplets className="w-6 h-6 text-gray-400" />
           </div>
         </div>
       </div>
@@ -56,43 +56,59 @@ export default function CustomerDashboard() {
       {/* 2. MAIN GRID (Active Sub & IA) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Active Subscription */}
+        {/* Active Subscription / Recent Order */}
         <div className="lg:col-span-2 bg-white rounded-3xl p-8 shadow-sm border border-[#E8E3DC] relative overflow-hidden flex flex-col md:flex-row gap-8 items-center">
           <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-[#F2F0EB] rounded-full blur-3xl opacity-50 pointer-events-none"></div>
           
           <div className="relative w-full md:w-1/3 aspect-square bg-[#F6F4F1] rounded-2xl flex items-center justify-center shrink-0">
-            <Image src="/images/products/crave-control/macro.png" alt="Crave Control" fill className="object-cover rounded-2xl" />
+            {orders.length > 0 && orders[0].items?.[0]?.thumbnail ? (
+              <Image src={orders[0].items[0].thumbnail} alt="Produit récent" fill className="object-cover rounded-2xl" />
+            ) : (
+              <Package className="w-12 h-12 text-gray-300" />
+            )}
           </div>
 
           <div className="relative z-10 flex-1 flex flex-col justify-between h-full py-2">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-700 border border-green-200 text-xs font-bold uppercase tracking-wider rounded-full mb-4">
-                <CheckCircle2 className="w-4 h-4" />
-                <span>Cure Active</span>
+              <div className={`inline-flex items-center gap-2 px-3 py-1 ${orders.length > 0 ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-500 border-gray-200'} border text-xs font-bold uppercase tracking-wider rounded-full mb-4`}>
+                {orders.length > 0 ? <CheckCircle2 className="w-4 h-4" /> : <Package className="w-4 h-4" />}
+                <span>{orders.length > 0 ? "Commande Récente" : "Aucune commande"}</span>
               </div>
               <h2 className={`text-2xl md:text-3xl font-bold text-[#0F3D3E] mb-2 ${inter.className}`}>
-                Crave Control
+                {orders.length > 0 ? (orders[0].items?.[0]?.title || "Produit HelyaCare") : "Découvrez nos Cures"}
               </h2>
               <p className="text-gray-500 text-[15px] max-w-md leading-relaxed mb-6">
-                Régulation glycémique et contrôle des envies. Prenez 2 gélules par jour avec votre premier repas.
+                {orders.length > 0 
+                  ? "Continuez à suivre votre cure pour des résultats optimaux. N'oubliez pas votre bilan IA." 
+                  : "Explorez notre boutique pour trouver la cure métabolique adaptée à vos besoins."}
               </p>
               
-              <div className="bg-[#F8FAFC] rounded-xl p-4 flex items-center justify-between border border-gray-100">
-                <div>
-                  <p className="text-xs text-gray-500 font-semibold uppercase">Prochaine livraison</p>
-                  <p className="text-sm font-bold text-[#0F3D3E]">15 Mai 2026</p>
+              {orders.length > 0 && (
+                <div className="bg-[#F8FAFC] rounded-xl p-4 flex items-center justify-between border border-gray-100">
+                  <div>
+                    <p className="text-xs text-gray-500 font-semibold uppercase">Date de commande</p>
+                    <p className="text-sm font-bold text-[#0F3D3E]">
+                      {new Date(orders[0].created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-gray-500 font-semibold uppercase">Statut</p>
+                    <p className="text-sm font-bold text-green-600 capitalize">{orders[0].status || "En cours"}</p>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs text-gray-500 font-semibold uppercase">Statut</p>
-                  <p className="text-sm font-bold text-green-600">En préparation</p>
-                </div>
-              </div>
+              )}
             </div>
             
             <div className="mt-6 flex items-center gap-4">
-              <button className="px-6 py-3 bg-[#0F3D3E] text-white rounded-xl text-sm font-semibold hover:bg-[#1a5556] transition-all hover:shadow-lg">
-                Gérer l’abonnement
-              </button>
+              {orders.length > 0 ? (
+                <Link href="/espace-client/commandes" className="px-6 py-3 bg-[#0F3D3E] text-white rounded-xl text-sm font-semibold hover:bg-[#1a5556] transition-all hover:shadow-lg">
+                  Voir la commande
+                </Link>
+              ) : (
+                <Link href="/boutique" className="px-6 py-3 bg-[#0F3D3E] text-white rounded-xl text-sm font-semibold hover:bg-[#1a5556] transition-all hover:shadow-lg">
+                  Visiter la boutique
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -132,28 +148,35 @@ export default function CustomerDashboard() {
             <button className="text-[#E56B2D] text-sm font-semibold hover:underline">Voir tout</button>
           </div>
           <div className="divide-y divide-[#E8E3DC]">
-            {[
-              { id: "#HC-9034", date: "15 Avr 2026", total: "20 000 FCFA", status: "Livré" },
-              { id: "#HC-8210", date: "15 Mar 2026", total: "20 000 FCFA", status: "Livré" },
-              { id: "#HC-7145", date: "15 Fév 2026", total: "20 000 FCFA", status: "Livré" },
-            ].map((order, i) => (
-              <div key={i} className="px-8 py-5 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors cursor-pointer group">
+            {orders.length > 0 ? orders.slice(0, 5).map((order: any) => (
+              <div key={order.id} className="px-8 py-5 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors cursor-pointer group">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-[#F2F0EB] flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-[#F2F0EB] flex items-center justify-center shrink-0">
                     <Package className="w-5 h-5 text-[#0F3D3E]" />
                   </div>
                   <div>
-                    <p className="font-bold text-[#0F3D3E]">{order.id}</p>
-                    <p className="text-xs text-gray-500 font-medium">{order.date}</p>
+                    <p className="font-bold text-[#0F3D3E]">#{order.display_id || order.id.slice(-6).toUpperCase()}</p>
+                    <p className="text-xs text-gray-500 font-medium">
+                      {new Date(order.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-6">
-                  <p className="font-bold text-[#0F3D3E]">{order.total}</p>
-                  <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-bold uppercase">{order.status}</span>
-                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-[#E56B2D] transition-colors" />
+                  <p className="font-bold text-[#0F3D3E] hidden sm:block">
+                    {new Intl.NumberFormat("fr-FR", { style: "currency", currency: order.currency_code }).format(order.total / 100)}
+                  </p>
+                  <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-[10px] font-bold uppercase truncate max-w-[100px] text-center">
+                    {order.status || order.payment_status || "En cours"}
+                  </span>
+                  <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-[#E56B2D] transition-colors shrink-0" />
                 </div>
               </div>
-            ))}
+            )) : (
+              <div className="px-8 py-10 text-center text-gray-500">
+                <p>Aucune commande récente.</p>
+                <Link href="/boutique" className="text-[#E56B2D] font-bold text-sm mt-2 inline-block hover:underline">Découvrir la boutique</Link>
+              </div>
+            )}
           </div>
         </div>
 

@@ -123,9 +123,9 @@ export default function Footer() {
       <div className="max-w-[1280px] mx-auto flex flex-col md:flex-row justify-between items-center text-[0.75rem] text-white/40 gap-4">
         <p>&copy; {new Date().getFullYear()} {t("rights")}</p>
         <div className="flex flex-wrap justify-center gap-6">
-          <Link href="#" className="hover:text-white transition-colors">{t("privacy")}</Link>
-          <Link href="#" className="hover:text-white transition-colors">{t("legal")}</Link>
-          <Link href="#" className="hover:text-white transition-colors">{t("cgv")}</Link>
+          <Link href="/legal/confidentialite" className="hover:text-white transition-colors">{t("privacy")}</Link>
+          <Link href="/legal/mentions-legales" className="hover:text-white transition-colors">{t("legal")}</Link>
+          <Link href="/legal/cgv" className="hover:text-white transition-colors">{t("cgv")}</Link>
         </div>
       </div>
     </footer>

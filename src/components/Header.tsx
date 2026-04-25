@@ -4,8 +4,10 @@ import { useState } from "react";
 import { usePathname, useRouter, Link } from "@/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { useSession } from "next-auth/react";
+import { useCart } from "@/contexts/CartContext";
 
-import { Dna, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Image from "next/image";
 
 // Geometric Logo (Official)
@@ -25,7 +27,7 @@ function GeometricLogo({ className = "", color = "white" }: { className?: string
 }
 
 // Cart Icon
-function CartIcon({ hasItems = false }: { hasItems?: boolean }) {
+function CartIcon({ count = 0 }: { count?: number }) {
   return (
     <div className="relative">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -33,8 +35,10 @@ function CartIcon({ hasItems = false }: { hasItems?: boolean }) {
         <line x1="3" y1="6" x2="21" y2="6"/>
         <path d="M16 10a4 4 0 01-8 0"/>
       </svg>
-      {hasItems && (
-        <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#E56B2D] rounded-full border border-[#0F3D3E]"></span>
+      {count > 0 && (
+        <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] bg-[#E56B2D] text-white text-[10px] font-black rounded-full border-2 border-[#0F3D3E] flex items-center justify-center px-1">
+          {count > 9 ? "9+" : count}
+        </span>
       )}
     </div>
   );
@@ -53,6 +57,8 @@ export default function Header() {
   const locale = useLocale();
   const t = useTranslations("Header");
   const { currency, setCurrency } = useCurrency();
+  const { data: session } = useSession();
+  const { itemCount, openCart } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const handleLocaleChange = (newLocale: "fr" | "en") => {
@@ -133,16 +139,29 @@ export default function Header() {
             </div>
 
             {/* Desktop Only: CTA */}
-            <Link
-              href="/connexion"
-              className="hidden lg:block bg-white text-[#0F3D3E] text-[13px] font-bold px-5 py-2 rounded-full hover:bg-gray-100 transition-colors"
-            >
-              {t("login")}
-            </Link>
+            {session ? (
+              <Link
+                href="/espace-client"
+                className="hidden lg:block bg-white text-[#0F3D3E] text-[13px] font-bold px-5 py-2 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                Mon espace
+              </Link>
+            ) : (
+              <Link
+                href="/connexion"
+                className="hidden lg:block bg-white text-[#0F3D3E] text-[13px] font-bold px-5 py-2 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                {t("login", { defaultMessage: "Se connecter" })}
+              </Link>
+            )}
 
             {/* Cart (Desktop & Mobile) */}
-            <button className="p-2 hover:opacity-80 transition-opacity -mr-2 md:mr-0">
-              <CartIcon hasItems={true} /> {/* Simulation panier plein */}
+            <button
+              onClick={openCart}
+              className="p-2 hover:opacity-80 transition-opacity -mr-2 md:mr-0 relative"
+              aria-label={`Panier (${itemCount} article${itemCount > 1 ? 's' : ''})`}
+            >
+              <CartIcon count={itemCount} />
             </button>
           </div>
         </div>
@@ -181,14 +200,25 @@ export default function Header() {
           
           <div className="h-px w-full bg-white/10 my-4" />
           
-          <Link
-            href="/connexion"
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="text-white text-lg font-medium flex items-center justify-between"
-          >
-            {t("login")}
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </Link>
+          {session ? (
+            <Link
+              href="/espace-client"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-white text-lg font-medium flex items-center justify-between"
+            >
+              Mon espace
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </Link>
+          ) : (
+            <Link
+              href="/connexion"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="text-white text-lg font-medium flex items-center justify-between"
+            >
+              {t("login", { defaultMessage: "Se connecter" })}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </Link>
+          )}
 
           <div className="mt-8 flex items-center justify-between text-white/80">
             <span className="text-sm font-medium">Langue</span>

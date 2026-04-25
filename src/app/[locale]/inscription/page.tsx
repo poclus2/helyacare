@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter, Link } from "@/navigation";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import Image from "next/image";
+import { signIn } from "next-auth/react";
+import { CheckCircle } from "lucide-react";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 const pjs = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
@@ -54,18 +56,56 @@ export default function InscriptionPage() {
   const [password, setPassword]   = useState("");
   const [error, setError]         = useState<string | null>(null);
   const [loading, setLoading]     = useState(false);
+  const [success, setSuccess]     = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    
-    // Simulate API call for now since we don't have a direct Next-Auth sign-up for credentials yet
-    setTimeout(() => {
+    // Call the internal Next.js API route that orchestrates Medusa v2 registration
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          password,
+          first_name: firstName,
+          last_name: lastName,
+          role: "customer"
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Une erreur est survenue lors de l'inscription.");
+        setLoading(false);
+        return;
+      }
+
+      // If registration is successful, automatically log the user in
+      const signInResult = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+
+      if (signInResult?.error) {
+        setError("Compte créé avec succès, mais la connexion automatique a échoué. Veuillez vous connecter manuellement.");
+        setSuccess(true);
+        setLoading(false);
+      } else {
+        setSuccess(true);
+        // Add a slight delay before redirecting so the user can read the success message
+        setTimeout(() => {
+          router.push("/espace-client");
+        }, 3000);
+      }
+    } catch (err) {
+      setError("Erreur de connexion au serveur. Veuillez réessayer.");
       setLoading(false);
-      // Faking success and redirecting to login
-      router.push("/connexion");
-    }, 1500);
+    }
   };
 
   return (
@@ -183,6 +223,28 @@ export default function InscriptionPage() {
               {loading ? "Création en cours…" : "Créer mon compte"}
             </button>
           </form>
+
+          {/* SUCCESS MODAL OVERLAY */}
+          {success && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+              <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-3xl max-w-md w-full text-center shadow-2xl animate-in zoom-in-95 duration-300">
+                <div className="w-20 h-20 mx-auto bg-green-500/20 rounded-full flex items-center justify-center mb-6">
+                  <CheckCircle className="w-10 h-10 text-green-400" />
+                </div>
+                <h3 className={`text-2xl font-bold text-white mb-2 ${inter.className}`}>Félicitations !</h3>
+                <p className="text-white/70 mb-6 text-sm leading-relaxed">
+                  Votre compte Helyacare a été créé avec succès. Bienvenue dans notre laboratoire vivant !<br/><br/>
+                  <span className="opacity-75 italic">Redirection automatique en cours...</span>
+                </p>
+                <button
+                  onClick={() => router.push("/espace-client")}
+                  className="w-full bg-white text-[#0F3D3E] font-bold text-sm rounded-xl px-4 py-4 transition-all hover:bg-gray-100"
+                >
+                  Aller à mon Espace Client
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="relative my-7 flex items-center">
             <div className="flex-1 border-t border-white/10" />
