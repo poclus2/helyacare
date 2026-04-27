@@ -1,13 +1,14 @@
 # Railway configuration for Medusa Backend
-# Nixpacks détecte Node.js automatiquement et installe les dépendances
+# Utilise un Dockerfile custom plutôt que Nixpacks
+# Raison : Nixpacks écrase .medusa/ avec un COPY final (gitignored)
+# causant "Could not find index.html in the admin build directory"
 
 [build]
-builder = "NIXPACKS"
-buildCommand = "npm run build"
+builder = "DOCKERFILE"
+dockerfilePath = "backend/Dockerfile"
 
 [deploy]
-# Lance les migrations puis démarre le serveur
-startCommand = "npx medusa db:migrate && npm run start"
+# Les migrations sont dans le CMD du Dockerfile
 healthcheckPath = "/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
