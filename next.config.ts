@@ -4,9 +4,6 @@ import type { NextConfig } from "next";
 const withNextIntl = createNextIntlPlugin('./src/i18n.ts');
 
 const nextConfig: NextConfig = {
-  // Mode standalone uniquement dans Docker (Railway/CI)
-  // Désactivé en local car bug Next.js 16 + middleware.js.nft.json sur Windows
-  ...(process.env.DOCKER_BUILD === 'true' && { output: 'standalone' }),
   images: {
     remotePatterns: [
       {
@@ -20,5 +17,6 @@ const nextConfig: NextConfig = {
     ],
   },
 };
+
 
 export default withNextIntl(nextConfig);

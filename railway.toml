@@ -1,12 +1,13 @@
 # Railway configuration for HelyaCare
-# Docs: https://docs.railway.app/reference/config-as-code
+# Nixpacks détecte automatiquement Next.js — pas besoin de Dockerfile
+# Cela évite le bug Next.js 16 Turbopack + standalone mode
 
 [build]
-builder = "DOCKERFILE"
-dockerfilePath = "./Dockerfile"
+builder = "NIXPACKS"
+buildCommand = "npm run build"
 
 [deploy]
-startCommand = "node server.js"
+startCommand = "npm start"
 healthcheckPath = "/api/prices"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
