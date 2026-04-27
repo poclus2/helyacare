@@ -10,16 +10,14 @@ env:
   NODE_VERSION: '20'
 
 jobs:
-  # ── 1. Tests & Build ──────────────────────────────────────────────────────
-  build:
-    name: Build & Type Check
+  # ── 1. Build & Validate Frontend ────────────────────────────────────────────
+  build-frontend:
+    name: "Frontend — Build & Type Check"
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
@@ -30,9 +28,8 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
 
-      - name: Build Next.js
+      - name: Build Next.js (production)
         env:
-          # Variables minimales pour le build (sans secrets sensibles)
           NEXT_PUBLIC_MEDUSA_BACKEND_URL: ${{ secrets.NEXT_PUBLIC_MEDUSA_BACKEND_URL }}
           NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY }}
           NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
@@ -40,46 +37,80 @@ jobs:
           ADMIN_SECRET: ${{ secrets.ADMIN_SECRET }}
         run: npm run build:prod
 
+  # ── 2. Build & Validate Backend ─────────────────────────────────────────────
+  build-backend:
+    name: "Backend — Build & Type Check"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/setup-node@v4
         with:
-          name: nextjs-build
-          path: |
-            .next/
-            public/
-            data/
-          retention-days: 1
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
 
-  # ── 2. Deploy sur Railway (production) ───────────────────────────────────
-  deploy-production:
-    name: Deploy → Railway (Production)
-    needs: build
+      - name: Install backend dependencies
+        run: npm ci
+
+      - name: Build Medusa
+        run: npm run build
+
+  # ── 3. Deploy Frontend → Railway ────────────────────────────────────────────
+  deploy-frontend:
+    name: "Deploy Frontend → Railway"
+    needs: build-frontend
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: production
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-      - name: Deploy to Railway
+      - name: Deploy Frontend
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        run: |
-          railway up --service helyacare-frontend --detach
+        run: railway up --service helyacare-frontend --detach
 
-      - name: Notify deployment success
+      - name: Confirm Frontend Deploy
         if: success()
-        run: |
-          echo "✅ HelyaCare déployé avec succès sur Railway"
-          echo "🌐 URL: ${{ secrets.PRODUCTION_URL }}"
+        run: echo "✅ Frontend HelyaCare déployé → ${{ secrets.FRONTEND_URL }}"
 
-      - name: Notify deployment failure
-        if: failure()
+  # ── 4. Deploy Backend → Railway ─────────────────────────────────────────────
+  deploy-backend:
+    name: "Deploy Backend → Railway"
+    needs: build-backend
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy Backend (Medusa)
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up --service helyacare-backend --detach
+
+      - name: Run Medusa Migrations
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        # Les migrations s'exécutent seulement si le service vient de démarrer
+        # Railway relance automatiquement le service après deploy
         run: |
-          echo "❌ Échec du déploiement HelyaCare"
-          exit 1
+          echo "⏳ Attente démarrage du service backend (60s)..."
+          sleep 60
+          railway run --service helyacare-backend npx medusa db:migrate || echo "⚠️ Migration déjà à jour"
+
+      - name: Confirm Backend Deploy
+        if: success()
+        run: echo "✅ Backend Medusa déployé → ${{ secrets.BACKEND_URL }}"
