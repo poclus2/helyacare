@@ -8,8 +8,9 @@ FROM node:20-alpine AS deps
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-# Installe uniquement les dépendances de production + dev pour le build
-RUN npm ci
+# Mettre npm à jour pour correspondre à la version locale (npm 11)
+# Le lockfile a été généré avec npm 11 — npm 10 (embarqué dans node:20-alpine) ne peut pas le lire
+RUN npm install -g npm@11 --quiet && npm ci
 
 # Étape 2 : Build
 FROM node:20-alpine AS builder
