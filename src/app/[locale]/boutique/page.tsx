@@ -5,10 +5,11 @@ import Footer from "@/components/Footer";
 import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
 import { useCurrency } from "@/contexts/CurrencyContext";
-import { BOUTIQUE_PRICES } from "@/lib/prices";
+import { useLivePrices } from "@/contexts/PricesContext";
 import { useCart } from "@/contexts/CartContext";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./boutique.css";
+
 
 const products = [
   {
@@ -89,100 +90,26 @@ export default function BoutiquePage() {
   const t = useTranslations("Boutique2");
   const { formatPrice } = useCurrency();
   const { addItem } = useCart();
+  const { getPrice, getVariantId } = useLivePrices();
   const [addedId, setAddedId] = useState<string | number | null>(null);
-  const [liveProducts, setLiveProducts] = useState<any[]>([]);
 
-  useEffect(() => {
-    const fetchLiveProducts = async () => {
-      try {
-        const backend = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
-        const pubKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "";
-
-        // fields=*variants.prices est obligatoire pour obtenir les prix en Medusa v2
-        const res = await fetch(
-          `${backend}/store/products?fields=*variants.prices&limit=50`,
-          { headers: { ...(pubKey && { "x-publishable-api-key": pubKey }) } }
-        );
-
-        if (!res.ok) {
-          console.error("[Boutique] Medusa store/products error:", res.status);
-          return;
-        }
-
-        const data = await res.json();
-
-        const formatted = (data.products || []).map((mp: any) => {
-          const variant = mp.variants?.[0];
-          // prices est un tableau en Medusa v2 — on prend le premier (XOF)
-          const pricesArr: any[] = Array.isArray(variant?.prices) ? variant.prices : [];
-          const xofPrice = pricesArr.find((p: any) => p.currency_code === "xof") || pricesArr[0];
-          // Medusa stocke en millièmes (3 500 000 → 35 000 XOF), on divise par 100
-          const priceInXOF = xofPrice ? Math.round(Number(xofPrice.amount) / 100) : 0;
-
-          return {
-            id: mp.id,
-            priceKey: mp.handle,
-            badge: "En Ligne",
-            sku: (mp.handle?.substring(0, 6).toUpperCase() || "NEW") + "™",
-            title: mp.title,
-            desc: mp.description || "Produit exclusif HelyaCare.",
-            image: mp.thumbnail || "/crave-control.png",
-            cta: "Ajouter au panier",
-            href: `/boutique/${mp.handle}`,
-            saveBadge: null,
-            medusa_variant_id: variant?.id,
-            price: priceInXOF,
-            handle: mp.handle,
-          };
-        });
-
-        setLiveProducts(formatted);
-      } catch (err) {
-        console.error("[Boutique] Failed to fetch live products:", err);
-      }
-    };
-    fetchLiveProducts();
-  }, []);
-
-  // Fusionner : les produits Medusa priment sur les statiques ayant le même handle
-  const liveHandles = new Set(liveProducts.map(p => p.handle || p.priceKey));
-
-  // Garder uniquement les statiques sans équivalent live
-  const filteredStatic = products.filter(p => !liveHandles.has(p.priceKey));
-  const allProducts = [...liveProducts, ...filteredStatic];
-
-  if (process.env.NODE_ENV === "development" && liveProducts.length > 0) {
-    console.log(`[Boutique] ✅ ${liveProducts.length} produits Medusa chargés · ${filteredStatic.length} statiques conservés`);
-  }
+  // Crave Control (id=1) est déjà affiché comme carte vedette dans le hero
+  // → on l'exclut de la grille pour éviter le doublon
+  const allProducts = products.filter(p => p.id !== 1);
 
 
   const handleAddToCart = async (product: any) => {
     if (product.id === 6) return; // Helya Perform — liste d'attente
-    
-    // Si c'est un produit live Medusa
-    if (product.medusa_variant_id) {
-      await addItem({
-        variantId: product.medusa_variant_id,
-        quantity: 1,
-        title: product.title,
-        subtitle: "Achat unique",
-        thumbnail: product.image,
-        unit_price: product.price,
-        currency_code: "XOF",
-      });
-      setAddedId(product.id);
-      setTimeout(() => setAddedId(null), 2000);
-      return;
-    }
 
-    // Produit statique
-    const prices = BOUTIQUE_PRICES[product.priceKey as keyof typeof BOUTIQUE_PRICES];
-    const price = prices?.subscription ?? prices?.normal ?? 0;
+    const normal = getPrice(product.priceKey, "normal");
+    const sub = getPrice(product.priceKey, "subscription");
+    const price = sub || normal;
+
     await addItem({
-      variantId: `${product.priceKey}-subscription-v1`,
+      variantId: getVariantId(product.priceKey) || `${product.priceKey}-v1`,
       quantity: 1,
       title: product.title,
-      subtitle: prices?.subscription ? "Abonnement mensuel" : "Achat unique",
+      subtitle: sub ? "Abonnement mensuel" : "Achat unique",
       thumbnail: product.image,
       unit_price: price,
       currency_code: "XOF",
@@ -190,6 +117,7 @@ export default function BoutiquePage() {
     setAddedId(product.id);
     setTimeout(() => setAddedId(null), 2000);
   };
+
 
   return (
     <div className="seed-page">
@@ -228,7 +156,7 @@ export default function BoutiquePage() {
                     {t("featuredDesc")}
                   </p>
                   <p className="seed-featured-price">
-                    {formatPrice(BOUTIQUE_PRICES["crave-control"].normal)}
+                    {formatPrice(getPrice("crave-control", "normal"))}
                   </p>
                   <div className="seed-featured-actions">
                     <Link href="/boutique/crave-control">
@@ -261,16 +189,11 @@ export default function BoutiquePage() {
       <section className="seed-grid-section">
         <div className="seed-grid-container">
           {allProducts.map((product) => {
-            let displayPrice = "";
-            let strikePrice = null;
+            const normal = getPrice(product.priceKey, "normal");
+            const sub = getPrice(product.priceKey, "subscription");
+            const displayPrice = formatPrice(sub || normal);
+            const strikePrice = sub && sub !== normal ? formatPrice(normal) : null;
 
-            if (product.medusa_variant_id) {
-              displayPrice = formatPrice(product.price);
-            } else {
-              const prices = BOUTIQUE_PRICES[product.priceKey as keyof typeof BOUTIQUE_PRICES];
-              displayPrice = formatPrice(prices?.subscription ?? prices?.normal ?? 0);
-              strikePrice = prices?.subscription ? formatPrice(prices.normal) : null;
-            }
 
             return (
               <div key={product.id} className="seed-card">
@@ -302,7 +225,7 @@ export default function BoutiquePage() {
 
                     <div className="seed-card-actions">
                       <Link href={product.href}>
-                        <button className="seed-btn-primary-dark">Découvrir</button>
+                        <button className="seed-btn-primary-dark">{t("discoverBtn")}</button>
                       </Link>
                       <button
                         className="seed-btn-text-dark"
@@ -330,27 +253,27 @@ export default function BoutiquePage() {
             <div className="seed-journal-overlay" />
             <img
               src="https://images.unsplash.com/photo-1582719471384-894fbb16e074?q=80&w=1500&auto=format&fit=crop"
-              alt="Scientifique HelyaCare"
+              alt={t("journalTitle1") + " " + t("journalTitle2")}
               className="seed-journal-bg"
             />
             <div className="seed-journal-content">
-              <span className="seed-journal-label">Recherche approfondie</span>
-              <h2 className="seed-journal-title">Le Journal Scientifique<br />HelyaCare</h2>
+              <span className="seed-journal-label">{t("journalLabel")}</span>
+              <h2 className="seed-journal-title">{t("journalTitle1")}<br />{t("journalTitle2")}</h2>
               <p className="seed-journal-desc">
-                Explorez notre bibliothèque d&apos;études validées et la méthodologie IA qui propulse chaque formule.
+                {t("journalDesc")}
               </p>
-              <button className="seed-journal-btn">Lire l&apos;édition actuelle</button>
+              <button className="seed-journal-btn">{t("journalBtn")}</button>
             </div>
           </div>
 
           {/* Right: Personalized Protocols Card */}
           <div className="seed-protocols-card">
             <div className="seed-protocols-icon">✚</div>
-            <h3 className="seed-protocols-title">Protocoles<br />Personnalisés</h3>
+            <h3 className="seed-protocols-title">{t("protocolsTitle1")}<br />{t("protocolsTitle2")}</h3>
             <p className="seed-protocols-desc">
-              Connectez vos données de santé pour recevoir une pile de suppléments générée par l&apos;IA, adaptée à votre biologie unique.
+              {t("protocolsDesc")}
             </p>
-            <button className="seed-protocols-btn">Faire l&apos;évaluation</button>
+            <button className="seed-protocols-btn">{t("protocolsBtn")}</button>
           </div>
 
         </div>

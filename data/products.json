@@ -1,0 +1,92 @@
+[
+  {
+    "id": "crave-control",
+    "handle": "crave-control",
+    "title": "Crave Control",
+    "sku": "CC-01",
+    "description": "Un bouclier neuro-métabolique qui régule l'appétit, aide à limiter les fringales et soutient le métabolisme au quotidien.",
+    "status": "published",
+    "price_normal": 20000,
+    "price_subscription": 17000,
+    "thumbnail": "/crave-control.png",
+    "images": [
+      "/crave-control.png"
+    ],
+    "badge": "Nouveau"
+  },
+  {
+    "id": "pack-bien-etre",
+    "handle": "pack-bien-etre",
+    "title": "Pack Bien-Être Essentiel",
+    "sku": "PBE-02",
+    "description": "Duo quotidien validé cliniquement associant Crave Control et Helya Hydrate pour une santé optimale au quotidien.",
+    "status": "published",
+    "price_normal": 35000,
+    "price_subscription": 28000,
+    "thumbnail": "/crave-control.png",
+    "images": [
+      "/crave-control.png"
+    ],
+    "badge": null
+  },
+  {
+    "id": "apple-satiety-shot",
+    "handle": "apple-satiety-shot",
+    "title": "Apple Satiety Shot",
+    "sku": "AS-02",
+    "description": "Shot de satiété formulé avec des extraits de pomme et de plantes adaptogènes pour couper les envies entre les repas.",
+    "status": "published",
+    "price_normal": 20000,
+    "price_subscription": 17000,
+    "thumbnail": "/crave-control.png",
+    "images": [
+      "/crave-control.png"
+    ],
+    "badge": "Nouveau"
+  },
+  {
+    "id": "helya-hydrate",
+    "handle": "helya-hydrate",
+    "title": "Helya Hydrate",
+    "sku": "HH-03",
+    "description": "Électrolytes premium enrichis en minéraux essentiels pour une hydratation cellulaire optimale et une récupération accélérée.",
+    "status": "published",
+    "price_normal": 20000,
+    "price_subscription": 17000,
+    "thumbnail": "/crave-control.png",
+    "images": [
+      "/crave-control.png"
+    ],
+    "badge": "Nouveau"
+  },
+  {
+    "id": "helya-vigor",
+    "handle": "helya-vigor",
+    "title": "Helya Vigor",
+    "sku": "HV-04",
+    "description": "Formule vitalité et énergie à base de plantes et de vitamines B pour soutenir l'endurance physique et mentale.",
+    "status": "published",
+    "price_normal": 20000,
+    "price_subscription": 17000,
+    "thumbnail": "/crave-control.png",
+    "images": [
+      "/crave-control.png"
+    ],
+    "badge": null
+  },
+  {
+    "id": "helya-perform",
+    "handle": "helya-perform",
+    "title": "Helya Perform",
+    "sku": "HP-05",
+    "description": "Protocole performance avancé, formulé pour les sportifs souhaitant optimiser leur récupération musculaire et leur clarté mentale.",
+    "status": "draft",
+    "price_normal": 20000,
+    "price_subscription": 17000,
+    "thumbnail": "/crave-control.png",
+    "images": [
+      "/crave-control.png"
+    ],
+    "badge": "Bientôt"
+  }
+]

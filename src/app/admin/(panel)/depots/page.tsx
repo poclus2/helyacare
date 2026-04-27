@@ -5,7 +5,7 @@ import { Inter } from "next/font/google";
 import {
   Loader2, CreditCard, CheckCircle2, XCircle, RefreshCcw,
   Smartphone, Building2, Clock, AlertCircle, TrendingUp,
-  Search, Filter, ChevronDown, Banknote, Copy, Check
+  Search, Filter, ChevronDown, Banknote, Copy, Check, ShoppingBag
 } from "lucide-react";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
@@ -48,7 +48,7 @@ export default function AdminDepositsPage() {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState<string | null>(null);
   const [actionResult, setActionResult] = useState<{ id: string; type: "success" | "error"; msg: string } | null>(null);
-  const [statusFilter, setStatusFilter] = useState<string>("pending");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [rejectModal, setRejectModal] = useState<{ deposit: DepositRequest } | null>(null);
   const [rejectReason, setRejectReason] = useState("");
@@ -259,7 +259,31 @@ export default function AdminDepositsPage() {
                         <span className={`px-2.5 py-1 text-xs font-bold rounded-full border ${method.color}`}>
                           {method.label}
                         </span>
+                        {/* Badge type commande vs dépôt */}
+                        {((dep as any).cart_items?.length > 0 || (dep as any).type === 'order') ? (
+                          <span className="px-2.5 py-1 text-xs font-bold rounded-full border bg-[#CBF27A]/10 text-[#CBF27A] border-[#CBF27A]/30 flex items-center gap-1">
+                            <ShoppingBag className="w-3 h-3" />
+                            Commande
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-1 text-xs font-bold rounded-full border bg-purple-400/10 text-purple-400 border-purple-400/20">
+                            Dépôt portefeuille
+                          </span>
+                        )}
                       </div>
+
+                      {/* Détail articles si commande */}
+                      {(dep as any).cart_items?.length > 0 && (
+                        <div className="mt-3 bg-white/5 rounded-xl px-4 py-3 space-y-1.5">
+                          <p className="text-white/30 text-[10px] font-bold uppercase tracking-wider mb-2">Articles commandés</p>
+                          {(dep as any).cart_items.map((item: any, idx: number) => (
+                            <div key={idx} className="flex items-center justify-between text-xs">
+                              <span className="text-white/70">{item.title} × {item.quantity}</span>
+                              <span className="text-[#CBF27A] font-bold">{fmtXOF(item.unit_price * item.quantity)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
 
                       <div className="mt-3 space-y-1.5 text-xs text-white/40">
                         {dep.payer_phone && (

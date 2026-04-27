@@ -20,7 +20,8 @@ async function verifyAdmin(request: Request) {
 
 const adminHeaders = {
   "Content-Type": "application/json",
-  ...(API_KEY && { Authorization: `Bearer ${API_KEY}` }),
+  // Medusa v2 : les clés API s'authentifient en Basic (clé = username, mot de passe vide)
+  ...(API_KEY && { Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}` }),
 };
 
 /**
@@ -52,7 +53,9 @@ export async function GET(request: Request) {
     const completedOrders = orders.filter(o => o.payment_status === "captured");
     const revenue = completedOrders.reduce((s: number, o: any) => s + (o.total || 0), 0);
     const pendingOrders = orders.filter(o => o.fulfillment_status === "not_fulfilled").length;
-    const ambassadors = customers.filter((c: any) => c.metadata?.role === "ambassadeur");
+    const ambassadors = customers.filter((c: any) =>
+      c.metadata?.role === "ambassadeur" || c.metadata?.is_ambassador === true
+    );
 
     // Commissions en attente (agréger sur tous les ambassadeurs)
     let pendingCommissions = 0;

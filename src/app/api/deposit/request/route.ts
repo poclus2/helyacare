@@ -3,20 +3,12 @@ import { auth } from "@/auth";
 
 /**
  * POST /api/deposit/request
- * Permet à un client/ambassadeur authentifié de créer une demande de dépôt manuel.
- * Le dépôt reste en PENDING jusqu'à validation admin.
- *
- * Body: {
- *   amount: number,
- *   currency?: string,          // "XOF" par défaut
- *   method: "wave" | "orange_money" | "mtn_momo" | "bank" | "other",
- *   payer_phone?: string,        // Numéro qui envoie le Mobile Money
- *   notes?: string               // Référence ou message libre
- * }
+ * Crée une demande de dépôt manuel (paiement Mobile Money ou virement).
+ * Utilise l'Admin API de Medusa pour persister les données de façon fiable,
+ * indépendamment de l'état du token store du client.
  */
 
 const BACKEND = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
-const PUB_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "";
 
 const PAYMENT_INSTRUCTIONS: Record<string, { label: string; target: string; note: string }> = {
   wave: {
@@ -46,6 +38,10 @@ const PAYMENT_INSTRUCTIONS: Record<string, { label: string; target: string; note
   },
 };
 
+const MIN_AMOUNT: Record<string, number> = {
+  wave: 500, orange_money: 500, mtn_momo: 500, bank: 5000, other: 500,
+};
+
 function generateReference(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let ref = "HC-DEP-";
@@ -55,6 +51,16 @@ function generateReference(): string {
   return ref;
 }
 
+function getAdminHeaders() {
+  const API_KEY = process.env.MEDUSA_API_KEY || "";
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}`,
+  };
+}
+
+// ─── POST /api/deposit/request ────────────────────────────────────────────────
+
 export async function POST(request: Request) {
   try {
     const session = await auth();
@@ -63,20 +69,22 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { amount, currency = "XOF", method, payer_phone, notes } = body;
+    const {
+      amount,
+      currency = "XOF",
+      method,
+      payer_phone,
+      notes,
+      cart_id,       // optionnel — si paiement checkout
+      cart_items,    // optionnel — articles du panier
+    } = body;
 
     if (!amount || amount <= 0) {
       return NextResponse.json({ error: "Montant invalide" }, { status: 400 });
     }
-
     if (!method || !PAYMENT_INSTRUCTIONS[method]) {
       return NextResponse.json({ error: "Méthode de paiement invalide" }, { status: 400 });
     }
-
-    // Seuil minimum
-    const MIN_AMOUNT: Record<string, number> = {
-      wave: 500, orange_money: 500, mtn_momo: 500, bank: 5000, other: 500,
-    };
     if (amount < (MIN_AMOUNT[method] || 500)) {
       return NextResponse.json(
         { error: `Montant minimum : ${MIN_AMOUNT[method]} ${currency}` },
@@ -84,12 +92,12 @@ export async function POST(request: Request) {
       );
     }
 
-    // Générer un code de référence unique
     const referenceCode = generateReference();
+    const now = new Date().toISOString();
+    const depositId = `DEP-${Date.now()}`;
 
-    // Créer l'objet demande de dépôt
     const depositRequest = {
-      id: `DEP-${Date.now()}`,
+      id: depositId,
       customer_id: session.customer_id,
       amount,
       currency,
@@ -98,49 +106,74 @@ export async function POST(request: Request) {
       payer_phone: payer_phone || null,
       notes: notes || null,
       status: "pending",
-      created_at: new Date().toISOString(),
+      created_at: now,
+      // Contexte commande (si paiement checkout)
+      cart_id: cart_id || null,
+      cart_items: cart_items || null,
+      type: cart_id ? "order" : "wallet",
     };
 
-    // Récupérer les metadata actuelles du customer
-    const getRes = await fetch(`${BACKEND}/store/customers/me`, {
-      headers: {
-        "Content-Type": "application/json",
-        ...(PUB_KEY && { "x-publishable-api-key": PUB_KEY }),
-        ...(session.access_token && { Authorization: `Bearer ${session.access_token}` }),
-      },
+    const adminHeaders = getAdminHeaders();
+
+    // ── 1. Récupérer le client via Admin API (fiable, pas dépendant du token store) ──
+    const getRes = await fetch(`${BACKEND}/admin/customers/${session.customer_id}`, {
+      headers: adminHeaders,
     });
 
-    let currentMeta: Record<string, string> = {};
-    if (getRes.ok) {
-      const getData = await getRes.json();
-      currentMeta = getData.customer?.metadata || {};
+    if (!getRes.ok) {
+      console.error("[deposit/request] Impossible de récupérer le client Medusa:", getRes.status);
+      return NextResponse.json(
+        { error: "Impossible de récupérer le compte client. Vérifiez votre connexion." },
+        { status: 502 }
+      );
     }
 
-    // Ajouter la demande à l'historique
-    const existingDeposits = currentMeta.deposit_requests
+    const getData = await getRes.json();
+    const currentMeta: Record<string, string> = { ...(getData.customer?.metadata || {}) };
+
+    // ── 2. Ajouter le dépôt à l'historique ──
+    const existingDeposits: any[] = currentMeta.deposit_requests
       ? JSON.parse(currentMeta.deposit_requests)
       : [];
     existingDeposits.push(depositRequest);
+    currentMeta.deposit_requests = JSON.stringify(existingDeposits);
 
-    // Mettre à jour les metadata
-    const updateRes = await fetch(`${BACKEND}/store/customers/me`, {
+    // ── 3. Si c'est un paiement de commande → enregistrer aussi comme commande en attente ──
+    if (cart_id) {
+      const pendingOrder = {
+        id: `ORD-MANUAL-${Date.now()}`,
+        deposit_id: depositId,
+        reference_code: referenceCode,
+        amount,
+        currency,
+        method,
+        cart_id,
+        cart_items: cart_items || [],
+        customer_id: session.customer_id,
+        status: "awaiting_payment",
+        created_at: now,
+      };
+      const existingPending: any[] = currentMeta.pending_orders
+        ? JSON.parse(currentMeta.pending_orders)
+        : [];
+      existingPending.push(pendingOrder);
+      currentMeta.pending_orders = JSON.stringify(existingPending);
+    }
+
+    // ── 4. Persister via Admin API ──
+    const updateRes = await fetch(`${BACKEND}/admin/customers/${session.customer_id}`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(PUB_KEY && { "x-publishable-api-key": PUB_KEY }),
-        ...(session.access_token && { Authorization: `Bearer ${session.access_token}` }),
-      },
-      body: JSON.stringify({
-        metadata: {
-          ...currentMeta,
-          deposit_requests: JSON.stringify(existingDeposits),
-        },
-      }),
+      headers: adminHeaders,
+      body: JSON.stringify({ metadata: currentMeta }),
     });
 
     if (!updateRes.ok) {
-      console.error("[deposit/request] Medusa update failed");
-      // Non-bloquant : on retourne quand même la demande avec les instructions
+      const errText = await updateRes.text().catch(() => "");
+      console.error("[deposit/request] Medusa update failed:", updateRes.status, errText);
+      return NextResponse.json(
+        { error: "Échec de l'enregistrement du dépôt. Veuillez réessayer." },
+        { status: 502 }
+      );
     }
 
     const instructions = PAYMENT_INSTRUCTIONS[method];
@@ -162,23 +195,19 @@ export async function POST(request: Request) {
   }
 }
 
-/**
- * GET /api/deposit/request
- * Retourne l'historique des dépôts du client connecté.
- */
-export async function GET(request: Request) {
+// ─── GET /api/deposit/request ─────────────────────────────────────────────────
+
+export async function GET(_request: Request) {
   try {
     const session = await auth();
     if (!session?.customer_id) {
       return NextResponse.json({ error: "Authentification requise" }, { status: 401 });
     }
 
-    const getRes = await fetch(`${BACKEND}/store/customers/me`, {
-      headers: {
-        "Content-Type": "application/json",
-        ...(PUB_KEY && { "x-publishable-api-key": PUB_KEY }),
-        ...(session.access_token && { Authorization: `Bearer ${session.access_token}` }),
-      },
+    const adminHeaders = getAdminHeaders();
+
+    const getRes = await fetch(`${BACKEND}/admin/customers/${session.customer_id}`, {
+      headers: adminHeaders,
     });
 
     if (!getRes.ok) {
@@ -188,7 +217,7 @@ export async function GET(request: Request) {
     const getData = await getRes.json();
     const meta = getData.customer?.metadata || {};
 
-    const deposits = meta.deposit_requests ? JSON.parse(meta.deposit_requests) : [];
+    const deposits: any[] = meta.deposit_requests ? JSON.parse(meta.deposit_requests) : [];
     const wallet = meta.wallet ? JSON.parse(meta.wallet) : { balance: 0, currency: "XOF", ledger: [] };
 
     deposits.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());

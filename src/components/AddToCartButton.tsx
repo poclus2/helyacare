@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ShoppingBag, Check } from "lucide-react";
 import { Inter } from "next/font/google";
 import { useCart } from "@/contexts/CartContext";
+import { useLivePrices } from "@/contexts/PricesContext";
 import type { ProductKey } from "@/lib/prices";
 
 const inter = Inter({ subsets: ["latin"], weight: ["600", "700"] });
@@ -17,18 +18,9 @@ interface AddToCartButtonProps {
   price: number;
   className?: string;
   label?: string;
+  /** Passer un variantId explicite (depuis la boutique listing avec données Medusa live) */
+  variantId?: string;
 }
-
-// Variant IDs par produit — à mettre à jour après le seed Medusa
-// Format: { [productKey]: { subscription: variantId, onetime: variantId } }
-const VARIANT_IDS: Record<string, { subscription: string; onetime: string }> = {
-  "crave-control":      { subscription: "crave-control-subscription-v1",      onetime: "crave-control-onetime-v1" },
-  "helya-hydrate":      { subscription: "helya-hydrate-subscription-v1",       onetime: "helya-hydrate-onetime-v1" },
-  "helya-vigor":        { subscription: "helya-vigor-subscription-v1",          onetime: "helya-vigor-onetime-v1" },
-  "apple-satiety-shot": { subscription: "apple-satiety-shot-subscription-v1",  onetime: "apple-satiety-shot-onetime-v1" },
-  "pack-bien-etre":     { subscription: "pack-bien-etre-subscription-v1",      onetime: "pack-bien-etre-onetime-v1" },
-  "helya-perform":      { subscription: "helya-perform-subscription-v1",       onetime: "helya-perform-onetime-v1" },
-};
 
 export default function AddToCartButton({
   productKey,
@@ -39,19 +31,24 @@ export default function AddToCartButton({
   price,
   className = "",
   label = "Commencer Maintenant",
+  variantId: propVariantId,
 }: AddToCartButtonProps) {
   const { addItem } = useCart();
+  const { getVariantId } = useLivePrices();
   const [status, setStatus] = useState<"idle" | "adding" | "added">("idle");
 
   const handleAdd = async () => {
     if (status !== "idle") return;
     setStatus("adding");
 
-    const variantId = VARIANT_IDS[productKey]?.[purchaseType === "subscription" ? "subscription" : "onetime"]
-      || `${productKey}-${purchaseType}-v1`;
+    // Priorité : prop explicite → variant live depuis Medusa → fallback textuel
+    const resolvedVariantId =
+      propVariantId ||
+      getVariantId(productKey) ||
+      `${productKey}-${purchaseType}-v1`;
 
     await addItem({
-      variantId,
+      variantId: resolvedVariantId,
       quantity: 1,
       title,
       subtitle: subtitle || (purchaseType === "subscription" ? "Abonnement mensuel" : "Achat unique"),

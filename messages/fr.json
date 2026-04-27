@@ -49,7 +49,16 @@
     "discoverBtn": "Découvrir",
     "addBtn": "Ajouter au panier",
     "quizText": "Crave Control est-il adapté à vos objectifs ?",
-    "quizBtn": "Faire le test"
+    "quizBtn": "Faire le test",
+    "journalLabel": "Recherche approfondie",
+    "journalTitle1": "Le Journal Scientifique",
+    "journalTitle2": "HelyaCare",
+    "journalDesc": "Explorez notre bibliothèque d'études validées et la méthodologie IA qui propulse chaque formule.",
+    "journalBtn": "Lire l'édition actuelle",
+    "protocolsTitle1": "Protocoles",
+    "protocolsTitle2": "Personnalisés",
+    "protocolsDesc": "Connectez vos données de santé pour recevoir une pile de suppléments générée par l'IA, adaptée à votre biologie unique.",
+    "protocolsBtn": "Faire l'évaluation"
   },
   "Solutions": {
     "title": "Nos Solutions",

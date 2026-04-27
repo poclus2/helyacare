@@ -96,7 +96,14 @@ export default function CheckoutPage() {
             currency: "XOF",
             method: paymentMethod,
             payer_phone: form.phone,
-            notes: `Commande panier ${cart.id?.slice(-8) || ""}`,
+            notes: `Commande panier — ${form.first_name} ${form.last_name}`,
+            cart_id: cart.id || null,
+            cart_items: cart.items?.map((item: any) => ({
+              title: item.title,
+              quantity: item.quantity,
+              unit_price: item.unit_price,
+              variant_id: item.variant_id,
+            })) || [],
           }),
         });
         const data = await res.json();

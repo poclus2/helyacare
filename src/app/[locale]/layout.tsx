@@ -1,27 +1,29 @@
 import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
-import "../globals.css";
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages, setRequestLocale } from "next-intl/server";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { AuthSessionProvider } from "@/contexts/AuthSessionProvider";
 import { CartProvider } from "@/contexts/CartContext";
 import CartDrawer from "@/components/CartDrawer";
+import { PricesProvider } from "@/contexts/PricesContext";
 
-const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
-});
 
 export const metadata: Metadata = {
   title: "Helyacare | L'Excellence de la Santé Numérique",
-  description: "Compléments alimentaires haut de gamme couplés à un suivi santé par Intelligence Artificielle.",
+  description:
+    "Compléments alimentaires haut de gamme couplés à un suivi santé par Intelligence Artificielle.",
 };
 
-export default async function RootLayout({
+/**
+ * Locale layout — gère uniquement les providers contextuels et i18n.
+ *
+ * NE redéfinit PAS <html> ni <body> — ceux-ci viennent de src/app/layout.tsx.
+ * L'attribut lang={locale} est appliqué dynamiquement via le script next-intl
+ * en combinaison avec suppressHydrationWarning du root layout.
+ */
+export default async function LocaleLayout({
   children,
-  params
+  params,
 }: {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
@@ -31,19 +33,17 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={`${poppins.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
-        <NextIntlClientProvider messages={messages}>
-          <AuthSessionProvider>
-            <CurrencyProvider>
-              <CartProvider>
-                {children}
-                <CartDrawer />
-              </CartProvider>
-            </CurrencyProvider>
-          </AuthSessionProvider>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider messages={messages} locale={locale}>
+      <AuthSessionProvider>
+        <CurrencyProvider>
+          <PricesProvider>
+            <CartProvider>
+              {children}
+              <CartDrawer />
+            </CartProvider>
+          </PricesProvider>
+        </CurrencyProvider>
+      </AuthSessionProvider>
+    </NextIntlClientProvider>
   );
 }

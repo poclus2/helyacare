@@ -8,7 +8,7 @@ import { Link } from "@/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useCurrency } from "@/contexts/CurrencyContext";
-import { PRODUCT_PRICES } from "@/lib/prices";
+import { useProductPrice } from "@/contexts/PricesContext";
 import AddToCartButton from "@/components/AddToCartButton";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
@@ -18,7 +18,7 @@ export default function CraveControlPage() {
   const [openFaq, setOpenFaq] = useState<number>(0);
   const [purchaseType, setPurchaseType] = useState<"subscription" | "one-time">("subscription");
   const { formatPrice } = useCurrency();
-  const prices = PRODUCT_PRICES["crave-control"];
+  const prices = useProductPrice("crave-control");
 
   // Placeholder arrays for the image stack
   const images = [

@@ -30,8 +30,12 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files — NE PAS committer les vraies clés
+.env
+.env.local
+.env.development
+# .env.production est un TEMPLATE (sans vraies clés) — OK à committer
+# Pour les vraies valeurs en production, utiliser Railway / GitHub Secrets
 
 # vercel
 .vercel
@@ -39,3 +43,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Images uploadées par l'admin (grande taille, persistées sur Railway Volume)
+public/uploads/*
+!public/uploads/.gitkeep
+
+# Logs Railway/Docker
+*.log

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Inter } from "next/font/google";
-import { Loader2, Search, Package, RefreshCcw, Tag } from "lucide-react";
+import { Loader2, Search, Package, RefreshCcw, Tag, Pencil } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -81,7 +81,7 @@ export default function AdminProduitsPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/5">
-                  {["Produit", "Handle", "Catégorie", "Variantes", "Statut"].map(h => (
+                  {["Produit", "Handle", "Catégorie", "Variantes", "Statut", ""].map(h => (
                     <th key={h} className="text-left px-5 py-3.5 text-white/30 text-[11px] font-bold uppercase tracking-wider">{h}</th>
                   ))}
                 </tr>
@@ -116,6 +116,17 @@ export default function AdminProduitsPage() {
                       }`}>
                         {product.status === "published" ? "Publié" : "Brouillon"}
                       </span>
+                    </td>
+                    <td className="px-4 py-4">
+                      <Link
+                        href={`/admin/produits/${product.id}`}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-[#CBF27A]/10
+                          text-white/40 hover:text-[#CBF27A] border border-white/10 hover:border-[#CBF27A]/30
+                          rounded-lg text-xs font-bold transition-all"
+                      >
+                        <Pencil className="w-3 h-3" />
+                        Modifier
+                      </Link>
                     </td>
                   </tr>
                 ))}

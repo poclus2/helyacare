@@ -49,7 +49,16 @@
     "discoverBtn": "Learn More",
     "addBtn": "Add To Cart",
     "quizText": "Is Crave Control right for you?",
-    "quizBtn": "Take the Quiz"
+    "quizBtn": "Take the Quiz",
+    "journalLabel": "In-Depth Research",
+    "journalTitle1": "The HelyaCare",
+    "journalTitle2": "Scientific Journal",
+    "journalDesc": "Explore our library of validated studies and the AI methodology that powers every formula.",
+    "journalBtn": "Read the current edition",
+    "protocolsTitle1": "Personalized",
+    "protocolsTitle2": "Protocols",
+    "protocolsDesc": "Connect your health data to receive an AI-generated supplement stack, tailored to your unique biology.",
+    "protocolsBtn": "Take the Assessment"
   },
   "Solutions": {
     "title": "Our Solutions",

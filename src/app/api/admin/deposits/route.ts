@@ -33,10 +33,12 @@ const MEDUSA_HEADERS = {
 };
 
 async function getCustomer(customerId: string) {
+  const API_KEY = process.env.MEDUSA_API_KEY || "";
   const res = await fetch(`${BACKEND}/admin/customers/${customerId}`, {
     headers: {
       ...MEDUSA_HEADERS,
-      Authorization: `Bearer ${process.env.MEDUSA_API_KEY || ""}`,
+      // Medusa v2 : Basic auth (clé = username, mot de passe vide)
+      Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}`,
     },
   });
   if (!res.ok) return null;
@@ -45,11 +47,13 @@ async function getCustomer(customerId: string) {
 }
 
 async function updateCustomerMeta(customerId: string, metadata: Record<string, string>) {
+  const API_KEY = process.env.MEDUSA_API_KEY || "";
   return fetch(`${BACKEND}/admin/customers/${customerId}`, {
     method: "POST",
     headers: {
       ...MEDUSA_HEADERS,
-      Authorization: `Bearer ${process.env.MEDUSA_API_KEY || ""}`,
+      // Medusa v2 : Basic auth (clé = username, mot de passe vide)
+      Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}`,
     },
     body: JSON.stringify({ metadata }),
   });
@@ -68,10 +72,11 @@ export async function GET(request: Request) {
 
   try {
     // Récupérer tous les clients (paginated)
+    const API_KEY = process.env.MEDUSA_API_KEY || "";
     const res = await fetch(`${BACKEND}/admin/customers?limit=500`, {
       headers: {
         ...MEDUSA_HEADERS,
-        Authorization: `Bearer ${process.env.MEDUSA_API_KEY || ""}`,
+        Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}`,
       },
     });
 
