@@ -8,8 +8,10 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 
 # Installer les dépendances
+# npm install plutôt que npm ci : évite les conflits de lockfileVersion
+# entre npm 11 (local) et le npm embarqué dans node:22-alpine
 COPY package.json package-lock.json ./
-RUN npm install -g npm@latest --quiet && npm ci
+RUN npm install --ignore-scripts
 
 # Copier le code source
 COPY . .
