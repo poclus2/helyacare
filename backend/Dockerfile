@@ -14,6 +14,9 @@ COPY . .
 
 # Build Medusa — génère .medusa/server
 RUN npm run build
+# Workaround: copier le dashboard admin vers public/admin car medusa start
+# le cherche à cet emplacement (chemin relatif à la racine du projet).
+RUN mkdir -p public && cp -r .medusa/server/public/admin public/admin || true
 
 # Exposer le port
 EXPOSE 9000
