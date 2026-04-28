@@ -11,6 +11,7 @@ import {
   AtSign, Smartphone
 } from "lucide-react";
 import { Link } from "@/navigation";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700", "800", "900"] });
@@ -23,14 +24,14 @@ export default function AmbassadeurPage() {
   const [pwError, setPwError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
     const ref = searchParams.get("ref");
     if (ref) {
       setForm(prev => ({ ...prev, referralCode: ref }));
     }
-  }, []);
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
