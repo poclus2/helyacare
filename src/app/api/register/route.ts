@@ -60,10 +60,9 @@ export async function POST(request: Request) {
     // 3. If registering as ambassador, create Ambassador + Wallet records in MLM module
     if (role === "ambassadeur" && customerId) {
       try {
-        // Generate referral code: HELYA-FIRSTNAMEL format
-        const generatedCode = referral_code 
-          ? referral_code.toUpperCase() 
-          : `HELYA-${(first_name || "AMB").toUpperCase()}${(last_name || "").charAt(0).toUpperCase()}`;
+        // Generate referral code: HL-XXXXXX format (alphanumeric)
+        const randomChars = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const generatedCode = `HL-${randomChars}`;
 
         await fetch(`${backendUrl}/store/ambassadors`, {
           method: "POST",
