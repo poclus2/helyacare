@@ -8,6 +8,7 @@ export async function POST(request: Request) {
 
     const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "";
+    console.log("[Register] Using Publishable Key of length:", publishableKey.length);
 
     // 1. Register Auth Identity
     const authRes = await fetch(`${backendUrl}/auth/customer/emailpass/register`, {
