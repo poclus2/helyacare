@@ -21,6 +21,6 @@ RUN mkdir -p public && cp -r .medusa/server/public/admin public/admin || true
 # Exposer le port
 EXPOSE 9000
 
-# Migrations + démarrage
-CMD ["sh", "-c", "npx medusa db:migrate && npm run start"]
+# Migrations + Création Admin + démarrage
+CMD ["sh", "-c", "npx medusa db:migrate && npx medusa user -e admin@helyacare.com -p 'HelyaCare2026!' || true && npm run start"]
 
