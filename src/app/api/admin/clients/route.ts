@@ -20,7 +20,7 @@ async function verifyAdmin(request: Request) {
 const adminHeaders = {
   "Content-Type": "application/json",
   // Medusa v2 : les clés API s'authentifient en Basic (clé = username, mot de passe vide)
-  ...(API_KEY && { Authorization: `Bearer ${API_KEY}` }),
+  ...(API_KEY && { Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}` }),
 };
 
 export async function GET(request: Request) {
