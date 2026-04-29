@@ -24,9 +24,9 @@ export default function ExperiencePage() {
 
   const doctorImages = [
     "/images/experience/experience_dr_1_1776847915055.png",
-    "/images/experience/experience_dr_2_1776847933658.png",
-    "/images/experience/experience_dr_3_1776847948772.png",
     "/images/experience/experience_dr_4_1776847975915.png",
+    "/images/experience/experience_dr_3_1776847948772.png",
+    "/images/experience/experience_dr_2_1776847933658.png",
   ];
 
   const researchImages = [

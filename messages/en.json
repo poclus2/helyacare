@@ -168,7 +168,7 @@
     "experts": {
       "title": "Recommended by our experts",
       "doctors": [
-        { "name": "Dr Akim Njimogna", "role": "Endocrinologist", "quote": "A revolutionary approach to glycemic management." },
+        { "name": "Dr Akim Njimogna", "role": "Consulting Physician", "quote": "A revolutionary approach to glycemic management." },
         { "name": "Dr. Sarah Ndiaye", "role": "Clinical Nutritionist", "quote": "AI brings the precision that supplementation was missing." },
         { "name": "Prof. Marc Leblanc", "role": "Research Director", "quote": "The collected data validates the effectiveness of the formulas." },
         { "name": "Dr. Elena Rossi", "role": "Longevity Expert", "quote": "A perfect synergy between nature and technology." }
