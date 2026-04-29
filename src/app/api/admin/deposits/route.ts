@@ -38,7 +38,7 @@ async function getCustomer(customerId: string) {
     headers: {
       ...MEDUSA_HEADERS,
       // Medusa v2 : Basic auth (clé = username, mot de passe vide)
-      Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}`,
+      Authorization: `Bearer ${API_KEY}`,
     },
   });
   if (!res.ok) return null;
@@ -53,7 +53,7 @@ async function updateCustomerMeta(customerId: string, metadata: Record<string, s
     headers: {
       ...MEDUSA_HEADERS,
       // Medusa v2 : Basic auth (clé = username, mot de passe vide)
-      Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}`,
+      Authorization: `Bearer ${API_KEY}`,
     },
     body: JSON.stringify({ metadata }),
   });
@@ -76,7 +76,7 @@ export async function GET(request: Request) {
     const res = await fetch(`${BACKEND}/admin/customers?limit=500`, {
       headers: {
         ...MEDUSA_HEADERS,
-        Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}`,
+        Authorization: `Bearer ${API_KEY}`,
       },
     });
 

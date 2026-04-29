@@ -55,7 +55,7 @@ function getAdminHeaders() {
   const API_KEY = process.env.MEDUSA_API_KEY || "";
   return {
     "Content-Type": "application/json",
-    Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}`,
+    Authorization: `Bearer ${API_KEY}`,
   };
 }
 
