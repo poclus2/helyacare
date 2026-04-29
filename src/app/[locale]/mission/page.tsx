@@ -17,19 +17,30 @@ export default async function MissionPage() {
       <Header />
       <main className={`text-gray-900 ${pjs.className}`}>
 
-        {/* ── 1. HERO TYPOGRAPHIQUE */}
-        <section className="bg-[#F2F0EB] pt-24 md:pt-36 pb-32 px-6 text-center relative overflow-hidden">
-          <div className="relative z-10 max-w-5xl mx-auto">
-            <p className="text-[11px] font-bold text-[#0F3D3E]/40 uppercase tracking-[0.25em] mb-10">
+        {/* ── 1. HERO (STYLE BOUTIQUE) */}
+        <section className="relative min-h-[80vh] flex flex-col justify-end pt-32 pb-12 px-6 md:px-10 overflow-hidden">
+          {/* Image de fond */}
+          <div className="absolute inset-0 z-0">
+            <img 
+              src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?q=80&w=2038&auto=format&fit=crop" 
+              alt="Mission Hero" 
+              className="w-full h-full object-cover object-top"
+            />
+            {/* Overlay gradient similaire à boutique */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/20 to-black/40" />
+          </div>
+
+          {/* Contenu */}
+          <div className="relative z-10 w-full max-w-[1300px] mx-auto pb-5">
+            <p className="text-[11px] font-bold text-[#CBF27A] uppercase tracking-[0.25em] mb-4">
               {t("hero.eyebrow")}
             </p>
-            <h1 className={`text-5xl md:text-7xl lg:text-[6rem] font-black text-[#0F3D3E] tracking-tight leading-[1.0] mb-8 ${inter.className}`}>
+            <h1 className={`text-white text-4xl md:text-5xl lg:text-[46px] font-medium leading-[1.1] mb-6 max-w-[600px] tracking-[-0.5px] ${inter.className}`}>
               {t("hero.title1")}<br />{t("hero.title2")}
             </h1>
-            <p className={`text-lg md:text-xl text-[#0F3D3E]/55 font-light max-w-2xl mx-auto leading-relaxed`}>
-              Helyacare est né d&apos;une conviction&nbsp;: la nature possède les codes,<br className="hidden md:block" /> la science possède les clés.
+            <p className="text-white/90 text-[15px] md:text-base font-light max-w-xl leading-relaxed mb-6">
+              Helyacare est né d&apos;une conviction&nbsp;: la nature possède les codes, la science possède les clés.
             </p>
-            <div className="w-16 h-px bg-[#0F3D3E]/15 mx-auto mt-16" />
           </div>
         </section>
 
