@@ -18,7 +18,7 @@ export default async function MissionPage() {
       <main className={`text-gray-900 ${pjs.className}`}>
 
         {/* ── 1. HERO (STYLE BOUTIQUE) */}
-        <section className="relative min-h-[80vh] flex flex-col justify-end pt-32 pb-12 px-6 md:px-10 overflow-hidden">
+        <section className="relative min-h-[40vh] flex flex-col justify-end pt-24 pb-8 px-6 md:px-10 overflow-hidden">
           {/* Image de fond */}
           <div className="absolute inset-0 z-0">
             <img 
