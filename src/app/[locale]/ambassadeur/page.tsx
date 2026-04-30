@@ -524,14 +524,13 @@ export default function AmbassadeurPage() {
                   {/* Code de parrainage */}
                   <div className="flex flex-col gap-1.5">
                     <label className="text-white/60 text-xs font-semibold uppercase tracking-widest flex items-center gap-2">
-                      Code de parrainage
-                      <span className="text-white/30 normal-case font-normal tracking-normal">— si vous avez été invité</span>
+                      Code de parrainage *
                     </label>
                     <input
-                      type="text"
+                      type="text" required
                       value={form.referralCode}
                       onChange={e => setForm({ ...form, referralCode: e.target.value })}
-                      placeholder="Ex : HC-AMINATA2024"
+                      placeholder="Ex : HL-XXXXXX"
                       className="bg-white/5 text-white placeholder:text-white/30 border border-white/20 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-[#CBF27A]/50 focus:ring-1 focus:ring-[#CBF27A]/30 focus:bg-white/10 transition-all duration-200 font-mono"
                     />
                   </div>
