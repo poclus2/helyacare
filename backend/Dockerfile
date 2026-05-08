@@ -3,15 +3,13 @@
 # ──────────────────────────────────────────────────────────────────
 # syntax=docker/dockerfile:1
 
-FROM node:22-slim
+FROM node:22-alpine
 WORKDIR /app
 
 # Installer les dépendances
-# NOTE: pas de build tools (python3/make/g++) — les paquets natifs (@swc/core, bcrypt)
-# téléchargent des binaires pré-compilés ce qui est BEAUCOUP plus rapide.
-# Le cache mount /root/.npm évite de re-télécharger entre les builds.
+# --ignore-scripts évite les postinstall natifs (@swc/core, bcrypt) qui sont très lents.
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm install --ignore-scripts
 
 # Copier le code source
 COPY . .
