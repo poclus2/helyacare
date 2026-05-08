@@ -13,7 +13,13 @@ export async function GET(
     const ambassadors = await mlmService.listAmbassadors({
       customer_id: customerId
     }, {
-      relations: ["wallet", "wallet.transactions", "downlines"]
+      relations: [
+        "wallet", 
+        "wallet.transactions", 
+        "downlines",
+        "downlines.downlines",
+        "downlines.downlines.downlines"
+      ]
     })
 
     if (!ambassadors || ambassadors.length === 0) {
@@ -34,14 +40,40 @@ export async function GET(
       .filter((t: any) => t.status === "paid")
       .reduce((sum: number, t: any) => sum + (t.amount || 0), 0)
 
+    // Flatten downlines
+    const flatDownlines: any[] = []
+    
+    const processDownlines = (dls: any[], level: number) => {
+      if (!dls || !Array.isArray(dls)) return;
+      for (const d of dls) {
+        flatDownlines.push({
+          id: d.id,
+          customer_id: d.customer_id,
+          referral_code: d.referral_code,
+          created_at: d.created_at,
+          level
+        })
+        if (d.downlines && d.downlines.length > 0 && level < 3) {
+          processDownlines(d.downlines, level + 1)
+        }
+      }
+    }
+
+    processDownlines((ambassador as any).downlines, 1)
+
+    const ambassadorData = {
+      ...ambassador,
+      downlines: flatDownlines
+    }
+
     return res.json({
-      ambassador,
+      ambassador: ambassadorData,
       stats: {
         available_balance: availableBalance,
         pending_balance: pendingBalance,
         paid_out: paidOut,
         total_transactions: transactions.length,
-        downline_count: (ambassador as any).downlines?.length || 0,
+        downline_count: flatDownlines.length,
       }
     })
   } catch (error) {

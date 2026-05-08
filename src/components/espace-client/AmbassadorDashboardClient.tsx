@@ -22,6 +22,7 @@ interface Downline {
   customer_id: string;
   referral_code: string;
   created_at?: string;
+  level?: number;
 }
 
 interface Stats {
@@ -91,9 +92,10 @@ export default function AmbassadorDashboardClient({
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"transactions" | "reseau">("transactions");
 
-  const downlineCount = downlines.length;
-  const grade = getGrade(downlineCount);
-  const progressPct = grade.nextAt ? Math.min((downlineCount / grade.nextAt) * 100, 100) : 100;
+  const directDownlineCount = downlines.filter(d => !d.level || d.level === 1).length;
+  const totalDownlineCount = downlines.length;
+  const grade = getGrade(directDownlineCount);
+  const progressPct = grade.nextAt ? Math.min((directDownlineCount / grade.nextAt) * 100, 100) : 100;
 
   const availableBalance = stats?.available_balance ?? 0;
   const pendingBalance = stats?.pending_balance ?? 0;
@@ -155,7 +157,7 @@ export default function AmbassadorDashboardClient({
         {/* Filleuls */}
         <div className="bg-white border border-[#E8E3DC] rounded-2xl p-5 shadow-sm">
           <p className="text-gray-500 text-xs font-semibold uppercase tracking-widest mb-2">Filleuls</p>
-          <p className={`text-2xl font-black text-[#0F3D3E] ${inter}`}>{downlineCount}</p>
+          <p className={`text-2xl font-black text-[#0F3D3E] ${inter}`}>{directDownlineCount}</p>
           <p className="text-gray-400 text-[11px] mt-1">Ligne de front directe</p>
         </div>
       </div>
@@ -177,8 +179,8 @@ export default function AmbassadorDashboardClient({
               </div>
             </div>
             <div className="text-right">
-              <p className="text-xs text-gray-400">Filleuls</p>
-              <p className={`text-2xl font-black text-[#0F3D3E] ${inter}`}>{downlineCount}</p>
+              <p className="text-xs text-gray-400">Filleuls directs</p>
+              <p className={`text-2xl font-black text-[#0F3D3E] ${inter}`}>{directDownlineCount}</p>
             </div>
           </div>
 
@@ -186,7 +188,7 @@ export default function AmbassadorDashboardClient({
             <div>
               <div className="flex justify-between text-xs text-gray-500 mb-2">
                 <span>Progression vers <strong className="text-[#0F3D3E]">{grade.next}</strong></span>
-                <span>{downlineCount} / {grade.nextAt} filleuls</span>
+                <span>{directDownlineCount} / {grade.nextAt} filleuls</span>
               </div>
               <div className="w-full h-2.5 bg-[#F2F0EB] rounded-full overflow-hidden">
                 <div
@@ -195,7 +197,7 @@ export default function AmbassadorDashboardClient({
                 />
               </div>
               <p className="text-[11px] text-gray-400 mt-2">
-                {grade.nextAt - downlineCount} filleul{grade.nextAt - downlineCount > 1 ? "s" : ""} supplémentaire{grade.nextAt - downlineCount > 1 ? "s" : ""} pour atteindre {grade.next}
+                {grade.nextAt - directDownlineCount} filleul{grade.nextAt - directDownlineCount > 1 ? "s" : ""} supplémentaire{grade.nextAt - directDownlineCount > 1 ? "s" : ""} pour atteindre {grade.next}
               </p>
             </div>
           )}
@@ -301,9 +303,9 @@ export default function AmbassadorDashboardClient({
           >
             <Users className="w-4 h-4" />
             Mon Réseau
-            {downlineCount > 0 && (
+            {totalDownlineCount > 0 && (
               <span className="ml-1 px-2 py-0.5 bg-[#F2F0EB] text-[#0F3D3E] text-[10px] font-bold rounded-full">
-                {downlineCount}
+                {totalDownlineCount}
               </span>
             )}
           </button>
@@ -405,7 +407,9 @@ export default function AmbassadorDashboardClient({
                         </div>
                         <div>
                           <p className="text-sm font-bold text-[#0F3D3E] font-mono">{dl.referral_code}</p>
-                          <p className="text-[11px] text-gray-400">Ligne de front</p>
+                          <p className="text-[11px] text-gray-400">
+                            {!dl.level || dl.level === 1 ? "Ligne de front" : `Niveau ${dl.level}`}
+                          </p>
                         </div>
                       </div>
                       <p className="text-sm text-gray-500 text-center">{formatDate((dl as any).created_at)}</p>
@@ -419,7 +423,7 @@ export default function AmbassadorDashboardClient({
                 </div>
                 <div className="px-6 py-4 border-t border-[#E8E3DC] flex items-center justify-between">
                   <p className="text-sm text-gray-500">
-                    <strong className="text-[#0F3D3E]">{downlineCount}</strong> filleul{downlineCount > 1 ? "s" : ""} dans votre équipe directe
+                    <strong className="text-[#0F3D3E]">{totalDownlineCount}</strong> filleul{totalDownlineCount > 1 ? "s" : ""} dans votre réseau complet
                   </p>
                   <div className="flex items-center gap-1.5 text-xs text-[#E56B2D] font-semibold cursor-pointer hover:underline">
                     <Layers className="w-3.5 h-3.5" />
