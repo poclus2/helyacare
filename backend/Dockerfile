@@ -11,7 +11,7 @@ WORKDIR /app
 # téléchargent des binaires pré-compilés ce qui est BEAUCOUP plus rapide.
 # Le cache mount /root/.npm évite de re-télécharger entre les builds.
 COPY package.json package-lock.json ./
-RUN --mount=type=cache,target=/root/.npm \
+RUN --mount=type=cache,id=npm-cache,target=/root/.npm \
     npm install
 
 # Copier le code source
