@@ -5,6 +5,9 @@
 FROM node:22-slim
 WORKDIR /app
 
+# Installer les dépendances système pour compiler les modules natifs (bcrypt, swc, etc.)
+RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
+
 # Installer les dépendances
 COPY package.json package-lock.json ./
 RUN npm install
