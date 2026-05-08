@@ -2,7 +2,7 @@
 # HelyaCare — Backend Dockerfile (Medusa v2)
 # ──────────────────────────────────────────────────────────────────
 
-FROM node:22-alpine
+FROM node:22-slim
 WORKDIR /app
 
 # Installer les dépendances
