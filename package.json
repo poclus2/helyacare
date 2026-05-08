@@ -10,6 +10,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@swc/helpers": "^0.5.21",
     "jose": "^6.2.2",
     "lucide-react": "^1.8.0",
     "next": "16.2.3",
