@@ -1,14 +1,14 @@
 # Railway configuration for Medusa Backend
-# Utilise un Dockerfile custom plutôt que Nixpacks
-# Raison : Nixpacks écrase .medusa/ avec un COPY final (gitignored)
-# causant "Could not find index.html in the admin build directory"
+# Nixpacks : cache npm natif Railway = pas de timeout
+# --no-admin : évite la compilation Vite/React du dashboard (trop lente)
+# --ignore-scripts : évite les postinstall natifs lents (@swc/core, bcrypt)
 
 [build]
-builder = "DOCKERFILE"
-dockerfilePath = "backend/Dockerfile"
+builder = "NIXPACKS"
+buildCommand = "npm install --ignore-scripts && npx medusa build --no-admin"
 
 [deploy]
-# Les migrations sont dans le CMD du Dockerfile
+startCommand = "npx medusa db:migrate && (npx medusa user -e admin@helyacare.com -p 'HelyaCare2026!' || true) && npm run start"
 healthcheckPath = "/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
