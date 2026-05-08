@@ -7,7 +7,7 @@ WORKDIR /app
 
 # Installer les dépendances
 COPY package.json package-lock.json ./
-RUN npm install --ignore-scripts
+RUN npm install
 
 # Copier le code source
 COPY . .
