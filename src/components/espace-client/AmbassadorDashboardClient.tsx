@@ -389,49 +389,122 @@ export default function AmbassadorDashboardClient({
                   {copied ? "Lien copié !" : "Copier mon lien d'invitation"}
                 </button>
               </div>
-            ) : (
-              <div>
-                <div className="px-6 py-3 bg-[#F8FAFC] border-b border-[#E8E3DC] text-xs font-semibold text-gray-500 uppercase tracking-widest grid grid-cols-3">
-                  <span>Code Ambassadeur</span>
-                  <span className="text-center">Rejoint le</span>
-                  <span className="text-right">Statut</span>
-                </div>
-                <div className="divide-y divide-[#F2F0EB]">
-                  {downlines.map((dl) => (
-                    <div key={dl.id} className="px-6 py-4 grid grid-cols-3 items-center hover:bg-[#FAFAF9] transition-colors">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 bg-[#F2F0EB] rounded-full flex items-center justify-center">
-                          <span className="text-sm font-bold text-[#0F3D3E]">
-                            {dl.referral_code?.charAt(6) ?? "A"}
-                          </span>
+            ) : (() => {
+              const levelConfig = [
+                {
+                  level: 1,
+                  label: "Niveau 1 — Filleuls directs",
+                  commission: "10%",
+                  borderColor: "border-l-[#0F3D3E]",
+                  avatarBg: "bg-[#0F3D3E]",
+                  badgeBg: "bg-[#0F3D3E]/10",
+                  badgeText: "text-[#0F3D3E]",
+                  headerBg: "bg-[#0F3D3E]/5",
+                  headerText: "text-[#0F3D3E]",
+                  dot: "bg-[#0F3D3E]",
+                  sublabel: "Ligne de front",
+                },
+                {
+                  level: 2,
+                  label: "Niveau 2 — Filleuls de filleuls",
+                  commission: "5%",
+                  borderColor: "border-l-[#E56B2D]",
+                  avatarBg: "bg-[#E56B2D]",
+                  badgeBg: "bg-[#E56B2D]/10",
+                  badgeText: "text-[#E56B2D]",
+                  headerBg: "bg-[#E56B2D]/5",
+                  headerText: "text-[#E56B2D]",
+                  dot: "bg-[#E56B2D]",
+                  sublabel: "2ème génération",
+                },
+                {
+                  level: 3,
+                  label: "Niveau 3 — 3ème génération",
+                  commission: "2%",
+                  borderColor: "border-l-[#7C3AED]",
+                  avatarBg: "bg-[#7C3AED]",
+                  badgeBg: "bg-[#7C3AED]/10",
+                  badgeText: "text-[#7C3AED]",
+                  headerBg: "bg-[#7C3AED]/5",
+                  headerText: "text-[#7C3AED]",
+                  dot: "bg-[#7C3AED]",
+                  sublabel: "3ème génération",
+                },
+              ];
+              return (
+                <div>
+                  {levelConfig.map(({ level, label, commission, borderColor, avatarBg, badgeBg, badgeText, headerBg, headerText, dot, sublabel }) => {
+                    const group = downlines.filter(d => (d.level ?? 1) === level);
+                    if (group.length === 0) return null;
+                    return (
+                      <div key={level} className="border-b border-[#F2F0EB] last:border-b-0">
+                        {/* Section header */}
+                        <div className={`px-6 py-3 ${headerBg} flex items-center justify-between`}>
+                          <div className="flex items-center gap-2.5">
+                            <span className={`w-2.5 h-2.5 rounded-full ${dot}`} />
+                            <span className={`text-xs font-bold uppercase tracking-widest ${headerText}`}>
+                              {label}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${badgeBg} ${badgeText}`}>
+                              {commission} de commission
+                            </span>
+                            <span className="text-[11px] font-semibold text-gray-400">
+                              {group.length} filleul{group.length > 1 ? "s" : ""}
+                            </span>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm font-bold text-[#0F3D3E] font-mono">{dl.referral_code}</p>
-                          <p className="text-[11px] text-gray-400">
-                            {!dl.level || dl.level === 1 ? "Ligne de front" : `Niveau ${dl.level}`}
-                          </p>
+                        {/* Rows */}
+                        <div className="divide-y divide-[#F2F0EB]">
+                          {group.map((dl) => (
+                            <div
+                              key={dl.id}
+                              className={`px-6 py-4 grid grid-cols-3 items-center hover:bg-[#FAFAF9] transition-colors border-l-4 ${borderColor}`}
+                            >
+                              <div className="flex items-center gap-3">
+                                <div className={`w-9 h-9 ${avatarBg} rounded-full flex items-center justify-center shrink-0`}>
+                                  <span className="text-sm font-bold text-white">
+                                    {dl.referral_code?.charAt(3)?.toUpperCase() ?? "A"}
+                                  </span>
+                                </div>
+                                <div>
+                                  <p className="text-sm font-bold text-[#0F3D3E] font-mono">{dl.referral_code}</p>
+                                  <p className={`text-[11px] font-semibold ${badgeText}`}>{sublabel}</p>
+                                </div>
+                              </div>
+                              <p className="text-sm text-gray-500 text-center">{formatDate((dl as any).created_at)}</p>
+                              <div className="flex justify-end">
+                                <span className="px-2.5 py-1 bg-green-50 text-green-600 border border-green-200 text-[11px] font-bold rounded-full">Actif</span>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                      <p className="text-sm text-gray-500 text-center">{formatDate((dl as any).created_at)}</p>
-                      <div className="flex justify-end">
-                        <span className="px-2.5 py-1 bg-green-50 text-green-600 border border-green-200 text-[11px] font-bold rounded-full">
-                          Actif
-                        </span>
-                      </div>
+                    );
+                  })}
+                  {/* Footer */}
+                  <div className="px-6 py-4 bg-[#F8FAFC] flex items-center justify-between flex-wrap gap-3">
+                    <p className="text-sm text-gray-500">
+                      <strong className="text-[#0F3D3E]">{totalDownlineCount}</strong> filleul{totalDownlineCount > 1 ? "s" : ""} dans votre réseau complet
+                    </p>
+                    <div className="flex items-center gap-4">
+                      {[
+                        { color: "bg-[#0F3D3E]", label: `Niv.1`, count: downlines.filter(d => (d.level ?? 1) === 1).length },
+                        { color: "bg-[#E56B2D]", label: `Niv.2`, count: downlines.filter(d => d.level === 2).length },
+                        { color: "bg-[#7C3AED]", label: `Niv.3`, count: downlines.filter(d => d.level === 3).length },
+                      ].map(({ color, label, count }) => (
+                        <div key={label} className="flex items-center gap-1.5 text-xs text-gray-500">
+                          <span className={`w-2 h-2 rounded-full ${color}`} />
+                          <span className="font-semibold">{label}</span>
+                          <span className="font-bold text-[#0F3D3E]">{count}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                <div className="px-6 py-4 border-t border-[#E8E3DC] flex items-center justify-between">
-                  <p className="text-sm text-gray-500">
-                    <strong className="text-[#0F3D3E]">{totalDownlineCount}</strong> filleul{totalDownlineCount > 1 ? "s" : ""} dans votre réseau complet
-                  </p>
-                  <div className="flex items-center gap-1.5 text-xs text-[#E56B2D] font-semibold cursor-pointer hover:underline">
-                    <Layers className="w-3.5 h-3.5" />
-                    Arbre complet (bientôt)
                   </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
           </div>
         )}
       </div>
