@@ -10,17 +10,12 @@ export async function GET(
   const mlmService: MlmModuleService = req.scope.resolve(MLM_MODULE)
 
   try {
-    const ambassadors = await mlmService.listAmbassadors({
-      customer_id: customerId
-    }, {
-      relations: [
-        "wallet", 
-        "wallet.transactions", 
-        "downlines",
-        "downlines.downlines",
-        "downlines.downlines.downlines"
-      ]
-    })
+    // Fetch the ambassador (sans relations imbriquées — MikroORM ne charge pas
+    // fiablement les self-ref récursifs avec downlines.downlines)
+    const ambassadors = await mlmService.listAmbassadors(
+      { customer_id: customerId },
+      { relations: ["wallet", "wallet.transactions"] }
+    )
 
     if (!ambassadors || ambassadors.length === 0) {
       return res.status(404).json({ message: "Customer is not an ambassador" })
@@ -28,7 +23,60 @@ export async function GET(
 
     const ambassador = ambassadors[0]
 
-    // Calculate commission stats from ledger
+    // ── 3 requêtes séquentielles pour construire l'arbre MLM ─────────────────
+    // Niveau 1 : filleuls directs
+    const level1 = await mlmService.listAmbassadors(
+      { sponsor: ambassador.id } as any,
+      { select: ["id", "customer_id", "referral_code", "created_at"] }
+    )
+
+    const flatDownlines: any[] = level1.map(d => ({
+      id: d.id,
+      customer_id: d.customer_id,
+      referral_code: d.referral_code,
+      created_at: (d as any).created_at,
+      level: 1,
+    }))
+
+    // Niveau 2 : filleuls des filleuls
+    if (level1.length > 0) {
+      const level1Ids = level1.map(d => d.id)
+      const level2 = await mlmService.listAmbassadors(
+        { sponsor: level1Ids } as any,
+        { select: ["id", "customer_id", "referral_code", "created_at"] }
+      )
+
+      for (const d of level2) {
+        flatDownlines.push({
+          id: d.id,
+          customer_id: d.customer_id,
+          referral_code: d.referral_code,
+          created_at: (d as any).created_at,
+          level: 2,
+        })
+      }
+
+      // Niveau 3 : 3ème génération
+      if (level2.length > 0) {
+        const level2Ids = level2.map(d => d.id)
+        const level3 = await mlmService.listAmbassadors(
+          { sponsor: level2Ids } as any,
+          { select: ["id", "customer_id", "referral_code", "created_at"] }
+        )
+
+        for (const d of level3) {
+          flatDownlines.push({
+            id: d.id,
+            customer_id: d.customer_id,
+            referral_code: d.referral_code,
+            created_at: (d as any).created_at,
+            level: 3,
+          })
+        }
+      }
+    }
+
+    // ── Stats depuis le ledger ────────────────────────────────────────────────
     const transactions = (ambassador as any).wallet?.transactions || []
     const availableBalance = transactions
       .filter((t: any) => t.status === "available")
@@ -40,30 +88,9 @@ export async function GET(
       .filter((t: any) => t.status === "paid")
       .reduce((sum: number, t: any) => sum + (t.amount || 0), 0)
 
-    // Flatten downlines
-    const flatDownlines: any[] = []
-    
-    const processDownlines = (dls: any[], level: number) => {
-      if (!dls || !Array.isArray(dls)) return;
-      for (const d of dls) {
-        flatDownlines.push({
-          id: d.id,
-          customer_id: d.customer_id,
-          referral_code: d.referral_code,
-          created_at: d.created_at,
-          level
-        })
-        if (d.downlines && d.downlines.length > 0 && level < 3) {
-          processDownlines(d.downlines, level + 1)
-        }
-      }
-    }
-
-    processDownlines((ambassador as any).downlines, 1)
-
     const ambassadorData = {
       ...ambassador,
-      downlines: flatDownlines
+      downlines: flatDownlines,
     }
 
     return res.json({
@@ -74,7 +101,7 @@ export async function GET(
         paid_out: paidOut,
         total_transactions: transactions.length,
         downline_count: flatDownlines.length,
-      }
+      },
     })
   } catch (error) {
     return res.status(500).json({ message: "Internal server error", error: error.message })
