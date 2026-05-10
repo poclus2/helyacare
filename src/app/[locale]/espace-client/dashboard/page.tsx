@@ -95,6 +95,7 @@ export default async function AmbassadorDashboardPage() {
       stats={stats}
       inter={inter.className}
       pjs={pjs.className}
+      ambassadorId={ambassador?.id || ""}
     />
   );
 }
