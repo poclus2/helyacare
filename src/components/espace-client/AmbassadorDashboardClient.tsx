@@ -105,7 +105,7 @@ function buildTree(downlines: Downline[], rootId: string): TreeNode[] {
   return rec(rootId);
 }
 
-const NW = 130, NH = 78, HGAP = 20, VGAP = 70, PAD = 40;
+const NW = 110, NH = 92, HGAP = 16, VGAP = 48, PAD = 40;
 
 function subtreeWidth(node: TreeNode): number {
   if (!node.children.length) return NW + HGAP;
@@ -136,11 +136,12 @@ function collectAllNodes(node: TreeNode, out: TreeNode[] = []) {
   out.push(node); node.children.forEach(c => collectAllNodes(c, out)); return out;
 }
 
-const LCFG: Record<number, { bg: string; border: string; text: string; codeBg: string; codeText: string; dot: string }> = {
-  0: { bg: '#0F3D3E', border: '#0F3D3E', text: '#fff', codeBg: 'rgba(255,255,255,0.2)', codeText: '#fff', dot: '#0F3D3E' },
-  1: { bg: '#E8F4F4', border: '#0F3D3E', text: '#0F3D3E', codeBg: 'rgba(15,61,62,0.1)', codeText: '#0F3D3E', dot: '#0F3D3E' },
-  2: { bg: '#FEF3EC', border: '#E56B2D', text: '#C4511F', codeBg: 'rgba(229,107,45,0.12)', codeText: '#C4511F', dot: '#E56B2D' },
-  3: { bg: '#F5F0FF', border: '#7C3AED', text: '#5B21B6', codeBg: 'rgba(124,58,237,0.12)', codeText: '#5B21B6', dot: '#7C3AED' },
+const LCFG: Record<number, { color: string }> = {
+  0: { color: '#85929E' }, // Gray for root
+  1: { color: '#5DADE2' }, // Blue
+  2: { color: '#58D68D' }, // Green
+  3: { color: '#F1948A' }, // Red
+  4: { color: '#F4D03F' }, // Yellow
 };
 
 function OrgChartModal({
@@ -173,14 +174,29 @@ function OrgChartModal({
     if (!p) return;
     const px = p.x + NW / 2;
     const py = p.y + NH;
+    if (!node.children.length) return;
+    
+    const my = py + VGAP / 2;
+    const color = '#CBD5E1'; // Filae subtle gray connecting lines
+    
+    edges.push({ d: `M${px},${py} L${px},${my}`, color });
+    
+    const firstChild = node.children[0];
+    const lastChild = node.children[node.children.length - 1];
+    const fp = pos.get(firstChild.id);
+    const lp = pos.get(lastChild.id);
+    if (fp && lp) {
+      const fx = fp.x + NW / 2;
+      const lx = lp.x + NW / 2;
+      edges.push({ d: `M${fx},${my} L${lx},${my}`, color });
+    }
+    
     for (const child of node.children) {
       const cp = pos.get(child.id);
       if (!cp) continue;
       const cx = cp.x + NW / 2;
       const cy = cp.y;
-      const my = (py + cy) / 2;
-      const color = LCFG[child.level ?? 1]?.dot ?? '#94A3B8';
-      edges.push({ d: `M${px},${py} C${px},${my} ${cx},${my} ${cx},${cy}`, color });
+      edges.push({ d: `M${cx},${my} L${cx},${cy}`, color });
       buildEdges(child);
     }
   }
@@ -208,7 +224,7 @@ function OrgChartModal({
             </div>
           </div>
           <div className="flex items-center gap-3">
-            {[{l:1,c:'#0F3D3E',t:'10%'},{l:2,c:'#E56B2D',t:'5%'},{l:3,c:'#7C3AED',t:'2%'}].map(({l,c,t})=>(
+            {[{l:1,c:'#5DADE2',t:'10%'},{l:2,c:'#58D68D',t:'5%'},{l:3,c:'#F1948A',t:'2%'}].map(({l,c,t})=>(
               <div key={l} className="flex items-center gap-1 text-xs text-gray-500">
                 <span className="w-2.5 h-2.5 rounded-full" style={{background:c}} />
                 <span className="font-semibold">Niv.{l}</span>
@@ -231,10 +247,13 @@ function OrgChartModal({
             {allNodes.map(node => {
               const p = pos.get(node.id);
               if (!p) return null;
-              const cfg = LCFG[node.level ?? 1];
-              const name = [node.first_name, node.last_name].filter(Boolean).join(' ') || node.email || '—';
-              const initial = (node.first_name?.[0] || node.last_name?.[0] || 'A').toUpperCase();
-              const isRoot = node.level === 0;
+              const cfg = LCFG[node.level ?? 1] || LCFG[0];
+              
+              const firstName = node.first_name || node.email?.split('@')[0] || '';
+              const lastName = node.last_name || '';
+              const displayInitials = (firstName?.[0] || '') + (lastName?.[0] || '');
+              const initial = displayInitials ? displayInitials.toUpperCase() : (node.email?.[0] || 'A').toUpperCase();
+
               return (
                 <div
                   key={node.id}
@@ -242,28 +261,65 @@ function OrgChartModal({
                     position: 'absolute',
                     left: p.x, top: p.y,
                     width: NW, height: NH,
-                    background: cfg.bg,
-                    border: `2px solid ${cfg.border}`,
-                    borderRadius: 16,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 3,
-                    boxShadow: isRoot ? '0 4px 20px rgba(15,61,62,0.25)' : '0 2px 8px rgba(0,0,0,0.08)',
                     cursor: 'default',
-                    padding: '6px 8px',
                   }}
                 >
-                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: cfg.border, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <span style={{ color: '#fff', fontSize: 11, fontWeight: 800 }}>{initial}</span>
+                  {/* Circle */}
+                  <div style={{
+                    position: 'relative',
+                    width: 48, height: 48, 
+                    borderRadius: '50%', 
+                    background: cfg.color, 
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                    zIndex: 2,
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                  }}>
+                    <span style={{ color: '#fff', fontSize: 16, fontWeight: 700, letterSpacing: 1 }}>{initial}</span>
+                    
+                    {/* Filae Plus Icon */}
+                    {node.children.length > 0 && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: 0, right: -4,
+                        width: 14, height: 14,
+                        background: '#fff',
+                        border: `1px solid ${cfg.color}`,
+                        borderRadius: 3,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: cfg.color,
+                        fontSize: 12, fontWeight: 'bold', lineHeight: 1
+                      }}>
+                        +
+                      </div>
+                    )}
                   </div>
-                  <p style={{ fontSize: 11, fontWeight: 700, color: cfg.text, textAlign: 'center', lineHeight: 1.2, width: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', padding: '0 4px' }}>
-                    {name}
-                  </p>
-                  <span style={{ fontSize: 9, fontWeight: 700, fontFamily: 'monospace', background: cfg.codeBg, color: cfg.codeText, padding: '2px 6px', borderRadius: 6 }}>
-                    {node.referral_code}
-                  </span>
+                  
+                  {/* Text Card */}
+                  <div style={{
+                    marginTop: -24,
+                    paddingTop: 28,
+                    paddingBottom: 8,
+                    width: '100%',
+                    background: '#fff',
+                    borderLeft: `4px solid ${cfg.color}`,
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center',
+                    zIndex: 1,
+                    minHeight: 68
+                  }}>
+                    <p style={{ fontSize: 11, fontWeight: 600, color: '#475569', textAlign: 'center', width: '90%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {firstName || '—'}
+                    </p>
+                    <p style={{ fontSize: 12, fontWeight: 800, color: '#1e293b', textAlign: 'center', width: '90%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textTransform: 'uppercase' }}>
+                      {lastName}
+                    </p>
+                    <p style={{ fontSize: 9, color: '#94a3b8', marginTop: 3 }}>
+                      {node.referral_code}
+                    </p>
+                  </div>
                 </div>
               );
             })}
@@ -734,14 +790,12 @@ export default function AmbassadorDashboardClient({
 
       {/* ── Network Tree Modal ── */}
       {showTree && (
-        <NetworkTreeModal
+        <OrgChartModal
           referralCode={referralCode}
           rootAmbassadorId={ambassadorId}
-          rootName={rootName}
           downlines={downlines}
           onClose={() => setShowTree(false)}
           inter={inter}
-          pjs={pjs}
         />
       )}
     </div>
