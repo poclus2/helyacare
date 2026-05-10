@@ -3,8 +3,8 @@
 import { useState } from "react";
 import {
   Copy, Check, TrendingUp, Users, Wallet, Award,
-  Clock, CheckCircle2, XCircle, ArrowUpRight, Share2,
-  ChevronRight, Layers, Gift
+  Clock, CheckCircle2, ArrowUpRight, Share2,
+  ChevronRight, Layers, Gift, GitBranch, X
 } from "lucide-react";
 import { Link } from "@/navigation";
 
@@ -26,6 +26,7 @@ interface Downline {
   first_name?: string;
   last_name?: string;
   email?: string;
+  sponsor_ambassador_id?: string;
 }
 
 interface Stats {
@@ -88,12 +89,161 @@ function getGrade(count: number) {
   return { label: "Ambassadeur", level: 1, next: "Or", nextAt: 5, color: "#E56B2D" };
 }
 
+// --- Network Tree Modal ---
+interface TreeNode extends Downline { children: TreeNode[] }
+
+function buildTree(downlines: Downline[], rootId: string): TreeNode[] {
+  const byParent: Record<string, Downline[]> = {};
+  for (const dl of downlines) {
+    const pid = dl.sponsor_ambassador_id || rootId;
+    if (!byParent[pid]) byParent[pid] = [];
+    byParent[pid].push(dl);
+  }
+  function rec(pid: string): TreeNode[] {
+    return (byParent[pid] || []).map(d => ({ ...d, children: rec(d.id) }));
+  }
+  return rec(rootId);
+}
+
+const LEVEL_CFG: Record<number, { avatar: string; codeBg: string; codeText: string; line: string; label: string }> = {
+  0: { avatar: 'bg-[#0F3D3E]', codeBg: 'bg-[#0F3D3E]/10', codeText: 'text-[#0F3D3E]', line: '#0F3D3E', label: 'Vous' },
+  1: { avatar: 'bg-[#0F3D3E]', codeBg: 'bg-[#0F3D3E]/10', codeText: 'text-[#0F3D3E]', line: '#0F3D3E', label: 'Niv.1' },
+  2: { avatar: 'bg-[#E56B2D]', codeBg: 'bg-[#E56B2D]/10', codeText: 'text-[#E56B2D]', line: '#E56B2D', label: 'Niv.2' },
+  3: { avatar: 'bg-[#7C3AED]', codeBg: 'bg-[#7C3AED]/10', codeText: 'text-[#7C3AED]', line: '#7C3AED', label: 'Niv.3' },
+};
+
+function TreeRow({ node, depth, isLast, ancestorLines }: {
+  node: TreeNode; depth: number; isLast: boolean; ancestorLines: boolean[];
+}) {
+  const cfg = LEVEL_CFG[node.level ?? 1];
+  const name = [node.first_name, node.last_name].filter(Boolean).join(' ') || node.email || '—';
+  const initial = (node.first_name?.[0] || node.referral_code?.[3] || 'A').toUpperCase();
+  return (
+    <>
+      <div className="flex items-center gap-2 py-2 px-3 hover:bg-gray-50 rounded-xl transition-colors group">
+        {/* Indent + connector lines */}
+        <div className="flex items-stretch shrink-0" style={{ width: depth * 24 }}>
+          {ancestorLines.map((hasLine, i) => (
+            <div key={i} className="flex justify-center" style={{ width: 24 }}>
+              {hasLine && <div className="w-px bg-gray-200 h-full" />}
+            </div>
+          ))}
+        </div>
+        {depth > 0 && (
+          <div className="flex flex-col items-center shrink-0" style={{ width: 16 }}>
+            <div className="w-px bg-gray-200 flex-1" />
+            <div className="w-3 h-px bg-gray-200" />
+          </div>
+        )}
+        {/* Avatar */}
+        <div className={`w-8 h-8 rounded-full ${cfg.avatar} flex items-center justify-center shrink-0 shadow-sm`}>
+          <span className="text-white text-xs font-bold">{initial}</span>
+        </div>
+        {/* Name */}
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-[#0F3D3E] truncate">{name}</p>
+        </div>
+        {/* Code */}
+        <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-lg shrink-0 ${cfg.codeBg} ${cfg.codeText}`}>
+          {node.referral_code}
+        </span>
+        {/* Level badge */}
+        <span className="text-[10px] font-bold text-gray-300 shrink-0">{cfg.label}</span>
+      </div>
+      {/* Children */}
+      {node.children.map((child, i) => (
+        <TreeRow
+          key={child.id}
+          node={child}
+          depth={depth + 1}
+          isLast={i === node.children.length - 1}
+          ancestorLines={[...ancestorLines, !isLast]}
+        />
+      ))}
+    </>
+  );
+}
+
+function NetworkTreeModal({
+  referralCode, rootAmbassadorId, rootName, downlines, onClose, inter, pjs
+}: {
+  referralCode: string; rootAmbassadorId: string; rootName: string;
+  downlines: Downline[]; onClose: () => void; inter: string; pjs: string;
+}) {
+  const tree = buildTree(downlines, rootAmbassadorId);
+  const cfg0 = LEVEL_CFG[0];
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-sm" onClick={onClose}>
+      <div
+        className="bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl w-full sm:max-w-xl max-h-[85vh] flex flex-col overflow-hidden"
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8E3DC] shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[#0F3D3E] rounded-xl flex items-center justify-center">
+              <GitBranch className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h3 className={`font-bold text-[#0F3D3E] text-base ${inter}`}>Arbre de votre réseau</h3>
+              <p className="text-xs text-gray-400">{downlines.length} filleul{downlines.length > 1 ? 's' : ''} sur 3 niveaux</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors">
+            <X className="w-4 h-4 text-gray-500" />
+          </button>
+        </div>
+        {/* Legend */}
+        <div className="flex items-center gap-4 px-6 py-3 border-b border-[#F2F0EB] shrink-0 flex-wrap">
+          {[1,2,3].map(lvl => (
+            <div key={lvl} className="flex items-center gap-1.5">
+              <div className={`w-3 h-3 rounded-full ${LEVEL_CFG[lvl].avatar}`} />
+              <span className="text-xs font-semibold text-gray-500">{LEVEL_CFG[lvl].label} — {lvl === 1 ? '10%' : lvl === 2 ? '5%' : '2%'}</span>
+            </div>
+          ))}
+        </div>
+        {/* Tree content */}
+        <div className="overflow-y-auto flex-1 px-4 py-4">
+          {/* Root node */}
+          <div className="flex items-center gap-3 px-3 py-2 mb-1">
+            <div className={`w-10 h-10 rounded-full ${cfg0.avatar} flex items-center justify-center shadow-md`}>
+              <span className="text-white text-sm font-bold">{rootName[0]?.toUpperCase() || 'V'}</span>
+            </div>
+            <div className="flex-1">
+              <p className={`font-black text-[#0F3D3E] text-sm ${inter}`}>{rootName} (vous)</p>
+            </div>
+            <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-lg ${cfg0.codeBg} ${cfg0.codeText}`}>{referralCode}</span>
+          </div>
+          {/* Tree rows */}
+          {tree.length === 0 ? (
+            <div className="py-8 text-center text-gray-400 text-sm">Aucun filleul pour l&apos;instant.</div>
+          ) : (
+            tree.map((node, i) => (
+              <TreeRow
+                key={node.id}
+                node={node}
+                depth={0}
+                isLast={i === tree.length - 1}
+                ancestorLines={[]}
+              />
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // --- Main Component ---
 export default function AmbassadorDashboardClient({
   balance, referralCode, downlines, transactions, stats, inter, pjs
 }: Props) {
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"transactions" | "reseau">("transactions");
+  const [showTree, setShowTree] = useState(false);
+  const ambassadorId = (downlines[0] as any)?.sponsor_ambassador_id ||
+    downlines.find(d => d.level === 1)?.sponsor_ambassador_id || "";
+  const rootName = "Votre Réseau";
 
   const directDownlineCount = downlines.filter(d => !d.level || d.level === 1).length;
   const totalDownlineCount = downlines.length;
@@ -515,6 +665,13 @@ export default function AmbassadorDashboardClient({
                         </div>
                       ))}
                     </div>
+                    <button
+                      onClick={() => setShowTree(true)}
+                      className="flex items-center gap-1.5 text-xs text-[#0F3D3E] font-bold px-3 py-1.5 bg-[#0F3D3E]/10 hover:bg-[#0F3D3E]/20 rounded-xl transition-colors"
+                    >
+                      <GitBranch className="w-3.5 h-3.5" />
+                      Arbre complet
+                    </button>
                   </div>
                 </div>
               );
@@ -534,6 +691,19 @@ export default function AmbassadorDashboardClient({
           <ChevronRight className="w-4 h-4" />
         </button>
       </div>
+
+      {/* ── Network Tree Modal ── */}
+      {showTree && (
+        <NetworkTreeModal
+          referralCode={referralCode}
+          rootAmbassadorId={ambassadorId}
+          rootName={rootName}
+          downlines={downlines}
+          onClose={() => setShowTree(false)}
+          inter={inter}
+          pjs={pjs}
+        />
+      )}
     </div>
   );
 }

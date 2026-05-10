@@ -38,6 +38,7 @@ export async function GET(
       referral_code: d.referral_code,
       created_at: (d as any).created_at,
       level: 1,
+      sponsor_ambassador_id: ambassador.id, // parent = root ambassador
     }))
 
     // Niveau 2 : filleuls des filleuls
@@ -49,12 +50,17 @@ export async function GET(
       )
 
       for (const d of level2) {
+        const sponsorId = level1.find(l1 =>
+          d.customer_id !== l1.customer_id &&
+          (d as any).sponsor_id === l1.id
+        )?.id ?? level1Ids[0]
         flatDownlines.push({
           id: d.id,
           customer_id: d.customer_id,
           referral_code: d.referral_code,
           created_at: (d as any).created_at,
           level: 2,
+          sponsor_ambassador_id: (d as any).sponsor_id ?? sponsorId,
         })
       }
 
@@ -73,6 +79,7 @@ export async function GET(
             referral_code: d.referral_code,
             created_at: (d as any).created_at,
             level: 3,
+            sponsor_ambassador_id: (d as any).sponsor_id,
           })
         }
       }
