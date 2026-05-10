@@ -4,7 +4,7 @@
 # --ignore-scripts : évite les postinstall natifs lents (@swc/core, bcrypt)
 
 [build]
-builder = "NIXPACKS"
+builder = "RAILPACK"
 buildCommand = "npm install --ignore-scripts && npx medusa build --no-admin"
 
 [deploy]
