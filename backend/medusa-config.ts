@@ -17,6 +17,11 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || 'supersecret',
     }
   },
+  // Désactive la compilation Vite/React du dashboard admin (trop lente sur Railway)
+  // --no-admin CLI flag supprimé en v2.13.6 — seul moyen fiable : config
+  admin: {
+    disable: true,
+  },
   modules: [
     {
       resolve: './src/modules/mlm'
