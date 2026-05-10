@@ -1,11 +1,11 @@
 # Railway configuration for Medusa Backend
-# Railpack : NODE_ENV=production, override install via railpack.json
-# railpack.json : npm install --ignore-scripts --prefer-offline
-# --no-admin : évite la compilation Vite/React du dashboard (trop lente)
+# Railpack : NODE_ENV=production
+# --no-admin supprimé dans Medusa v2.13.6 → désactiver via MEDUSA_ADMIN_DISABLE=true (env Railway)
+# ignore-scripts=true dans .npmrc → skip compilation native @swc/core
 
 [build]
 builder = "RAILPACK"
-buildCommand = "npx medusa build --no-admin"
+buildCommand = "npx medusa build"
 
 [deploy]
 startCommand = "npx medusa db:migrate && (npx medusa user -e admin@helyacare.com -p 'HelyaCare2026!' || true) && npm run start"
