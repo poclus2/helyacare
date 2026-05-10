@@ -1,6 +1,7 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { MLM_MODULE } from "../../../../modules/mlm"
 import MlmModuleService from "../../../../modules/mlm/service"
+import { Modules } from "@medusajs/framework/utils"
 
 export async function GET(
   req: MedusaRequest,
@@ -8,6 +9,7 @@ export async function GET(
 ) {
   const customerId = req.params.customer_id
   const mlmService: MlmModuleService = req.scope.resolve(MLM_MODULE)
+  const customerService = req.scope.resolve(Modules.CUSTOMER)
 
   try {
     // Fetch the ambassador (sans relations imbriquées — MikroORM ne charge pas
@@ -73,6 +75,30 @@ export async function GET(
             level: 3,
           })
         }
+      }
+    }
+
+    // ── Enrichissement : récupérer les noms depuis le module Customer ─────────
+    if (flatDownlines.length > 0) {
+      const customerIds = flatDownlines.map(d => d.customer_id).filter(Boolean)
+      try {
+        const customers = await customerService.listCustomers(
+          { id: customerIds },
+          { select: ["id", "first_name", "last_name", "email"] }
+        )
+        const customerMap = new Map(customers.map((c: any) => [c.id, c]))
+
+        for (const dl of flatDownlines) {
+          const customer = customerMap.get(dl.customer_id)
+          if (customer) {
+            dl.first_name = customer.first_name || ""
+            dl.last_name = customer.last_name || ""
+            dl.email = customer.email || ""
+          }
+        }
+      } catch (e) {
+        // Si le module Customer n'est pas accessible, on continue sans les noms
+        console.warn("Could not enrich downlines with customer names:", e)
       }
     }
 

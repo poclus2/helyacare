@@ -23,6 +23,9 @@ interface Downline {
   referral_code: string;
   created_at?: string;
   level?: number;
+  first_name?: string;
+  last_name?: string;
+  email?: string;
 }
 
 interface Stats {
@@ -457,28 +460,39 @@ export default function AmbassadorDashboardClient({
                         </div>
                         {/* Rows */}
                         <div className="divide-y divide-[#F2F0EB]">
-                          {group.map((dl) => (
-                            <div
-                              key={dl.id}
-                              className={`px-6 py-4 grid grid-cols-3 items-center hover:bg-[#FAFAF9] transition-colors border-l-4 ${borderColor}`}
-                            >
-                              <div className="flex items-center gap-3">
-                                <div className={`w-9 h-9 ${avatarBg} rounded-full flex items-center justify-center shrink-0`}>
-                                  <span className="text-sm font-bold text-white">
-                                    {dl.referral_code?.charAt(3)?.toUpperCase() ?? "A"}
+                          {group.map((dl) => {
+                            const fullName = [dl.first_name, dl.last_name].filter(Boolean).join(" ") || dl.email || "—";
+                            const initials = dl.first_name?.[0] || dl.last_name?.[0] || dl.referral_code?.[3] || "A";
+                            return (
+                              <div
+                                key={dl.id}
+                                className={`px-4 py-4 grid grid-cols-4 items-center hover:bg-[#FAFAF9] transition-colors border-l-4 ${borderColor}`}
+                              >
+                                {/* Col 1 : Nom */}
+                                <div className="flex items-center gap-3">
+                                  <div className={`w-9 h-9 ${avatarBg} rounded-full flex items-center justify-center shrink-0`}>
+                                    <span className="text-sm font-bold text-white uppercase">{initials}</span>
+                                  </div>
+                                  <div className="min-w-0">
+                                    <p className="text-sm font-bold text-[#0F3D3E] truncate">{fullName}</p>
+                                    <p className={`text-[11px] font-semibold ${badgeText}`}>{sublabel}</p>
+                                  </div>
+                                </div>
+                                {/* Col 2 : Code de parrainage */}
+                                <div className="flex justify-center">
+                                  <span className={`text-xs font-mono font-bold px-2.5 py-1 rounded-lg ${badgeBg} ${badgeText}`}>
+                                    {dl.referral_code}
                                   </span>
                                 </div>
-                                <div>
-                                  <p className="text-sm font-bold text-[#0F3D3E] font-mono">{dl.referral_code}</p>
-                                  <p className={`text-[11px] font-semibold ${badgeText}`}>{sublabel}</p>
+                                {/* Col 3 : Date */}
+                                <p className="text-sm text-gray-500 text-center">{formatDate((dl as any).created_at)}</p>
+                                {/* Col 4 : Statut */}
+                                <div className="flex justify-end">
+                                  <span className="px-2.5 py-1 bg-green-50 text-green-600 border border-green-200 text-[11px] font-bold rounded-full">Actif</span>
                                 </div>
                               </div>
-                              <p className="text-sm text-gray-500 text-center">{formatDate((dl as any).created_at)}</p>
-                              <div className="flex justify-end">
-                                <span className="px-2.5 py-1 bg-green-50 text-green-600 border border-green-200 text-[11px] font-bold rounded-full">Actif</span>
-                              </div>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       </div>
                     );
