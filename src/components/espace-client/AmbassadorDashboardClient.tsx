@@ -105,7 +105,7 @@ function buildTree(downlines: Downline[], rootId: string): TreeNode[] {
   return rec(rootId);
 }
 
-const NW = 110, NH = 92, HGAP = 16, VGAP = 48, PAD = 40;
+const NW = 140, NH = 114, HGAP = 24, VGAP = 60, PAD = 40;
 
 function subtreeWidth(node: TreeNode): number {
   if (!node.children.length) return NW + HGAP;
@@ -204,18 +204,17 @@ function OrgChartModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-center justify-center md:p-4 bg-white md:bg-black/60 md:backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden"
-        style={{ maxWidth: '95vw', maxHeight: '88vh', width: Math.min(canvasW + 48, window.innerWidth * 0.95) }}
+        className="bg-[#f8fafc] md:bg-white flex flex-col w-full h-full md:w-fit md:max-w-[95vw] md:h-fit md:max-h-[88vh] md:rounded-3xl md:shadow-2xl overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E3DC] shrink-0">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 md:px-6 py-4 bg-white border-b border-[#E8E3DC] shrink-0 shadow-sm z-10 gap-4 sm:gap-0">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#0F3D3E] rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-[#0F3D3E] rounded-xl flex items-center justify-center shrink-0">
               <GitBranch className="w-4 h-4 text-white" />
             </div>
             <div>
@@ -223,22 +222,27 @@ function OrgChartModal({
               <p className="text-xs text-gray-400">{downlines.length} filleul{downlines.length > 1 ? 's' : ''} · 3 niveaux max</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            {[{l:1,c:'#5DADE2',t:'10%'},{l:2,c:'#58D68D',t:'5%'},{l:3,c:'#F1948A',t:'2%'}].map(({l,c,t})=>(
-              <div key={l} className="flex items-center gap-1 text-xs text-gray-500">
-                <span className="w-2.5 h-2.5 rounded-full" style={{background:c}} />
-                <span className="font-semibold">Niv.{l}</span>
-                <span className="text-gray-400">{t}</span>
-              </div>
-            ))}
-            <button onClick={onClose} className="ml-2 w-8 h-8 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors">
+          <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+            <div className="flex items-center gap-3">
+              {[{l:1,c:'#5DADE2',t:'10%'},{l:2,c:'#58D68D',t:'5%'},{l:3,c:'#F1948A',t:'2%'}].map(({l,c,t})=>(
+                <div key={l} className="flex items-center gap-1 text-xs text-gray-500">
+                  <span className="w-2.5 h-2.5 rounded-full" style={{background:c}} />
+                  <span className="font-semibold">Niv.{l}</span>
+                  <span className="text-gray-400 hidden sm:inline">{t}</span>
+                </div>
+              ))}
+            </div>
+            <button onClick={onClose} className="sm:ml-2 w-8 h-8 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors shrink-0">
               <X className="w-4 h-4 text-gray-500" />
             </button>
           </div>
         </div>
         {/* Canvas */}
-        <div className="overflow-auto flex-1 p-4">
-          <div style={{ position: 'relative', width: canvasW, height: canvasH, minWidth: canvasW }}>
+        <div 
+          className="overflow-auto flex-1 p-4 md:p-8 touch-pan-x touch-pan-y"
+          style={{ WebkitOverflowScrolling: 'touch', background: '#f8fafc' }}
+        >
+          <div style={{ position: 'relative', width: canvasW, height: canvasH, minWidth: canvasW, margin: '0 auto' }}>
             <svg style={{ position: 'absolute', inset: 0, width: canvasW, height: canvasH, overflow: 'visible' }}>
               {edges.map((e, i) => (
                 <path key={i} d={e.d} fill="none" stroke={e.color} strokeWidth={1.5} strokeOpacity={0.5} />
@@ -300,23 +304,28 @@ function OrgChartModal({
                   {/* Text Card */}
                   <div style={{
                     marginTop: -24,
-                    paddingTop: 28,
-                    paddingBottom: 8,
+                    paddingTop: 34,
+                    paddingBottom: 12,
                     width: '100%',
                     background: '#fff',
                     borderLeft: `4px solid ${cfg.color}`,
-                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                    borderRight: '1px solid #e2e8f0',
+                    borderTop: '1px solid #e2e8f0',
+                    borderBottom: '1px solid #e2e8f0',
+                    borderTopRightRadius: 8,
+                    borderBottomRightRadius: 8,
+                    borderBottomLeftRadius: 4,
+                    boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)',
                     display: 'flex', flexDirection: 'column', alignItems: 'center',
                     zIndex: 1,
-                    minHeight: 68
                   }}>
-                    <p style={{ fontSize: 11, fontWeight: 600, color: '#475569', textAlign: 'center', width: '90%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <p style={{ fontSize: 12, fontWeight: 600, color: '#64748b', textAlign: 'center', width: '90%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', lineHeight: 1.4 }}>
                       {firstName || '—'}
                     </p>
-                    <p style={{ fontSize: 12, fontWeight: 800, color: '#1e293b', textAlign: 'center', width: '90%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textTransform: 'uppercase' }}>
+                    <p style={{ fontSize: 13, fontWeight: 800, color: '#0f172a', textAlign: 'center', width: '90%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textTransform: 'uppercase', lineHeight: 1.4 }}>
                       {lastName}
                     </p>
-                    <p style={{ fontSize: 9, color: '#94a3b8', marginTop: 3 }}>
+                    <p style={{ fontSize: 10, color: '#94a3b8', marginTop: 4, fontFamily: 'monospace', background: '#f1f5f9', padding: '2px 6px', borderRadius: 4 }}>
                       {node.referral_code}
                     </p>
                   </div>
