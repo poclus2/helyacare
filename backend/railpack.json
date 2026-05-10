@@ -1,5 +1,10 @@
 {
-  "install": {
-    "command": "npm install --ignore-scripts --prefer-offline"
+  "steps": {
+    "install": {
+      "cmds": [
+        "npm i -g corepack@latest && corepack enable && corepack prepare --activate",
+        "npm ci"
+      ]
+    }
   }
 }
