@@ -61,24 +61,41 @@ const products = [
   },
 ];
 
-const MIN_QTY = 5;
-
 export default function AmbassadorBoutique() {
   const { formatPrice } = useCurrency();
   const { addItem } = useCart();
   const { getPrice, getVariantId } = useLivePrices();
   const [addedId, setAddedId] = useState<string | number | null>(null);
+  const [minQty, setMinQty] = useState(5);
+  const [customPrices, setCustomPrices] = useState<Record<string, number>>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/settings/ambassador")
+      .then(res => res.json())
+      .then(data => {
+        if (data.ambassador_settings) {
+          setMinQty(data.ambassador_settings.min_qty || 5);
+          setCustomPrices(data.ambassador_settings.prices || {});
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
 
   const handleAddToCart = async (product: any) => {
-    // Les ambassadeurs ont un prix déjà calculé par Medusa (si connecté) ou on prend le prix normal.
-    // L'essentiel est de forcer la quantité minimale.
-    const price = getPrice(product.priceKey, "normal");
+    const overridePrice = customPrices[product.priceKey];
+    const originalPrice = getPrice(product.priceKey, "normal");
+    const price = overridePrice > 0 ? overridePrice : originalPrice;
 
     await addItem({
       variantId: getVariantId(product.priceKey) || `${product.priceKey}-v1`,
-      quantity: MIN_QTY,
+      quantity: minQty,
       title: product.title,
-      subtitle: `Achat Revendeur (Lot de ${MIN_QTY})`,
+      subtitle: `Achat Revendeur (Lot de ${minQty})`,
       thumbnail: product.image,
       unit_price: price,
       currency_code: "XOF",
@@ -87,19 +104,29 @@ export default function AmbassadorBoutique() {
     setTimeout(() => setAddedId(null), 2000);
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="animate-spin w-8 h-8 border-4 border-[#CBF27A] border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
   return (
     <div className="seed-page bg-transparent pt-0 pb-10">
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-[#0F3D3E] mb-2">Boutique Ambassadeur</h2>
         <p className="text-gray-600">
-          En tant qu'ambassadeur, vous bénéficiez de tarifs préférentiels. Un minimum de <strong>{MIN_QTY} unités</strong> par produit est requis pour valider votre commande de réassort.
+          En tant qu'ambassadeur, vous bénéficiez de tarifs préférentiels. Un minimum de <strong>{minQty} unités</strong> par produit est requis pour valider votre commande de réassort.
         </p>
       </div>
 
       <section className="seed-grid-section pt-0">
         <div className="seed-grid-container px-0 max-w-full">
           {products.map((product) => {
-            const price = getPrice(product.priceKey, "normal");
+            const overridePrice = customPrices[product.priceKey];
+            const originalPrice = getPrice(product.priceKey, "normal");
+            const price = overridePrice > 0 ? overridePrice : originalPrice;
             const displayPrice = formatPrice(price);
 
             return (
@@ -123,7 +150,7 @@ export default function AmbassadorBoutique() {
                         {displayPrice} <span className="text-sm font-normal text-gray-500">/ unité</span>
                       </div>
                       <p className="text-[11px] text-[#E56B2D] font-medium mt-1">
-                        Achat par lot de {MIN_QTY} min. ({formatPrice(price * MIN_QTY)})
+                        Achat par lot de {minQty} min. ({formatPrice(price * minQty)})
                       </p>
                     </div>
 
@@ -132,7 +159,7 @@ export default function AmbassadorBoutique() {
                         className="seed-btn-text-dark w-full text-center flex justify-center bg-[#0F3D3E] text-white hover:bg-[#1a5556]"
                         onClick={() => handleAddToCart(product)}
                       >
-                        {addedId === product.id ? "✓ Ajouté au panier !" : `Ajouter un lot de ${MIN_QTY}`}
+                        {addedId === product.id ? "✓ Ajouté au panier !" : `Ajouter un lot de ${minQty}`}
                       </button>
                     </div>
                   </div>

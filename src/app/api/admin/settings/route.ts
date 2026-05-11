@@ -33,13 +33,14 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
       whatsapp_number: store?.metadata?.whatsapp_number || "",
+      ambassador_settings: store?.metadata?.ambassador_settings || { min_qty: 5, prices: {} },
     });
   } catch (error: any) {
     if (error.message === "Non authentifié") {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
     console.error("[admin/settings GET]", error);
-    return NextResponse.json({ whatsapp_number: "" });
+    return NextResponse.json({ whatsapp_number: "", ambassador_settings: { min_qty: 5, prices: {} } });
   }
 }
 
@@ -47,7 +48,7 @@ export async function POST(request: Request) {
   try {
     await verifyAdmin(request);
     const body = await request.json();
-    const { whatsapp_number } = body;
+    const { whatsapp_number, ambassador_settings } = body;
 
     // 1. Récupérer le store actuel
     const getRes = await fetch(`${BACKEND}/admin/stores`, { headers: adminHeaders });
@@ -59,15 +60,17 @@ export async function POST(request: Request) {
       throw new Error("Aucun store trouvé");
     }
 
+    // Préparer les metadata à mettre à jour
+    const updatedMetadata = { ...store.metadata };
+    if (whatsapp_number !== undefined) updatedMetadata.whatsapp_number = whatsapp_number;
+    if (ambassador_settings !== undefined) updatedMetadata.ambassador_settings = ambassador_settings;
+
     // 2. Mettre à jour le store
     const updateRes = await fetch(`${BACKEND}/admin/stores/${store.id}`, {
       method: "POST",
       headers: adminHeaders,
       body: JSON.stringify({
-        metadata: {
-          ...store.metadata,
-          whatsapp_number,
-        },
+        metadata: updatedMetadata,
       }),
     });
 
@@ -75,7 +78,7 @@ export async function POST(request: Request) {
       throw new Error("Erreur lors de la mise à jour du store");
     }
 
-    return NextResponse.json({ success: true, whatsapp_number });
+    return NextResponse.json({ success: true, whatsapp_number, ambassador_settings });
   } catch (error: any) {
     if (error.message === "Non authentifié") {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
