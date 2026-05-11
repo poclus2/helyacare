@@ -5,6 +5,7 @@ import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import { AuthSessionProvider } from "@/contexts/AuthSessionProvider";
 import { CartProvider } from "@/contexts/CartContext";
 import CartDrawer from "@/components/CartDrawer";
+import WhatsAppWidget from "@/components/WhatsAppWidget";
 import { PricesProvider } from "@/contexts/PricesContext";
 
 
@@ -40,6 +41,7 @@ export default async function LocaleLayout({
             <CartProvider>
               {children}
               <CartDrawer />
+              <WhatsAppWidget />
             </CartProvider>
           </PricesProvider>
         </CurrencyProvider>

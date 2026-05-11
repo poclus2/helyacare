@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Inter } from "next/font/google";
 import {
   LayoutDashboard, ShoppingBag, Users, Wallet,
-  LogOut, ShieldCheck, Menu, ChevronRight, Package, CreditCard
+  LogOut, ShieldCheck, Menu, ChevronRight, Package, CreditCard, Settings
 } from "lucide-react";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
@@ -18,6 +18,7 @@ const navItems = [
   { href: "/admin/clients", label: "Clients", icon: Users },
   { href: "/admin/depots", label: "Dépôts Manuels", icon: CreditCard },
   { href: "/admin/retraits", label: "Retraits MLM", icon: Wallet },
+  { href: "/admin/parametres", label: "Paramètres", icon: Settings },
 ];
 
 function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
