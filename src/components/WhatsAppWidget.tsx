@@ -39,7 +39,7 @@ export default function WhatsAppWidget() {
   };
 
   return (
-    <div className="fixed bottom-6 left-6 z-50 flex flex-col items-start">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
       {/* Tooltip / Bubble */}
       {isOpen && (
         <div className="mb-4 bg-white rounded-2xl p-4 shadow-2xl border border-gray-100 max-w-[280px] animate-in fade-in slide-in-from-bottom-4 duration-300 relative">
@@ -60,7 +60,7 @@ export default function WhatsAppWidget() {
             </div>
           </div>
           
-          <p className="text-sm text-gray-600 mb-4 bg-gray-50 p-3 rounded-xl rounded-tl-none">
+          <p className="text-sm text-gray-600 mb-4 bg-gray-50 p-3 rounded-xl rounded-tr-none">
             Bonjour 👋<br/>Comment pouvons-nous vous aider aujourd'hui ?
           </p>
           
