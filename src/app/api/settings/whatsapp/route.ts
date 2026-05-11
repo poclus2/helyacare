@@ -8,11 +8,13 @@ const adminHeaders = {
   ...(API_KEY && { Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}` }),
 };
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const res = await fetch(`${BACKEND}/admin/stores`, {
       headers: adminHeaders,
-      next: { revalidate: 60 }, // Cache pendant 60 secondes
+      cache: 'no-store',
     });
     
     if (!res.ok) {

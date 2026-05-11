@@ -6,7 +6,7 @@ import { MessageCircle, X } from "lucide-react";
 export default function WhatsAppWidget() {
   const [whatsappNumber, setWhatsappNumber] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [hasScrolled, setHasScrolled] = useState(false);
+  const [showWidget, setShowWidget] = useState(false);
 
   useEffect(() => {
     // Fetch the whatsapp number on mount
@@ -21,17 +21,15 @@ export default function WhatsAppWidget() {
       })
       .catch(console.error);
 
-    // Show after some scrolling to avoid immediate distraction
-    const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setHasScrolled(true);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    // Show after a slight delay instead of relying strictly on scroll
+    const timer = setTimeout(() => {
+      setShowWidget(true);
+    }, 1500);
+
+    return () => clearTimeout(timer);
   }, []);
 
-  if (!whatsappNumber || !hasScrolled) return null;
+  if (!whatsappNumber || !showWidget) return null;
 
   const handleWhatsAppClick = () => {
     // Message par défaut encodé
