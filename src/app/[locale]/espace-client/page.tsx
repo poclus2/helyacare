@@ -1,4 +1,5 @@
 import CustomerDashboard from "@/components/espace-client/CustomerDashboard";
+import AmbassadorBoutique from "@/components/espace-client/AmbassadorBoutique";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 
@@ -8,9 +9,8 @@ export default async function EspaceClientOverviewPage() {
   const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "";
   const role = (session?.role as string) || "customer";
 
-  // Rediriger les ambassadeurs directement vers leur dashboard MLM
   if (role === "ambassadeur") {
-    redirect("/espace-client/dashboard");
+    return <AmbassadorBoutique />;
   }
 
   let orders: any[] = [];

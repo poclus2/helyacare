@@ -1,12 +1,12 @@
 "use client";
 
 import { Link, usePathname } from "@/navigation";
-import { LayoutDashboard, RefreshCcw, ShoppingBag, ActivitySquare, Settings, Users, Wallet, LogOut } from "lucide-react";
+import { LayoutDashboard, RefreshCcw, ShoppingBag, ActivitySquare, Settings, Users, Wallet, LogOut, Store } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 export default function DashboardNav({ isAmbassador = false }: { isAmbassador?: boolean }) {
   const navLinks = [
-    { name: "Vue d'ensemble", href: "/espace-client", icon: LayoutDashboard },
+    { name: isAmbassador ? "Boutique" : "Vue d'ensemble", href: "/espace-client", icon: isAmbassador ? Store : LayoutDashboard },
     ...(isAmbassador ? [
       { name: "Réseau MLM", href: "/espace-client/dashboard", icon: Users },
       { name: "Wallet", href: "/espace-client/ambassadeur", icon: Wallet },
