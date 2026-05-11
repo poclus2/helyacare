@@ -5,7 +5,7 @@ import { Link } from "@/navigation";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useLivePrices } from "@/contexts/PricesContext";
 import { useCart } from "@/contexts/CartContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "@/app/[locale]/boutique/boutique.css"; // Reuse shop styles
 
 const products = [
