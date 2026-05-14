@@ -140,3 +140,31 @@ export async function GET(
     return res.status(500).json({ message: "Internal server error", error: error.message })
   }
 }
+
+export async function POST(
+  req: MedusaRequest,
+  res: MedusaResponse
+) {
+  const customerId = req.params.customer_id
+  const mlmService: MlmModuleService = req.scope.resolve(MLM_MODULE)
+  
+  try {
+    const ambassadors = await mlmService.listAmbassadors({ customer_id: customerId })
+    if (!ambassadors || ambassadors.length === 0) {
+      return res.status(404).json({ message: "Customer is not an ambassador" })
+    }
+
+    const { placement_preference } = req.body as { placement_preference?: string }
+    
+    if (placement_preference && ["LEFT", "RIGHT", "WEAKER_LEG", "AUTOMATIC"].includes(placement_preference)) {
+      await mlmService.updateAmbassadors({
+        id: ambassadors[0].id,
+        placement_preference
+      })
+    }
+
+    return res.json({ success: true, placement_preference })
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error", error: error.message })
+  }
+}

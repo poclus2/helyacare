@@ -19,6 +19,8 @@ export default function NouveauProduitPage() {
     handle: "",
     price: "",
     status: "published" as "published" | "draft",
+    ambassador_price: "",
+    ambassador_min_qty: "5",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,9 +36,11 @@ export default function NouveauProduitPage() {
       const payload = {
         title: formData.title,
         description: formData.description,
-        handle: formData.handle || undefined, // Laisser Medusa générer si vide
+        handle: formData.handle || undefined,
         status: formData.status,
-        // En Medusa, un produit a besoin d'au moins une option pour avoir des variantes
+        price_normal: priceAmount,
+        ambassador_price: formData.ambassador_price ? Math.round(parseFloat(formData.ambassador_price)) : 0,
+        ambassador_min_qty: formData.ambassador_min_qty ? parseInt(formData.ambassador_min_qty, 10) : 5,
         options: [{ title: "Défaut", values: ["Unique"] }],
         variants: [
           {
@@ -122,7 +126,7 @@ export default function NouveauProduitPage() {
 
           {/* Prix */}
           <div className="space-y-2">
-            <label className="text-white/60 text-xs font-bold uppercase tracking-wider block">Prix (XOF) *</label>
+            <label className="text-white/60 text-xs font-bold uppercase tracking-wider block">Prix public (XOF) *</label>
             <div className="relative">
               <input
                 type="number"
@@ -167,6 +171,48 @@ export default function NouveauProduitPage() {
               rows={5}
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#CBF27A]/40 transition-all resize-none"
             />
+          </div>
+
+          {/* Section Ambassadeur */}
+          <div className="md:col-span-2 bg-white/3 border border-[#E56B2D]/20 rounded-2xl p-5 space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="text-[#E56B2D] text-base">🤝</span>
+              <h3 className="text-white font-bold text-sm">Tarification Ambassadeur</h3>
+              <span className="ml-auto text-[10px] font-bold px-2 py-0.5 bg-[#E56B2D]/10 text-[#E56B2D] border border-[#E56B2D]/20 rounded-full">RÉSEAU MLM</span>
+            </div>
+            <p className="text-white/30 text-xs">Si le prix ambassadeur est à 0, le prix public sera utilisé. La quantité minimum définit le lot minimum à commander.</p>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-white/60 text-xs font-bold uppercase tracking-wider block">Prix Ambassadeur (XOF)</label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={formData.ambassador_price}
+                    onChange={e => setFormData({ ...formData, ambassador_price: e.target.value })}
+                    placeholder="ex: 15000"
+                    className="w-full bg-white/5 border border-[#E56B2D]/20 rounded-xl px-4 py-3 pr-16 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#E56B2D]/50 transition-all"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 text-sm font-bold">XOF</span>
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-white/60 text-xs font-bold uppercase tracking-wider block">Quantité Minimum</label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={formData.ambassador_min_qty}
+                    onChange={e => setFormData({ ...formData, ambassador_min_qty: e.target.value })}
+                    placeholder="ex: 5"
+                    className="w-full bg-white/5 border border-[#E56B2D]/20 rounded-xl px-4 py-3 pr-20 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#E56B2D]/50 transition-all"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 text-sm font-bold">unités</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

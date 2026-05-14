@@ -1,34 +1,37 @@
 import { NextResponse } from "next/server";
+import { readFileSync } from "fs";
+import { join } from "path";
 
-const BACKEND = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
-const API_KEY = process.env.MEDUSA_API_KEY || "";
+const DATA_PATH = join(process.cwd(), "data", "products.json");
 
-const adminHeaders = {
-  "Content-Type": "application/json",
-  ...(API_KEY && { Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}` }),
-};
+function readProducts(): any[] {
+  try {
+    return JSON.parse(readFileSync(DATA_PATH, "utf-8"));
+  } catch {
+    return [];
+  }
+}
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const res = await fetch(`${BACKEND}/admin/stores`, {
-      headers: adminHeaders,
-      cache: 'no-store',
-    });
-    
-    if (!res.ok) {
-      return NextResponse.json({ ambassador_settings: { min_qty: 5, prices: {} } });
-    }
-    
-    const data = await res.json();
-    const store = data.stores?.[0];
+    const products = readProducts();
 
-    return NextResponse.json({
-      ambassador_settings: store?.metadata?.ambassador_settings || { min_qty: 5, prices: {} },
-    });
+    // Build a per-product ambassador config keyed by handle
+    const perProduct: Record<string, { price: number; min_qty: number }> = {};
+    for (const p of products) {
+      if (p.handle) {
+        perProduct[p.handle] = {
+          price: p.ambassador_price || 0,
+          min_qty: p.ambassador_min_qty || 5,
+        };
+      }
+    }
+
+    return NextResponse.json({ ambassador_products: perProduct });
   } catch (error) {
     console.error("[public/settings/ambassador GET]", error);
-    return NextResponse.json({ ambassador_settings: { min_qty: 5, prices: {} } });
+    return NextResponse.json({ ambassador_products: {} });
   }
 }

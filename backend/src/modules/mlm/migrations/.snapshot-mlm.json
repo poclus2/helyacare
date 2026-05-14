@@ -70,6 +70,126 @@
           "enumItems": [],
           "mappedType": "text"
         },
+        "placement_id": {
+          "name": "placement_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "text"
+        },
+        "binary_position": {
+          "name": "binary_position",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": null,
+          "comment": null,
+          "enumItems": [
+            "LEFT",
+            "RIGHT"
+          ],
+          "mappedType": "enum"
+        },
+        "left_bv": {
+          "name": "left_bv",
+          "type": "numeric",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": "0",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "decimal"
+        },
+        "right_bv": {
+          "name": "right_bv",
+          "type": "numeric",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": "0",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "decimal"
+        },
+        "placement_preference": {
+          "name": "placement_preference",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": "'AUTOMATIC'",
+          "comment": null,
+          "enumItems": [
+            "LEFT",
+            "RIGHT",
+            "WEAKER_LEG",
+            "AUTOMATIC"
+          ],
+          "mappedType": "enum"
+        },
+        "raw_left_bv": {
+          "name": "raw_left_bv",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": "'{\"value\":\"0\",\"precision\":20}'",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "json"
+        },
+        "raw_right_bv": {
+          "name": "raw_right_bv",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "unique": false,
+          "length": null,
+          "precision": null,
+          "scale": null,
+          "default": "'{\"value\":\"0\",\"precision\":20}'",
+          "comment": null,
+          "enumItems": [],
+          "mappedType": "json"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamptz",
@@ -150,6 +270,15 @@
           "expression": "CREATE INDEX IF NOT EXISTS \"IDX_ambassador_sponsor_id\" ON \"ambassador\" (\"sponsor_id\") WHERE deleted_at IS NULL"
         },
         {
+          "keyName": "IDX_ambassador_placement_id",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_ambassador_placement_id\" ON \"ambassador\" (\"placement_id\") WHERE deleted_at IS NULL"
+        },
+        {
           "keyName": "IDX_ambassador_deleted_at",
           "columnNames": [],
           "composite": false,
@@ -175,6 +304,19 @@
           "constraintName": "ambassador_sponsor_id_foreign",
           "columnNames": [
             "sponsor_id"
+          ],
+          "localTableName": "public.ambassador",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.ambassador",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "ambassador_placement_id_foreign": {
+          "constraintName": "ambassador_placement_id_foreign",
+          "columnNames": [
+            "placement_id"
           ],
           "localTableName": "public.ambassador",
           "referencedColumnNames": [

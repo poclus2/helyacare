@@ -66,18 +66,15 @@ export default function AmbassadorBoutique() {
   const { addItem } = useCart();
   const { getPrice, getVariantId } = useLivePrices();
   const [addedId, setAddedId] = useState<string | number | null>(null);
-  const [minQty, setMinQty] = useState(5);
-  const [customPrices, setCustomPrices] = useState<Record<string, number>>({});
+  // Keyed by product handle: { price, min_qty }
+  const [ambassadorProducts, setAmbassadorProducts] = useState<Record<string, { price: number; min_qty: number }>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch("/api/settings/ambassador")
       .then(res => res.json())
       .then(data => {
-        if (data.ambassador_settings) {
-          setMinQty(data.ambassador_settings.min_qty || 5);
-          setCustomPrices(data.ambassador_settings.prices || {});
-        }
+        setAmbassadorProducts(data.ambassador_products || {});
         setLoading(false);
       })
       .catch(err => {
@@ -86,8 +83,16 @@ export default function AmbassadorBoutique() {
       });
   }, []);
 
+  const getAmbassadorConfig = (priceKey: string) => {
+    const config = ambassadorProducts[priceKey];
+    return {
+      price: config?.price || 0,
+      minQty: config?.min_qty || 5,
+    };
+  };
+
   const handleAddToCart = async (product: any) => {
-    const overridePrice = customPrices[product.priceKey];
+    const { price: overridePrice, minQty } = getAmbassadorConfig(product.priceKey);
     const originalPrice = getPrice(product.priceKey, "normal");
     const price = overridePrice > 0 ? overridePrice : originalPrice;
 
@@ -117,14 +122,14 @@ export default function AmbassadorBoutique() {
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-[#0F3D3E] mb-2">Boutique Ambassadeur</h2>
         <p className="text-gray-600">
-          En tant qu'ambassadeur, vous bénéficiez de tarifs préférentiels. Un minimum de <strong>{minQty} unités</strong> par produit est requis pour valider votre commande de réassort.
+          En tant qu'ambassadeur, vous bénéficiez de tarifs préférentiels avec des quantités minimum par lot définies pour chaque produit.
         </p>
       </div>
 
       <section className="seed-grid-section pt-0">
         <div className="seed-grid-container px-0 max-w-full">
           {products.map((product) => {
-            const overridePrice = customPrices[product.priceKey];
+            const { price: overridePrice, minQty } = getAmbassadorConfig(product.priceKey);
             const originalPrice = getPrice(product.priceKey, "normal");
             const price = overridePrice > 0 ? overridePrice : originalPrice;
             const displayPrice = formatPrice(price);

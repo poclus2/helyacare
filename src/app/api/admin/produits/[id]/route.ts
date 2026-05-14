@@ -92,9 +92,12 @@ export async function POST(
       ...(body.product?.description !== undefined && { description: body.product.description }),
       ...(body.product?.status !== undefined && { status: body.product.status }),
       ...(body.product?.thumbnail !== undefined && { thumbnail: body.product.thumbnail }),
-      // Prix
+      // Prix publics
       ...(body.price !== undefined && body.price > 0 && { price_normal: body.price }),
       ...(body.price_subscription !== undefined && { price_subscription: body.price_subscription }),
+      // Prix & quantité ambassadeurs
+      ...(body.ambassador_price !== undefined && { ambassador_price: body.ambassador_price }),
+      ...(body.ambassador_min_qty !== undefined && { ambassador_min_qty: body.ambassador_min_qty }),
       // Images
       ...(Array.isArray(body.images) && { images: body.images }),
     };

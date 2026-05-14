@@ -19,8 +19,10 @@ interface ProductForm {
   description: string;
   handle: string;
   status: "published" | "draft";
-  price: string;          // Prix achat unique (XOF)
+  price: string;              // Prix achat unique (XOF)
   price_subscription: string; // Prix abonnement mensuel (XOF)
+  ambassador_price: string;   // Prix ambassadeur (XOF)
+  ambassador_min_qty: string; // Quantité minimum ambassadeur
 }
 
 export default function ModifierProduitPage() {
@@ -52,6 +54,8 @@ export default function ModifierProduitPage() {
     status: "published",
     price: "",
     price_subscription: "",
+    ambassador_price: "",
+    ambassador_min_qty: "5",
   });
 
   // — Chargement initial du produit
@@ -89,6 +93,8 @@ export default function ModifierProduitPage() {
           status: product.status || "published",
           price: priceNormal > 0 ? String(priceNormal) : "",
           price_subscription: priceSub > 0 ? String(priceSub) : "",
+          ambassador_price: product.ambassador_price > 0 ? String(product.ambassador_price) : "",
+          ambassador_min_qty: product.ambassador_min_qty ? String(product.ambassador_min_qty) : "5",
         });
       } catch (err: any) {
         setError(err.message || "Impossible de charger le produit");
@@ -108,6 +114,8 @@ export default function ModifierProduitPage() {
     try {
       const priceNormal = form.price ? parseFloat(form.price) : 0;
       const priceSub = form.price_subscription ? parseFloat(form.price_subscription) : 0;
+      const ambassadorPrice = form.ambassador_price ? parseFloat(form.ambassador_price) : 0;
+      const ambassadorMinQty = form.ambassador_min_qty ? parseInt(form.ambassador_min_qty, 10) : 5;
 
       const res = await fetch(`/api/admin/produits/${id}`, {
         method: "POST",
@@ -121,6 +129,8 @@ export default function ModifierProduitPage() {
           },
           price: priceNormal,
           price_subscription: priceSub || undefined,
+          ambassador_price: ambassadorPrice,
+          ambassador_min_qty: ambassadorMinQty,
           images: galleryImages,
         }),
       });
@@ -568,6 +578,71 @@ export default function ModifierProduitPage() {
               </span>
             </div>
           )}
+        </div>
+
+        {/* Section Ambassadeur */}
+        <div className="bg-white/3 border border-[#E56B2D]/20 rounded-2xl p-6 space-y-5">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-[#E56B2D] text-lg">🤝</span>
+            <h2 className="text-white font-bold text-sm">Tarification Ambassadeur</h2>
+            <span className="ml-auto text-[10px] font-bold px-2 py-0.5 bg-[#E56B2D]/10 text-[#E56B2D] border border-[#E56B2D]/20 rounded-full">RÉSEAU MLM</span>
+          </div>
+          <p className="text-white/30 text-xs">Ces valeurs s'appliquent uniquement aux ambassadeurs dans leur boutique dédiée. Si le prix est à 0, le prix public sera utilisé.</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Prix ambassadeur */}
+            <div className="space-y-2">
+              <label className="text-white/60 text-xs font-bold uppercase tracking-wider block">
+                Prix Ambassadeur (XOF / unité)
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={form.ambassador_price}
+                  onChange={e => setForm({ ...form, ambassador_price: e.target.value })}
+                  placeholder="ex: 15000"
+                  className="w-full bg-white/5 border border-[#E56B2D]/20 rounded-xl px-4 py-3 pr-16 text-white text-sm
+                    placeholder:text-white/20 focus:outline-none focus:border-[#E56B2D]/50 transition-all"
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 text-sm font-bold">XOF</span>
+              </div>
+              {form.price && form.ambassador_price && parseFloat(form.price) > 0 && parseFloat(form.ambassador_price) > 0 && (
+                <p className="text-[11px] font-semibold text-[#E56B2D]">
+                  {parseFloat(form.ambassador_price) < parseFloat(form.price)
+                    ? `↓ ${Math.round((1 - parseFloat(form.ambassador_price) / parseFloat(form.price)) * 100)}% de remise vs prix public`
+                    : "⚠ Prix ≥ prix public — vérifiez les valeurs"
+                  }
+                </p>
+              )}
+            </div>
+
+            {/* Quantité minimale */}
+            <div className="space-y-2">
+              <label className="text-white/60 text-xs font-bold uppercase tracking-wider block">
+                Quantité Minimum par Commande
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={form.ambassador_min_qty}
+                  onChange={e => setForm({ ...form, ambassador_min_qty: e.target.value })}
+                  placeholder="ex: 5"
+                  className="w-full bg-white/5 border border-[#E56B2D]/20 rounded-xl px-4 py-3 pr-20 text-white text-sm
+                    placeholder:text-white/20 focus:outline-none focus:border-[#E56B2D]/50 transition-all"
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 text-sm font-bold">unités</span>
+              </div>
+              {form.ambassador_price && form.ambassador_min_qty && (
+                <p className="text-white/20 text-[11px]">
+                  Valeur minimale du lot : {(parseFloat(form.ambassador_price || "0") * parseInt(form.ambassador_min_qty || "0")).toLocaleString("fr-FR")} XOF
+                </p>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Publication */}

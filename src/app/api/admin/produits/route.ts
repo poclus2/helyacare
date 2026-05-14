@@ -73,6 +73,8 @@ export async function POST(request: Request) {
       status: body.status || "draft",
       price_normal: body.price_normal || 0,
       price_subscription: body.price_subscription || 0,
+      ambassador_price: body.ambassador_price || 0,
+      ambassador_min_qty: body.ambassador_min_qty || 5,
       thumbnail: body.thumbnail || null,
       badge: body.badge || null,
     };

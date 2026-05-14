@@ -53,6 +53,65 @@ class MlmModuleService extends MedusaService({
       referral_code: aliasToSet
     })
   }
+
+  // --- HYBRID BINARY LOGIC ---
+
+  /**
+   * Finds the next available spot in the binary tree based on the sponsor's preference
+   */
+  async assignBinaryPlacement(sponsorId: string): Promise<{ placement_id: string, binary_position: "LEFT" | "RIGHT" }> {
+    const sponsor = await this.retrieveAmbassador(sponsorId)
+    
+    const preference = sponsor.placement_preference || "AUTOMATIC"
+    // TODO: For "AUTOMATIC", determine the weaker leg by comparing left_bv and right_bv
+    let targetDirection: "LEFT" | "RIGHT" = preference === "RIGHT" ? "RIGHT" : "LEFT"
+    
+    let currentNodeId = sponsor.id
+
+    while (true) {
+      // Find children of currentNodeId
+      const children = await this.listAmbassadors({
+        placement: { id: currentNodeId }
+      })
+
+      const targetChild = children.find(c => c.binary_position === targetDirection)
+
+      if (!targetChild) {
+        // We found an empty spot!
+        return { placement_id: currentNodeId, binary_position: targetDirection }
+      }
+
+      // If the spot is taken, move down to that child and continue
+      currentNodeId = targetChild.id
+    }
+  }
+
+  /**
+   * Accumulates BV up the binary tree when a purchase is made
+   */
+  async addBinaryVolume(startingAmbassadorId: string, volumeToAdd: number): Promise<void> {
+    let current = await this.retrieveAmbassador(startingAmbassadorId, { relations: ["placement"] })
+
+    while (current && current.placement) {
+      const parentId = current.placement.id
+      const position = current.binary_position
+
+      if (position === "LEFT") {
+        await this.updateAmbassadors({
+          id: parentId,
+          left_bv: current.placement.left_bv + volumeToAdd // Will need transaction-safety in production
+        })
+      } else if (position === "RIGHT") {
+        await this.updateAmbassadors({
+          id: parentId,
+          right_bv: current.placement.right_bv + volumeToAdd // Will need transaction-safety in production
+        })
+      }
+
+      // Move up to the next parent
+      current = await this.retrieveAmbassador(parentId, { relations: ["placement"] })
+    }
+  }
 }
 
 export default MlmModuleService
