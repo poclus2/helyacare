@@ -46,6 +46,10 @@ interface Props {
   inter: string;
   pjs: string;
   ambassadorId: string;
+  leftBv?: number;
+  rightBv?: number;
+  placementPreference?: string;
+  onUpdatePreference?: (pref: string) => Promise<void>;
 }
 
 // --- Helper ---
@@ -343,7 +347,8 @@ function OrgChartModal({
 
 // --- Main Component ---
 export default function AmbassadorDashboardClient({
-  balance, referralCode, downlines, transactions, stats, inter, pjs, ambassadorId
+  balance, referralCode, downlines, transactions, stats, inter, pjs, ambassadorId,
+  leftBv = 150000, rightBv = 85000, placementPreference = "AUTOMATIC", onUpdatePreference
 }: Props) {
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState<"transactions" | "reseau">("transactions");
@@ -358,6 +363,13 @@ export default function AmbassadorDashboardClient({
   const availableBalance = stats?.available_balance ?? 0;
   const pendingBalance = stats?.pending_balance ?? 0;
   const paidOut = stats?.paid_out ?? 0;
+
+  // Binary calculations
+  const totalBv = leftBv + rightBv;
+  const leftPct = totalBv > 0 ? (leftBv / totalBv) * 100 : 50;
+  const rightPct = totalBv > 0 ? (rightBv / totalBv) * 100 : 50;
+  const weakerBv = Math.min(leftBv, rightBv);
+  const weakerLeg = leftBv < rightBv ? 'left' : rightBv < leftBv ? 'right' : 'equal';
 
   const referralLink =
     typeof window !== "undefined"
@@ -526,6 +538,77 @@ export default function AmbassadorDashboardClient({
                   Partager
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Binaire & Placement ── */}
+      <div className="bg-white border border-[#E8E3DC] rounded-2xl shadow-sm overflow-hidden">
+        <div className="px-6 py-5 border-b border-[#E8E3DC] flex flex-col sm:flex-row items-start sm:items-center justify-between bg-gradient-to-r from-[#F8FAFC] to-white gap-4 sm:gap-0">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[#0F3D3E] rounded-xl flex items-center justify-center shrink-0">
+              <GitBranch className="w-5 h-5 text-[#CBF27A]" />
+            </div>
+            <div>
+              <h3 className={`text-lg font-bold text-[#0F3D3E] ${inter}`}>Bonus Binaire & Débordement</h3>
+              <p className="text-sm text-gray-500">Gagnez 10% sur le volume (BV) de votre jambe faible.</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3 bg-white border border-[#E8E3DC] px-4 py-2.5 rounded-xl w-full sm:w-auto">
+            <span className="text-xs font-semibold text-gray-500 hidden sm:inline">Stratégie :</span>
+            <select 
+              value={placementPreference}
+              className="text-sm font-bold text-[#0F3D3E] bg-transparent outline-none cursor-pointer w-full sm:w-auto"
+              onChange={(e) => onUpdatePreference?.(e.target.value)}
+            >
+              <option value="AUTOMATIC">Automatique (Jambe Faible)</option>
+              <option value="LEFT">Extrême Gauche</option>
+              <option value="RIGHT">Extrême Droite</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="p-6">
+          <div className="flex flex-col md:flex-row gap-8 items-center">
+            {/* Jambe Gauche */}
+            <div className="flex-1 w-full text-center md:text-left">
+              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Jambe Gauche</p>
+              <p className={`text-3xl font-black text-[#0F3D3E] ${inter}`}>{leftBv.toLocaleString('fr-FR')} <span className="text-sm text-gray-400">BV</span></p>
+            </div>
+
+            {/* Versus Bar */}
+            <div className="w-full md:w-1/2 flex flex-col items-center">
+              <div className="flex w-full h-3 rounded-full overflow-hidden bg-gray-100 shadow-inner mb-3">
+                <div className="h-full bg-blue-500 transition-all duration-1000" style={{ width: `${leftPct}%` }} />
+                <div className="h-full bg-amber-500 transition-all duration-1000" style={{ width: `${rightPct}%` }} />
+              </div>
+              <div className="flex justify-between w-full text-[11px] font-bold text-gray-400 uppercase">
+                <span className="text-blue-500">{leftPct.toFixed(0)}%</span>
+                <span>Équilibre</span>
+                <span className="text-amber-500">{rightPct.toFixed(0)}%</span>
+              </div>
+            </div>
+
+            {/* Jambe Droite */}
+            <div className="flex-1 w-full text-center md:text-right">
+              <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-1">Jambe Droite</p>
+              <p className={`text-3xl font-black text-[#0F3D3E] ${inter}`}>{rightBv.toLocaleString('fr-FR')} <span className="text-sm text-gray-400">BV</span></p>
+            </div>
+          </div>
+
+          {/* Estimation */}
+          <div className="mt-6 pt-5 border-t border-[#E8E3DC] flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-sm text-gray-500">
+                Jambe faible actuelle : <strong className="text-[#0F3D3E]">{weakerLeg === 'left' ? 'Gauche' : weakerLeg === 'right' ? 'Droite' : 'Équilibrée'}</strong>
+              </span>
+            </div>
+            <div className="flex items-center gap-3 bg-[#CBF27A]/20 px-5 py-2.5 rounded-xl border border-[#CBF27A]/30">
+              <span className="text-xs font-semibold text-[#0F3D3E] uppercase tracking-wide">Bonus Binaire Estimé</span>
+              <span className={`text-xl font-black text-[#0F3D3E] ${inter}`}>{formatXOF(weakerBv * 0.1)}</span>
             </div>
           </div>
         </div>
