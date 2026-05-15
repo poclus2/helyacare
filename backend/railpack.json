@@ -3,7 +3,7 @@
     "install": {
       "cmds": [
         "npm i -g corepack@latest && corepack enable && corepack prepare --activate",
-        "NODE_OPTIONS='--max-old-space-size=4096' npm ci --no-audit --no-fund --maxsockets 1 --verbose"
+        "NODE_OPTIONS='--max-old-space-size=4096' npm ci --ignore-scripts --no-audit --no-fund --maxsockets 1"
       ]
     }
   }
