@@ -159,7 +159,7 @@ export async function POST(
     if (placement_preference && ["LEFT", "RIGHT", "WEAKER_LEG", "AUTOMATIC"].includes(placement_preference)) {
       await mlmService.updateAmbassadors({
         id: ambassadors[0].id,
-        placement_preference
+        placement_preference: placement_preference as "LEFT" | "RIGHT" | "WEAKER_LEG" | "AUTOMATIC"
       })
     }
 
