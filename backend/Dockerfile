@@ -5,8 +5,8 @@ WORKDIR /app
 # Copie des fichiers de dépendances
 COPY package*.json ./
 
-# Installation des dépendances
-RUN npm install
+# Installation optimisée pour éviter les blocages (ignore la compilation native lente)
+RUN npm install --ignore-scripts --no-fund --no-audit
 
 # Copie du code source
 COPY . .
