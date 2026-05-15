@@ -1,17 +1,73 @@
 version: '3.8'
+
 services:
-  postgres:
+  db:
     image: postgres:15
-    container_name: helyacare_postgres
+    container_name: helyacare_db
     restart: always
     environment:
-      POSTGRES_USER: helya_admin
-      POSTGRES_PASSWORD: helya_password
-      POSTGRES_DB: helyacare_db
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: ${POSTGRES_USER:-helya_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-helya_password}
+      POSTGRES_DB: ${POSTGRES_DB:-helyacare_db}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - helyanet
+
+  redis:
+    image: redis:alpine
+    container_name: helyacare_redis
+    restart: always
+    volumes:
+      - redis_data:/data
+    networks:
+      - helyanet
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: helyacare_backend
+    restart: always
+    depends_on:
+      - db
+      - redis
+    environment:
+      - NODE_ENV=production
+      - PORT=9000
+      - DATABASE_URL=postgres://${POSTGRES_USER:-helya_admin}:${POSTGRES_PASSWORD:-helya_password}@db:5432/${POSTGRES_DB:-helyacare_db}
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET:-supersecret}
+      - COOKIE_SECRET=${COOKIE_SECRET:-supersecret}
+      - STORE_CORS=${STORE_CORS:-http://localhost:3000,https://helyacare.com}
+      - ADMIN_CORS=${ADMIN_CORS:-http://localhost:3000,https://api.helyacare.com,https://helyacare.com}
+      - AUTH_CORS=${AUTH_CORS:-http://localhost:3000,https://helyacare.com,https://api.helyacare.com}
+      # Ajoutez d'autres clés Stripe ou Mail ici si nécessaire
+    ports:
+      - "9000:9000"
+    networks:
+      - helyanet
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: helyacare_frontend
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_MEDUSA_BACKEND_URL=${NEXT_PUBLIC_MEDUSA_BACKEND_URL:-http://localhost:9000}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - helyanet
 
 volumes:
   postgres_data:
+  redis_data:
+
+networks:
+  helyanet:
+    driver: bridge
