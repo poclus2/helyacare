@@ -4,8 +4,8 @@
 # ignore-scripts=true dans .npmrc → skip compilation native @swc/core
 
 [build]
-builder = "RAILPACK"
-buildCommand = "npx medusa build"
+builder = "NIXPACKS"
+buildCommand = "npm install --ignore-scripts && npx medusa build"
 
 [deploy]
 startCommand = "npx medusa db:migrate && (npx medusa user -e admin@helyacare.com -p 'HelyaCare2026!' || true) && npm run start"
