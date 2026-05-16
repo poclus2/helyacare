@@ -11,7 +11,8 @@ RUN npm install --ignore-scripts --no-fund --no-audit
 # Copie du code source
 COPY . .
 
-# Build de Medusa
+# Build de Medusa pour la production (génère l'admin dashboard)
+ENV NODE_ENV=production
 RUN npx medusa build
 
 EXPOSE 9000
