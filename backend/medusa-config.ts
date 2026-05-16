@@ -18,9 +18,9 @@ module.exports = defineConfig({
     }
   },
   // Désactive la compilation Vite/React du dashboard admin (trop lente sur Railway)
-  // --no-admin CLI flag supprimé en v2.13.6 — seul moyen fiable : config
+  // Sur VPS Contabo (6Go RAM), on peut l'activer sans problème.
   admin: {
-    disable: true,
+    disable: process.env.DISABLE_ADMIN === 'true',
   },
   modules: [
     {
