@@ -17,10 +17,9 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || 'supersecret',
     }
   },
-  // Désactive la compilation Vite/React du dashboard admin (trop lente sur Railway)
-  // Sur VPS Contabo (6Go RAM), on peut l'activer sans problème.
+  // Désactivé par défaut pour éviter de bloquer le démarrage du serveur sur VPS
   admin: {
-    disable: process.env.DISABLE_ADMIN === 'true',
+    disable: process.env.DISABLE_ADMIN !== 'false',
   },
   modules: [
     {
