@@ -11,80 +11,18 @@ import { useState } from "react";
 import "./boutique.css";
 
 
-const products = [
-  {
-    id: 1,
-    priceKey: "crave-control" as const,
-    badge: "Nouveau",
-    sku: "CC-01™",
-    title: "Crave Control",
-    desc: "Un bouclier neuro-métabolique qui régule l'appétit, aide à limiter les fringales et soutient le métabolisme au quotidien.",
-    image: "/crave-control.png",
-    cta: "Ajouter au panier",
-    href: "/boutique/crave-control",
-    saveBadge: null as string | null,
-  },
-  {
-    id: 2,
-    priceKey: "pack-bien-etre" as const,
-    badge: null as string | null,
-    sku: null as string | null,
-    title: "Pack Bien-Être Essentiel",
-    desc: "Duo quotidien validé cliniquement associant Crave Control et Helya Hydrate pour une santé optimale au quotidien.",
-    saveBadge: "Pack — Économisez 20%",
-    image: "/crave-control.png",
-    cta: "Ajouter au panier",
-    href: "/boutique/pack-bien-etre",
-  },
-  {
-    id: 3,
-    priceKey: "apple-satiety-shot" as const,
-    badge: "Nouveau",
-    sku: "AS-02™",
-    title: "Apple Satiety Shot",
-    desc: "Shot de satiété formulé avec des extraits de pomme et de plantes adaptogènes pour couper les envies entre les repas.",
-    image: "/crave-control.png",
-    cta: "Ajouter au panier",
-    href: "/boutique/apple-satiety-shot",
-    saveBadge: null as string | null,
-  },
-  {
-    id: 4,
-    priceKey: "helya-hydrate" as const,
-    badge: "Nouveau",
-    sku: "HH-03™",
-    title: "Helya Hydrate",
-    desc: "Électrolytes premium enrichis en minéraux essentiels pour une hydratation cellulaire optimale et une récupération accélérée.",
-    image: "/crave-control.png",
-    cta: "Ajouter au panier",
-    href: "/boutique/helya-hydrate",
-    saveBadge: null as string | null,
-  },
-  {
-    id: 5,
-    priceKey: "helya-vigor" as const,
-    badge: null as string | null,
-    sku: "HV-04™",
-    title: "Helya Vigor",
-    desc: "Formule vitalité et énergie à base de plantes et de vitamines B pour soutenir l'endurance physique et mentale.",
-    image: "/crave-control.png",
-    cta: "Ajouter au panier",
-    href: "/boutique/helya-vigor",
-    saveBadge: null as string | null,
-  },
-  {
-    id: 6,
-    priceKey: "helya-perform" as const,
-    badge: "Bientôt",
-    sku: "HP-05™",
-    title: "Helya Perform",
-    desc: "Protocole performance avancé, formulé pour les sportifs souhaitant optimiser leur récupération musculaire et leur clarté mentale.",
-    image: "/crave-control.png",
-    cta: "Rejoindre la liste d'attente",
-    href: "/boutique/helya-perform",
-    saveBadge: null as string | null,
-  },
-];
+"use client";
+
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { useTranslations } from "next-intl";
+import { Link } from "@/navigation";
+import { useCurrency } from "@/contexts/CurrencyContext";
+import { useLivePrices } from "@/contexts/PricesContext";
+import { useCart } from "@/contexts/CartContext";
+import { useState, useEffect } from "react";
+import { Loader2 } from "lucide-react";
+import "./boutique.css";
 
 export default function BoutiquePage() {
   const t = useTranslations("Boutique2");
@@ -92,21 +30,41 @@ export default function BoutiquePage() {
   const { addItem } = useCart();
   const { getPrice, getVariantId } = useLivePrices();
   const [addedId, setAddedId] = useState<string | number | null>(null);
+  
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Crave Control (id=1) est déjà affiché comme carte vedette dans le hero
-  // → on l'exclut de la grille pour éviter le doublon
-  const allProducts = products.filter(p => p.id !== 1);
-
+  useEffect(() => {
+    async function loadProducts() {
+      try {
+        const res = await fetch("/api/products");
+        if (res.ok) {
+          const data = await res.json();
+          setProducts(data.products || []);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadProducts();
+  }, []);
 
   const handleAddToCart = async (product: any) => {
-    if (product.id === 6) return; // Helya Perform — liste d'attente
+    // Si pas de variante, on empêche l'ajout
+    if (!product.variant_id && !getVariantId(product.priceKey)) return;
 
-    const normal = getPrice(product.priceKey, "normal");
-    const sub = getPrice(product.priceKey, "subscription");
+    // Pour l'instant, "Helya Perform" était grisé. S'il n'est pas dispo en stock, on pourrait bloquer.
+    // On simule le blocage si cta === "Rejoindre la liste d'attente"
+    if (product.cta === "Rejoindre la liste d'attente") return;
+
+    const normal = getPrice(product.priceKey, "normal") || product.price_normal;
+    const sub = getPrice(product.priceKey, "subscription") || product.price_subscription;
     const price = sub || normal;
 
     await addItem({
-      variantId: getVariantId(product.priceKey) || `${product.priceKey}-v1`,
+      variantId: getVariantId(product.priceKey) || product.variant_id || `${product.priceKey}-v1`,
       quantity: 1,
       title: product.title,
       subtitle: sub ? "Abonnement mensuel" : "Achat unique",
@@ -118,6 +76,35 @@ export default function BoutiquePage() {
     setTimeout(() => setAddedId(null), 2000);
   };
 
+  if (loading) {
+    return (
+      <div className="seed-page">
+        <Header />
+        <div className="flex flex-col items-center justify-center py-48 text-white">
+          <Loader2 className="w-12 h-12 text-[#CBF27A] animate-spin mb-4" />
+          <p className="font-bold">Chargement du catalogue...</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // S'il n'y a aucun produit
+  if (products.length === 0) {
+    return (
+      <div className="seed-page">
+        <Header />
+        <div className="flex flex-col items-center justify-center py-48 text-white">
+          <p className="font-bold text-xl">Aucun produit disponible pour le moment.</p>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  // On trouve le produit vedette (ex: crave-control ou le premier de la liste)
+  const featuredProduct = products.find(p => p.priceKey === "crave-control") || products[0];
+  const allProducts = products.filter(p => p.id !== featuredProduct.id);
 
   return (
     <div className="seed-page">
@@ -144,29 +131,29 @@ export default function BoutiquePage() {
           <div className="seed-hero-cards">
             {/* Featured Product Card */}
             <div className="seed-featured-card">
-              <div className="seed-badge-featured">{t("featuredBadge")}</div>
+              <div className="seed-badge-featured">{featuredProduct.badge || t("featuredBadge")}</div>
               <div className="seed-featured-layout">
                 <div className="seed-featured-img-wrap">
-                  <img src="/crave-control.png" alt="Crave Control" />
+                  <img src={featuredProduct.image} alt={featuredProduct.title} />
                 </div>
                 <div className="seed-featured-details">
-                  <span className="seed-sku-pill">{t("featuredCategory")}</span>
-                  <h2 className="seed-featured-title">{t("featuredTitle")}</h2>
+                  <span className="seed-sku-pill">{featuredProduct.sku || t("featuredCategory")}</span>
+                  <h2 className="seed-featured-title">{featuredProduct.title}</h2>
                   <p className="seed-featured-desc">
-                    {t("featuredDesc")}
+                    {featuredProduct.desc}
                   </p>
                   <p className="seed-featured-price">
-                    {formatPrice(getPrice("crave-control", "normal"))}
+                    {formatPrice(getPrice(featuredProduct.priceKey, "normal") || featuredProduct.price_normal)}
                   </p>
                   <div className="seed-featured-actions">
-                    <Link href="/boutique/crave-control">
+                    <Link href={`/boutique/${featuredProduct.priceKey}`}>
                       <button className="seed-btn-primary-white">{t("discoverBtn")}</button>
                     </Link>
                     <button
                       className="seed-btn-text-white"
-                      onClick={() => handleAddToCart(products[0])}
+                      onClick={() => handleAddToCart(featuredProduct)}
                     >
-                      {addedId === 1 ? "✓ Ajouté !" : t("addBtn")}
+                      {addedId === featuredProduct.id ? "✓ Ajouté !" : t("addBtn")}
                     </button>
                   </div>
                 </div>
@@ -189,11 +176,12 @@ export default function BoutiquePage() {
       <section className="seed-grid-section">
         <div className="seed-grid-container">
           {allProducts.map((product) => {
-            const normal = getPrice(product.priceKey, "normal");
-            const sub = getPrice(product.priceKey, "subscription");
+            const normal = getPrice(product.priceKey, "normal") || product.price_normal;
+            const sub = getPrice(product.priceKey, "subscription") || product.price_subscription;
             const displayPrice = formatPrice(sub || normal);
             const strikePrice = sub && sub !== normal ? formatPrice(normal) : null;
-
+            
+            const isWaitlist = product.cta === "Rejoindre la liste d'attente" || product.status === "draft";
 
             return (
               <div key={product.id} className="seed-card">
@@ -230,8 +218,8 @@ export default function BoutiquePage() {
                       <button
                         className="seed-btn-text-dark"
                         onClick={() => handleAddToCart(product)}
-                        disabled={product.id === 6}
-                        style={product.id === 6 ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+                        disabled={isWaitlist}
+                        style={isWaitlist ? { opacity: 0.5, cursor: "not-allowed" } : {}}
                       >
                         {addedId === product.id ? "✓ Ajouté !" : product.cta}
                       </button>

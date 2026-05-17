@@ -1,25 +1,9 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
-import { readFileSync, writeFileSync } from "fs";
-import { join } from "path";
 
 const SECRET = new TextEncoder().encode(
   process.env.ADMIN_SECRET || "helyacare-admin-fallback-secret"
 );
-
-const DATA_PATH = join(process.cwd(), "data", "products.json");
-
-function readProducts(): any[] {
-  try {
-    return JSON.parse(readFileSync(DATA_PATH, "utf-8"));
-  } catch {
-    return [];
-  }
-}
-
-function writeProducts(products: any[]) {
-  writeFileSync(DATA_PATH, JSON.stringify(products, null, 2), "utf-8");
-}
 
 async function verifyAdmin(request: Request) {
   const cookieHeader = request.headers.get("cookie") || "";
@@ -31,19 +15,8 @@ async function verifyAdmin(request: Request) {
   await jwtVerify(token, SECRET);
 }
 
-function toApiFormat(p: any) {
-  return {
-    ...p,
-    variants: [
-      {
-        id: `${p.id}-variant-1`,
-        title: "Standard",
-        prices: [{ currency_code: "xof", amount: (p.price_normal || 0) * 100 }],
-      },
-    ],
-    collection: null,
-  };
-}
+const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
+const MEDUSA_API_KEY = process.env.MEDUSA_API_KEY || "";
 
 /** GET /api/admin/produits/[id] */
 export async function GET(
@@ -53,18 +26,44 @@ export async function GET(
   try {
     await verifyAdmin(request);
     const { id } = await props.params;
-    const products = readProducts();
-    const product = products.find(p => p.id === id || p.handle === id);
+    
+    const res = await fetch(`${MEDUSA_URL}/admin/products/${id}?fields=*variants.prices,*options`, {
+      headers: { "Authorization": `Bearer ${MEDUSA_API_KEY}` },
+      cache: "no-store",
+    });
 
-    if (!product) {
-      return NextResponse.json({ error: "Produit introuvable" }, { status: 404 });
+    if (!res.ok) {
+      if (res.status === 404) return NextResponse.json({ error: "Produit introuvable" }, { status: 404 });
+      throw new Error(`Medusa API error: ${res.status}`);
     }
 
-    return NextResponse.json({ product: toApiFormat(product) });
+    const data = await res.json();
+    const p = data.product;
+
+    const price_normal = p.variants?.[0]?.prices?.find((price: any) => price.currency_code === "xof")?.amount / 100 || 0;
+
+    const formatted = {
+      id: p.id,
+      handle: p.handle,
+      title: p.title,
+      description: p.description,
+      thumbnail: p.thumbnail,
+      images: p.images?.map((i: any) => i.url) || [],
+      status: p.status,
+      price_normal,
+      price_subscription: p.metadata?.subscription_price || 0,
+      ambassador_price: p.metadata?.ambassador_price || 0,
+      ambassador_min_qty: p.metadata?.ambassador_min_qty || 5,
+      variants: p.variants || [],
+      collection: null,
+    };
+
+    return NextResponse.json({ product: formatted });
   } catch (error: any) {
     if (error.message === "Non authentifié") {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
+    console.error("[GET /api/admin/produits/[id]]", error);
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
   }
 }
@@ -78,34 +77,75 @@ export async function POST(
     await verifyAdmin(request);
     const { id } = await props.params;
     const body = await request.json();
-    const products = readProducts();
-    const idx = products.findIndex(p => p.id === id || p.handle === id);
+    
+    // On doit d'abord récupérer le produit actuel pour obtenir ses metadatas existantes et l'ID de sa variante
+    const getRes = await fetch(`${MEDUSA_URL}/admin/products/${id}?fields=*variants.prices,*options`, {
+      headers: { "Authorization": `Bearer ${MEDUSA_API_KEY}` },
+    });
+    if (!getRes.ok) throw new Error("Produit introuvable pour la mise à jour");
+    const existing = await getRes.json();
+    const p = existing.product;
 
-    if (idx === -1) {
-      return NextResponse.json({ error: "Produit introuvable" }, { status: 404 });
-    }
-
-    // Mise à jour partielle
-    const updated = {
-      ...products[idx],
-      ...(body.product?.title !== undefined && { title: body.product.title }),
-      ...(body.product?.description !== undefined && { description: body.product.description }),
-      ...(body.product?.status !== undefined && { status: body.product.status }),
-      ...(body.product?.thumbnail !== undefined && { thumbnail: body.product.thumbnail }),
-      // Prix publics
-      ...(body.price !== undefined && body.price > 0 && { price_normal: body.price }),
-      ...(body.price_subscription !== undefined && { price_subscription: body.price_subscription }),
-      // Prix & quantité ambassadeurs
+    const metadata = {
+      ...p.metadata,
+      ...(body.price_subscription !== undefined && { subscription_price: body.price_subscription }),
       ...(body.ambassador_price !== undefined && { ambassador_price: body.ambassador_price }),
       ...(body.ambassador_min_qty !== undefined && { ambassador_min_qty: body.ambassador_min_qty }),
-      // Images
-      ...(Array.isArray(body.images) && { images: body.images }),
     };
 
-    products[idx] = updated;
-    writeProducts(products);
+    // Mise à jour partielle des champs de base du produit
+    const updatePayload: any = {
+      title: body.product?.title !== undefined ? body.product.title : p.title,
+      description: body.product?.description !== undefined ? body.product.description : p.description,
+      status: body.product?.status !== undefined ? body.product.status : p.status,
+      thumbnail: body.product?.thumbnail !== undefined ? body.product.thumbnail : p.thumbnail,
+      metadata,
+    };
 
-    return NextResponse.json({ product: toApiFormat(updated) });
+    // Si on met à jour les images
+    if (Array.isArray(body.images)) {
+      updatePayload.images = body.images.map((url: string) => ({ url }));
+    }
+
+    const res = await fetch(`${MEDUSA_URL}/admin/products/${id}`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${MEDUSA_API_KEY}` 
+      },
+      body: JSON.stringify(updatePayload),
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.error("Medusa update product error:", err);
+      throw new Error("Erreur de mise à jour Medusa");
+    }
+
+    // ── Mise à jour du prix si nécessaire ──
+    if (body.price !== undefined && p.variants && p.variants.length > 0) {
+      const variantId = p.variants[0].id;
+      // Note : dans Medusa V2, on met à jour les prix de la variante via le bon endpoint
+      const priceUpdatePayload = {
+        prices: [
+          {
+            currency_code: "xof",
+            amount: body.price * 100,
+          }
+        ]
+      };
+      const varRes = await fetch(`${MEDUSA_URL}/admin/products/${id}/variants/${variantId}`, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${MEDUSA_API_KEY}` 
+        },
+        body: JSON.stringify(priceUpdatePayload),
+      });
+      if (!varRes.ok) console.error("Erreur mise à jour prix variant:", await varRes.text());
+    }
+
+    return NextResponse.json({ product: { id, updated: true } });
   } catch (error: any) {
     if (error.message === "Non authentifié") {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
@@ -123,22 +163,22 @@ export async function DELETE(
   try {
     await verifyAdmin(request);
     const { id } = await props.params;
-    const products = readProducts();
-    const idx = products.findIndex(p => p.id === id || p.handle === id);
+    
+    const res = await fetch(`${MEDUSA_URL}/admin/products/${id}`, {
+      method: "DELETE",
+      headers: { "Authorization": `Bearer ${MEDUSA_API_KEY}` },
+    });
 
-    if (idx === -1) {
-      return NextResponse.json({ error: "Produit introuvable" }, { status: 404 });
+    if (!res.ok) {
+      throw new Error(`Erreur suppression: ${res.status}`);
     }
 
-    const deleted = products[idx];
-    products.splice(idx, 1);
-    writeProducts(products);
-
-    return NextResponse.json({ id: deleted.id, deleted: true });
+    return NextResponse.json({ id, deleted: true });
   } catch (error: any) {
     if (error.message === "Non authentifié") {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
+    console.error("[admin/produits/delete]", error);
     return NextResponse.json({ error: "Erreur lors de la suppression" }, { status: 500 });
   }
 }
