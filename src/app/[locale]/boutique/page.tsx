@@ -7,19 +7,6 @@ import { Link } from "@/navigation";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useLivePrices } from "@/contexts/PricesContext";
 import { useCart } from "@/contexts/CartContext";
-import { useState } from "react";
-import "./boutique.css";
-
-
-"use client";
-
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import { useTranslations } from "next-intl";
-import { Link } from "@/navigation";
-import { useCurrency } from "@/contexts/CurrencyContext";
-import { useLivePrices } from "@/contexts/PricesContext";
-import { useCart } from "@/contexts/CartContext";
 import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import "./boutique.css";
