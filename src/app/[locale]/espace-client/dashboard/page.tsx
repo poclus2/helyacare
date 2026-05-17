@@ -23,6 +23,7 @@ export default async function AmbassadorDashboardPage() {
 
   let ambassador: any = null;
   let stats: any = null;
+  let debugError = "";
 
   if (token && customerId) {
     // 1. Try to fetch existing ambassador record
@@ -35,15 +36,19 @@ export default async function AmbassadorDashboardPage() {
         const data = await res.json();
         ambassador = data.ambassador;
         stats = data.stats;
+      } else {
+        debugError += `[GET] Status: ${res.status} | `;
+        try { debugError += await res.text(); } catch(e){}
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("Failed to fetch ambassador:", e);
+      debugError += `[GET] Exception: ${e.message} | `;
     }
 
     // 2. If role is ambassadeur but no ambassador record exists → auto-provision
     if (!ambassador && role === "ambassadeur") {
       try {
-        const generatedCode = `HELYA-${firstName.toUpperCase().slice(0, 8)}`;
+        const generatedCode = `HELYA-${firstName.toUpperCase().replace(/\s/g, '').slice(0, 8)}`;
         const createRes = await fetch(`${backendUrl}/store/ambassadors`, {
           method: "POST",
           headers,
@@ -56,9 +61,13 @@ export default async function AmbassadorDashboardPage() {
           const data = await createRes.json();
           ambassador = data.ambassador;
           stats = null; // Fresh account — no stats yet
+        } else {
+           debugError += `\n[POST] Status: ${createRes.status} | `;
+           try { debugError += await createRes.text(); } catch(e){}
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error("Failed to auto-provision ambassador:", e);
+        debugError += `\n[POST] Exception: ${e.message} | `;
       }
     }
   }
@@ -74,7 +83,13 @@ export default async function AmbassadorDashboardPage() {
         </div>
         <h2 className={`text-2xl font-bold text-[#0F3D3E] ${inter.className}`}>Programme Ambassadeur</h2>
         <p className="text-gray-500 max-w-md">Rejoignez le programme HelyaCare pour accéder à votre tableau de bord ambassadeur et commencer à générer des commissions.</p>
-        <a href="/ambassadeur" className="px-6 py-3 bg-[#0F3D3E] text-white rounded-xl font-semibold text-sm hover:bg-[#1a5556] transition-colors">
+        {debugError && (
+          <div className="text-left w-full max-w-2xl bg-red-50 text-red-700 text-xs p-4 rounded-xl font-mono mt-4 overflow-auto">
+            <span className="font-bold">Info Diagnostic (à envoyer au dev) :</span>
+            <pre className="mt-2 whitespace-pre-wrap">{debugError}</pre>
+          </div>
+        )}
+        <a href="/ambassadeur" className="px-6 py-3 bg-[#0F3D3E] text-white rounded-xl font-semibold text-sm hover:bg-[#1a5556] transition-colors mt-4">
           Devenir Ambassadeur
         </a>
       </div>
