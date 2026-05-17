@@ -82,6 +82,7 @@ AUTH_CORS=https://helyacare.com,https://api.helyacare.com
 
 # ==== FRONTEND ====
 NEXT_PUBLIC_MEDUSA_BACKEND_URL=https://api.helyacare.com
+NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=pk_fe5b9e38457f82b5b007da6a6fa441fdc5f94906d1c1fda167ba8644e134a74f
 ```
 Pour sauvegarder et quitter `nano` : appuyez sur `Ctrl+O`, `Entrée`, puis `Ctrl+X`.
 

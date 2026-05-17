@@ -40,7 +40,7 @@ export default async function AmbassadorDashboardPage() {
       console.error("Failed to fetch ambassador:", e);
     }
 
-    // 2. If role is ambassadeur but no MLM record exists → auto-provision
+    // 2. If role is ambassadeur but no ambassador record exists → auto-provision
     if (!ambassador && role === "ambassadeur") {
       try {
         const generatedCode = `HELYA-${firstName.toUpperCase().slice(0, 8)}`;
@@ -73,7 +73,7 @@ export default async function AmbassadorDashboardPage() {
           </svg>
         </div>
         <h2 className={`text-2xl font-bold text-[#0F3D3E] ${inter.className}`}>Programme Ambassadeur</h2>
-        <p className="text-gray-500 max-w-md">Rejoignez le programme HelyaCare pour accéder à votre tableau de bord MLM et commencer à générer des commissions.</p>
+        <p className="text-gray-500 max-w-md">Rejoignez le programme HelyaCare pour accéder à votre tableau de bord ambassadeur et commencer à générer des commissions.</p>
         <a href="/ambassadeur" className="px-6 py-3 bg-[#0F3D3E] text-white rounded-xl font-semibold text-sm hover:bg-[#1a5556] transition-colors">
           Devenir Ambassadeur
         </a>

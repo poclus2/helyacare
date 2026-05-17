@@ -23,7 +23,8 @@ COPY . .
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Build standard (pas de standalone — évite bug Turbopack + middleware.js.nft.json)
+# .env.production est copié depuis le build context (voir .dockerignore)
+# Next.js le lit automatiquement pendant npm run build
 RUN npm run build
 
 # Étape 3 : Image de production

@@ -8,7 +8,7 @@ export default function DashboardNav({ isAmbassador = false }: { isAmbassador?: 
   const navLinks = [
     { name: isAmbassador ? "Boutique" : "Vue d'ensemble", href: "/espace-client", icon: isAmbassador ? Store : LayoutDashboard },
     ...(isAmbassador ? [
-      { name: "Réseau MLM", href: "/espace-client/dashboard", icon: Users },
+      { name: "Mon Réseau", href: "/espace-client/dashboard", icon: Users },
       { name: "Wallet", href: "/espace-client/ambassadeur", icon: Wallet },
     ] : []),
     { name: "Abonnement", href: "/espace-client/abonnement", icon: RefreshCcw },

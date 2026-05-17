@@ -198,7 +198,7 @@ export default function WithdrawPanel({ token }: Props) {
       {/* ── Code parrainage + Retrait ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        {/* Code parrainage — même style que le bloc Réseau MLM */}
+        {/* Code parrainage */}
         {referralCode && (
           <div className="bg-[#0F3D3E] rounded-2xl p-6 shadow-lg relative overflow-hidden">
             <div className="absolute -top-8 -right-8 w-40 h-40 bg-white/5 rounded-full" />

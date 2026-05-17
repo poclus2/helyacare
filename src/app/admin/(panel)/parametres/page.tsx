@@ -146,7 +146,7 @@ export default function ParametresPage() {
           </div>
           <div>
             <h2 className="text-white font-semibold">Boutique Ambassadeurs</h2>
-            <p className="text-white/40 text-xs">Prix réduits et quantité minimale pour le réseau MLM</p>
+            <p className="text-white/40 text-xs">Prix réduits et quantité minimale pour le programme ambassadeurs</p>
           </div>
         </div>
 

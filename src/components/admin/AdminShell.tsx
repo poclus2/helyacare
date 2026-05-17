@@ -17,7 +17,7 @@ const navItems = [
   { href: "/admin/produits", label: "Produits", icon: Package },
   { href: "/admin/clients", label: "Clients", icon: Users },
   { href: "/admin/depots", label: "Dépôts Manuels", icon: CreditCard },
-  { href: "/admin/retraits", label: "Retraits MLM", icon: Wallet },
+  { href: "/admin/retraits", label: "Retraits", icon: Wallet },
   { href: "/admin/parametres", label: "Paramètres", icon: Settings },
 ];
 

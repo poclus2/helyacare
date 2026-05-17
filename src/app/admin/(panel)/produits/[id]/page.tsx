@@ -585,7 +585,7 @@ export default function ModifierProduitPage() {
           <div className="flex items-center gap-2 mb-2">
             <span className="text-[#E56B2D] text-lg">🤝</span>
             <h2 className="text-white font-bold text-sm">Tarification Ambassadeur</h2>
-            <span className="ml-auto text-[10px] font-bold px-2 py-0.5 bg-[#E56B2D]/10 text-[#E56B2D] border border-[#E56B2D]/20 rounded-full">RÉSEAU MLM</span>
+            <span className="ml-auto text-[10px] font-bold px-2 py-0.5 bg-[#E56B2D]/10 text-[#E56B2D] border border-[#E56B2D]/20 rounded-full">AMBASSADEURS</span>
           </div>
           <p className="text-white/30 text-xs">Ces valeurs s'appliquent uniquement aux ambassadeurs dans leur boutique dédiée. Si le prix est à 0, le prix public sera utilisé.</p>
 

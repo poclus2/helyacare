@@ -123,7 +123,7 @@ export default function AdminRetraitsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-white">Retraits MLM</h1>
+          <h1 className="text-2xl font-extrabold text-white">Retraits Ambassadeurs</h1>
           <p className="text-white/40 text-sm mt-0.5">
             {pending.length} en attente · {history.length} traités
           </p>
