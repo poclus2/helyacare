@@ -44,12 +44,9 @@ COPY --from=builder /app/.next             ./.next
 COPY --from=builder /app/node_modules      ./node_modules
 COPY --from=builder /app/package.json      ./package.json
 
-# Catalogue produits
-COPY --from=builder /app/data ./data
-
 # Dossier uploads persistant
 RUN mkdir -p ./public/uploads && \
-    chown -R nextjs:nodejs ./public/uploads ./data
+    chown -R nextjs:nodejs ./public/uploads
 
 USER nextjs
 
