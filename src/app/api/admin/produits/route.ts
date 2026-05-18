@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
+import { getMedusaAdminToken } from "@/lib/medusa-admin-auth";
 
 const SECRET = new TextEncoder().encode(
   process.env.ADMIN_SECRET || "helyacare-admin-fallback-secret"
@@ -16,15 +17,15 @@ async function verifyAdmin(request: Request) {
 }
 
 const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
-const MEDUSA_API_KEY = process.env.MEDUSA_API_KEY || "";
 
 /** GET /api/admin/produits — liste tous les produits depuis Medusa */
 export async function GET(request: Request) {
   try {
     await verifyAdmin(request);
 
+    const medusaToken = await getMedusaAdminToken();
     const res = await fetch(`${MEDUSA_URL}/admin/products?fields=*variants.prices,*options`, {
-      headers: { "Authorization": `Bearer ${MEDUSA_API_KEY}` },
+      headers: { "Authorization": `Bearer ${medusaToken}` },
       cache: "no-store",
     });
 
@@ -100,11 +101,12 @@ export async function POST(request: Request) {
       }
     };
 
+    const medusaToken = await getMedusaAdminToken();
     const res = await fetch(`${MEDUSA_URL}/admin/products`, {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${MEDUSA_API_KEY}` 
+        "Authorization": `Bearer ${medusaToken}` 
       },
       body: JSON.stringify(newProductPayload),
     });

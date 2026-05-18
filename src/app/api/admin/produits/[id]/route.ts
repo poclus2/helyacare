@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
+import { getMedusaAdminToken } from "@/lib/medusa-admin-auth";
 
 const SECRET = new TextEncoder().encode(
   process.env.ADMIN_SECRET || "helyacare-admin-fallback-secret"
@@ -16,7 +17,6 @@ async function verifyAdmin(request: Request) {
 }
 
 const MEDUSA_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
-const MEDUSA_API_KEY = process.env.MEDUSA_API_KEY || "";
 
 /** GET /api/admin/produits/[id] */
 export async function GET(
@@ -27,8 +27,9 @@ export async function GET(
     await verifyAdmin(request);
     const { id } = await props.params;
     
+    const medusaToken = await getMedusaAdminToken();
     const res = await fetch(`${MEDUSA_URL}/admin/products/${id}?fields=*variants.prices,*options`, {
-      headers: { "Authorization": `Bearer ${MEDUSA_API_KEY}` },
+      headers: { "Authorization": `Bearer ${medusaToken}` },
       cache: "no-store",
     });
 
@@ -79,8 +80,9 @@ export async function POST(
     const body = await request.json();
     
     // On doit d'abord récupérer le produit actuel pour obtenir ses metadatas existantes et l'ID de sa variante
+    const medusaToken = await getMedusaAdminToken();
     const getRes = await fetch(`${MEDUSA_URL}/admin/products/${id}?fields=*variants.prices,*options`, {
-      headers: { "Authorization": `Bearer ${MEDUSA_API_KEY}` },
+      headers: { "Authorization": `Bearer ${medusaToken}` },
     });
     if (!getRes.ok) throw new Error("Produit introuvable pour la mise à jour");
     const existing = await getRes.json();
@@ -111,7 +113,7 @@ export async function POST(
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${MEDUSA_API_KEY}` 
+        "Authorization": `Bearer ${medusaToken}` 
       },
       body: JSON.stringify(updatePayload),
     });
@@ -138,7 +140,7 @@ export async function POST(
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${MEDUSA_API_KEY}` 
+          "Authorization": `Bearer ${medusaToken}` 
         },
         body: JSON.stringify(priceUpdatePayload),
       });
@@ -164,9 +166,10 @@ export async function DELETE(
     await verifyAdmin(request);
     const { id } = await props.params;
     
+    const medusaToken2 = await getMedusaAdminToken();
     const res = await fetch(`${MEDUSA_URL}/admin/products/${id}`, {
       method: "DELETE",
-      headers: { "Authorization": `Bearer ${MEDUSA_API_KEY}` },
+      headers: { "Authorization": `Bearer ${medusaToken2}` },
     });
 
     if (!res.ok) {
