@@ -41,7 +41,7 @@ export async function GET(
     const data = await res.json();
     const p = data.product;
 
-    const price_normal = p.variants?.[0]?.prices?.find((price: any) => price.currency_code === "xof")?.amount / 100 || 0;
+    const price_normal = p.variants?.[0]?.prices?.find((price: any) => price.currency_code === "xof")?.amount || 0;
 
     const formatted = {
       id: p.id,
@@ -132,7 +132,7 @@ export async function POST(
         prices: [
           {
             currency_code: "xof",
-            amount: body.price * 100,
+            amount: body.price,
           }
         ]
       };

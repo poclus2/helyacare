@@ -86,7 +86,7 @@ export default function AdminCommandesPage() {
             email: o.email || "—",
             items_label: items.length > 1 ? `${firstItem} +${items.length - 1}` : firstItem,
             items_count: items.length,
-            amount: Math.round((o.total || 0) / 100),  // Medusa stocke en centimes
+            amount: Math.round(o.total || 0),  // Medusa stocke la devise sans decimale pour XOF
             payment_method: "flutterwave",
             payment_status: o.payment_status || o.status || "—",
             fulfillment_status: o.fulfillment_status,

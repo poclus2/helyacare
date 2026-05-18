@@ -42,7 +42,7 @@ export async function GET() {
           if (!variant) continue;
           
           const xofPrice = (variant.prices || []).find((p: any) => p.currency_code === "xof") || variant.prices?.[0];
-          const amount = xofPrice ? Math.round(Number(xofPrice.amount) / 100) : 0;
+          const amount = xofPrice ? Number(xofPrice.amount) : 0;
           
           // Le prix d'abonnement est stocké dans les métadonnées (créé depuis le dashboard admin)
           const subPrice = product.metadata?.subscription_price 

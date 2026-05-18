@@ -163,7 +163,7 @@ export default function CustomerDashboard({ orders = [] }: { orders?: any[] }) {
                 </div>
                 <div className="flex items-center gap-6">
                   <p className="font-bold text-[#0F3D3E] hidden sm:block">
-                    {new Intl.NumberFormat("fr-FR", { style: "currency", currency: order.currency_code }).format(order.total / 100)}
+                    {new Intl.NumberFormat("fr-FR", { style: "currency", currency: order.currency_code }).format(order.total)}
                   </p>
                   <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-[10px] font-bold uppercase truncate max-w-[100px] text-center">
                     {order.status || order.payment_status || "En cours"}

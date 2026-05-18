@@ -37,7 +37,7 @@ export async function GET(request: Request) {
     
     // On mappe les produits Medusa pour l'UI existante du dashboard
     const formatted = data.products.map((p: any) => {
-      const price_normal = p.variants?.[0]?.prices?.find((price: any) => price.currency_code === "xof")?.amount / 100 || 0;
+      const price_normal = p.variants?.[0]?.prices?.find((price: any) => price.currency_code === "xof")?.amount || 0;
       
       return {
         id: p.id,
@@ -85,7 +85,7 @@ export async function POST(request: Request) {
           prices: [
             {
               currency_code: "xof",
-              amount: (body.price_normal || 0) * 100,
+              amount: body.price_normal || 0,
             }
           ],
           options: { Format: "Standard" }

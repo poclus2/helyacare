@@ -165,8 +165,8 @@ export default function BoutiquePage() {
           {allProducts.map((product) => {
             const normal = getPrice(product.priceKey, "normal") || product.price_normal;
             const sub = getPrice(product.priceKey, "subscription") || product.price_subscription;
-            const displayPrice = formatPrice(sub || normal);
-            const strikePrice = sub && sub !== normal ? formatPrice(normal) : null;
+            const displayPrice = formatPrice(normal);
+            const subPriceStr = sub && sub !== normal ? formatPrice(sub) : null;
             
             const isWaitlist = product.cta === "Rejoindre la liste d'attente" || product.status === "draft";
 
@@ -191,9 +191,9 @@ export default function BoutiquePage() {
 
                     <div className="seed-card-price">
                       {displayPrice}
-                      {strikePrice && (
-                        <span className="seed-strikethrough ml-2 text-[0.8em] opacity-60">
-                          {strikePrice}
+                      {subPriceStr && (
+                        <span className="ml-2 text-[0.8em] text-[#CBF27A]">
+                          ou {subPriceStr} en abonnement
                         </span>
                       )}
                     </div>

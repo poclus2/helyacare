@@ -225,7 +225,7 @@ export default function AdminDashboardPage() {
                         #{order.display_id || order.id.slice(-6).toUpperCase()}
                       </td>
                       <td className="px-4 py-4 text-white/80 text-sm">{order.customer_email}</td>
-                      <td className="px-4 py-4 text-[#CBF27A] font-bold text-sm">{fmtXOF(order.total / 100)}</td>
+                      <td className="px-4 py-4 text-[#CBF27A] font-bold text-sm">{fmtXOF(order.total)}</td>
                       <td className="px-4 py-4">
                         <PaymentBadge status={order.status} />
                       </td>

@@ -46,7 +46,7 @@ export function CommandesClient({ medusaOrders, manualDeposits }: Props) {
     id: o.id,
     display_id: o.display_id,
     email: o.email,
-    amount: Math.round((o.total || 0) / 100),
+    amount: Math.round(o.total || 0),
     payment_status: o.payment_status || o.status,
     payment_method: "flutterwave",
     fulfillment_status: o.fulfillment_status,
@@ -57,7 +57,7 @@ export function CommandesClient({ medusaOrders, manualDeposits }: Props) {
       id: i.id,
       title: i.title || i.variant_title,
       quantity: i.quantity,
-      unit_price: Math.round((i.unit_price || 0) / 100),
+      unit_price: Math.round(i.unit_price || 0),
       thumbnail: i.thumbnail,
     })),
     shipping_address: o.shipping_address,
@@ -129,7 +129,7 @@ export function CommandesClient({ medusaOrders, manualDeposits }: Props) {
                   ref: o.display_id ? `#HC-${o.display_id}` : `#${o.id?.slice(-6).toUpperCase()}`,
                   subLabel: "Flutterwave",
                   product: (o.items?.[0]?.title || "Produit HelyaCare") + (o.items?.length > 1 ? ` +${o.items.length - 1}` : ""),
-                  amount: fmtXOF(Math.round((o.total || 0) / 100)),
+                  amount: fmtXOF(Math.round(o.total || 0)),
                   date: o.created_at ? fmtDate(o.created_at) : "—",
                   status: o.payment_status || o.status,
                   onView: () => setSelectedOrder(toDrawerMedusa(o)),
@@ -213,7 +213,7 @@ export function CommandesClient({ medusaOrders, manualDeposits }: Props) {
                         </td>
                         <td className="py-4 text-gray-600 text-sm">{order.created_at ? fmtDate(order.created_at) : "—"}</td>
                         <td className="py-4 text-gray-600 text-sm max-w-[160px] truncate">{itemLabel}</td>
-                        <td className="py-4 font-bold text-[#0F3D3E] text-sm">{fmtXOF(Math.round((order.total || 0) / 100))}</td>
+                        <td className="py-4 font-bold text-[#0F3D3E] text-sm">{fmtXOF(Math.round(order.total || 0))}</td>
                         <td className="py-4 text-gray-500 text-xs">Carte bancaire</td>
                         <td className="py-4"><StatusBadge status={order.payment_status || order.status} /></td>
                         <td className="py-4 text-right">

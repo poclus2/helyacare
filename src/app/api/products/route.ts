@@ -26,7 +26,7 @@ export async function GET() {
         .map((p: any) => {
           const variant = p.variants?.[0];
           const xofPrice = (variant?.prices || []).find((price: any) => price.currency_code === "xof") || variant?.prices?.[0];
-          const amount = xofPrice ? Math.round(Number(xofPrice.amount) / 100) : 0;
+          const amount = xofPrice ? Number(xofPrice.amount) : 0;
           
           return {
             id: p.id,
@@ -35,7 +35,7 @@ export async function GET() {
             sku: p.metadata?.sku || null,
             title: p.title,
             desc: p.description,
-            image: p.thumbnail || "/crave-control.png", // fallback image
+            image: p.thumbnail || "/placeholder.png", // fallback image
             cta: "Ajouter au panier",
             href: `/boutique/${p.handle}`,
             saveBadge: p.metadata?.saveBadge || null,

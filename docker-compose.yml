@@ -65,6 +65,10 @@ services:
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - ADMIN_SECRET=${ADMIN_SECRET}
       - MEDUSA_API_KEY=${MEDUSA_API_KEY}
+      # ─── Auth.js v5 (NextAuth) — OBLIGATOIRE en production ───────────────────
+      - AUTH_SECRET=${AUTH_SECRET}
+      - AUTH_URL=${AUTH_URL:-https://helyacare.com}
+      - AUTH_TRUST_HOST=true
     ports:
       - "3000:3000"
     depends_on:

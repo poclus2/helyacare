@@ -52,7 +52,7 @@ export default async function AbonnementPage() {
         style: "currency",
         currency: latestOrder.currency_code || "XOF",
         maximumFractionDigits: 0,
-      }).format(latestOrder.total / 100)
+      }).format(latestOrder.total)
     : null;
 
   return (
