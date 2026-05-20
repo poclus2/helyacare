@@ -198,10 +198,16 @@ export default function RichContentEditor({ richData, setRichData, timelineSecti
             {['main', 'bottom_left', 'bottom_right'].map((key) => (
               <div key={key} className="space-y-2 bg-white/5 p-3 rounded-xl border border-white/10">
                 <label className="text-white/60 text-[10px] font-bold uppercase tracking-wider block">{key.replace('_', ' ')}</label>
-                {timelineSection.media?.[key] && <img src={timelineSection.media[key]} className="w-full h-24 object-cover bg-black/20 rounded mb-2" />}
+                {timelineSection.media?.[key] && (
+                  timelineSection.media[key].match(/\.(mp4|webm|ogg)$/i) ? (
+                    <video src={timelineSection.media[key]} className="w-full h-24 object-cover bg-black/20 rounded mb-2" controls muted />
+                  ) : (
+                    <img src={timelineSection.media[key]} className="w-full h-24 object-cover bg-black/20 rounded mb-2" />
+                  )
+                )}
                 <label className="block w-full text-center px-3 py-2 bg-white/10 rounded-xl text-xs text-white cursor-pointer hover:bg-white/20 transition">
-                  Upload Image
-                  <input type="file" className="hidden" accept="image/*" onChange={(e) => handleTimelineImageUpload(e, key as any)} />
+                  Upload Fichier
+                  <input type="file" className="hidden" accept="image/*,video/*" onChange={(e) => handleTimelineImageUpload(e, key as any)} />
                 </label>
               </div>
             ))}

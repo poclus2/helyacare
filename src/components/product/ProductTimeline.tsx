@@ -31,6 +31,26 @@ interface TimelineProps {
   } | null;
 }
 
+const MediaRenderer = ({ src, alt, fill, className, sizes, autoPlay = true }: any) => {
+  if (!src) return <Image src="/placeholder.png" alt={alt} fill={fill} className={className} sizes={sizes} />;
+  
+  const isVideo = src.match(/\.(mp4|webm|ogg)$/i);
+  if (isVideo) {
+    return (
+      <video 
+        src={src} 
+        autoPlay={autoPlay}
+        loop 
+        muted 
+        playsInline 
+        className={className} 
+        style={fill ? { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' } : {}}
+      />
+    );
+  }
+  return <Image src={src} alt={alt} fill={fill} className={className} sizes={sizes} />;
+};
+
 export default function ProductTimeline({ timeline }: TimelineProps) {
   if (!timeline || !timeline.steps || timeline.steps.length === 0) return null;
 
@@ -108,7 +128,7 @@ export default function ProductTimeline({ timeline }: TimelineProps) {
             
             {/* Main Media (Top, spans both columns) */}
             <div className="col-span-2 relative aspect-[16/10] bg-gray-200 rounded-[24px] overflow-hidden group">
-               <Image src={timeline.media?.main || "/placeholder.png"} alt="Science" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
+               <MediaRenderer src={timeline.media?.main} alt="Science" fill className="object-cover" sizes="(max-width: 1024px) 100vw, 50vw" />
                <div className="absolute inset-0 bg-black/10 flex items-center justify-center transition-opacity group-hover:bg-black/20">
                   <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
                     <Play className="w-6 h-6 text-white ml-1 fill-white" />
@@ -118,12 +138,12 @@ export default function ProductTimeline({ timeline }: TimelineProps) {
 
             {/* Bottom Left Media */}
             <div className="relative aspect-[4/3] bg-gray-200 rounded-[24px] overflow-hidden">
-               <Image src={timeline.media?.bottom_left || "/placeholder.png"} alt="Microscopic" fill className="object-cover" sizes="(max-width: 1024px) 50vw, 25vw" />
+               <MediaRenderer src={timeline.media?.bottom_left} alt="Microscopic" fill className="object-cover" sizes="(max-width: 1024px) 50vw, 25vw" />
             </div>
 
             {/* Bottom Right Media */}
             <div className="relative aspect-square bg-gray-200 rounded-full overflow-hidden self-end w-[85%] mx-auto">
-               <Image src={timeline.media?.bottom_right || "/placeholder.png"} alt="Hand with pills" fill className="object-cover" sizes="(max-width: 1024px) 50vw, 25vw" />
+               <MediaRenderer src={timeline.media?.bottom_right} alt="Hand with pills" fill className="object-cover" sizes="(max-width: 1024px) 50vw, 25vw" />
             </div>
 
           </div>
