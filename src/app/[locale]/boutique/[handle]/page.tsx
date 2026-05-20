@@ -28,7 +28,7 @@ async function getProductByHandle(handle: string) {
   if (!backendUrl) return null;
 
   try {
-    const fields = ["id", "handle", "title", "description", "thumbnail", "status", "metadata", "*variants.prices"].join(",");
+    const fields = ["id", "handle", "title", "description", "thumbnail", "status", "metadata", "*variants.prices", "*images"].join(",");
     const res = await fetch(
       `${backendUrl}/store/products?handle=${handle}&fields=${encodeURIComponent(fields)}`,
       {
@@ -57,7 +57,7 @@ async function getProductByHandle(handle: string) {
       image: p.thumbnail || "/placeholder.png",
       price_normal: amount,
       price_subscription: p.metadata?.subscription_price ? Number(p.metadata.subscription_price) : Math.round(amount * 0.85),
-      
+      gallery: p.images ? p.images.map((img: any) => img.url) : [],
       rating: p.metadata?.rating || 4.8,
       reviews_count: p.metadata?.reviews_count || 120,
       benefits: p.metadata?.benefits || [],
@@ -96,12 +96,23 @@ export default async function DynamicProductPage(
     notFound();
   }
 
-  // Placeholder images si non fournies
+  // Récupérer toutes les images disponibles (thumbnail + galerie), sans doublons ni placeholders existants
+  const allImages = Array.from(
+    new Set([product.image, ...(product.gallery || [])]
+      .filter(Boolean)
+      .filter((img) => img !== "/placeholder.png"))
+  );
+  
+  // S'il n'y a pas d'image, on utilise un logo de remplacement
+  const getImg = (idx: number) => {
+    return allImages[idx] || "/logo-white.png";
+  };
+
   const images = [
-    { id: 1, src: `/images/products/${product.priceKey}/lifestyle.png`, alt: `${product.title} Lifestyle` },
-    { id: 2, src: `/images/products/${product.priceKey}/macro.png`, alt: `${product.title} Macro` },
-    { id: 3, src: `/images/products/${product.priceKey}/ecosystem.png`, alt: `HelyaCare Eco-System` },
-    { id: 4, src: `/images/products/${product.priceKey}/ingredients.png`, alt: `${product.title} Ingredients` },
+    { id: 1, src: getImg(0), alt: `${product.title} 1`, isPlaceholder: !allImages[0] },
+    { id: 2, src: getImg(1), alt: `${product.title} 2`, isPlaceholder: !allImages[1] },
+    { id: 3, src: getImg(2), alt: `${product.title} 3`, isPlaceholder: !allImages[2] },
+    { id: 4, src: getImg(3), alt: `${product.title} 4`, isPlaceholder: !allImages[3] },
   ];
 
   return (
@@ -118,25 +129,25 @@ export default async function DynamicProductPage(
               {/* Mobile Slider */}
               <div className="lg:hidden flex overflow-x-auto snap-x snap-mandatory gap-3 pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 {images.map((img) => (
-                  <div key={`mobile-${img.id}`} className="relative w-[85vw] aspect-[4/3] shrink-0 snap-start bg-[#1B3624] rounded-2xl overflow-hidden shadow-sm">
-                    <Image src={img.src} alt={img.alt} fill className="object-cover" priority={img.id === 1} sizes="85vw" />
+                  <div key={`mobile-${img.id}`} className="relative w-[85vw] aspect-[4/3] shrink-0 snap-start bg-[#1B3624] rounded-2xl overflow-hidden shadow-sm flex items-center justify-center">
+                    <Image src={img.src} alt={img.alt} fill className={img.isPlaceholder ? "object-contain p-8 opacity-20" : "object-cover"} priority={img.id === 1} sizes="85vw" />
                   </div>
                 ))}
               </div>
 
               {/* Desktop Masonry/Grid */}
               <div className="hidden lg:grid grid-cols-2 gap-4">
-                <div className="col-span-2 relative w-full aspect-[16/10] bg-[#1B3624] rounded-[20px] overflow-hidden">
-                  <Image src={images[0].src} alt={images[0].alt} fill className="object-cover" priority sizes="60vw" />
+                <div className="col-span-2 relative w-full aspect-[16/10] bg-[#1B3624] rounded-[20px] overflow-hidden flex items-center justify-center">
+                  <Image src={images[0].src} alt={images[0].alt} fill className={images[0].isPlaceholder ? "object-contain p-12 opacity-20" : "object-cover"} priority sizes="60vw" />
                 </div>
-                <div className="relative w-full aspect-[4/3] bg-[#1B3624] rounded-[20px] overflow-hidden">
-                  <Image src={images[1].src} alt={images[1].alt} fill className="object-cover" sizes="30vw" />
+                <div className="relative w-full aspect-[4/3] bg-[#1B3624] rounded-[20px] overflow-hidden flex items-center justify-center">
+                  <Image src={images[1].src} alt={images[1].alt} fill className={images[1].isPlaceholder ? "object-contain p-8 opacity-20" : "object-cover"} sizes="30vw" />
                 </div>
-                <div className="relative w-full aspect-[4/3] bg-[#E8E3DC] rounded-[20px] overflow-hidden">
-                  <Image src={images[2].src} alt={images[2].alt} fill className="object-cover" sizes="30vw" />
+                <div className="relative w-full aspect-[4/3] bg-[#E8E3DC] rounded-[20px] overflow-hidden flex items-center justify-center">
+                  <Image src={images[2].src} alt={images[2].alt} fill className={images[2].isPlaceholder ? "object-contain p-8 opacity-20" : "object-cover"} sizes="30vw" />
                 </div>
-                <div className="col-span-2 relative w-full aspect-[16/7] bg-[#1B3624] rounded-[20px] overflow-hidden mt-2">
-                  <Image src={images[3].src} alt={images[3].alt} fill className="object-cover" sizes="60vw" />
+                <div className="col-span-2 relative w-full aspect-[16/7] bg-[#1B3624] rounded-[20px] overflow-hidden mt-2 flex items-center justify-center">
+                  <Image src={images[3].src} alt={images[3].alt} fill className={images[3].isPlaceholder ? "object-contain p-12 opacity-20" : "object-cover"} sizes="60vw" />
                 </div>
               </div>
             </div>
