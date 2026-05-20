@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import Image from "next/image";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { Star, Flower2, Pill, Dna, Microscope } from "lucide-react";
