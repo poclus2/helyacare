@@ -330,7 +330,7 @@ export default function ModifierProduitPage() {
                   +Galerie
                 </button>
               </div>
-              <p className="text-white/20 text-[10px]">JPG, PNG, WebP · Max 20 MB · Affiché sur la carte boutique et en image hero</p>
+              <p className="text-white/20 text-[10px]">JPG, PNG, WebP · Max 50 MB · Affiché sur la carte boutique et en image hero</p>
             </div>
           </div>
         </div>
