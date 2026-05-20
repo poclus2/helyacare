@@ -71,6 +71,8 @@ services:
       - AUTH_TRUST_HOST=true
     ports:
       - "3000:3000"
+    volumes:
+      - uploads_data:/app/public/uploads
     depends_on:
       - backend
     networks:
@@ -79,6 +81,7 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  uploads_data:
 
 networks:
   helyanet:
