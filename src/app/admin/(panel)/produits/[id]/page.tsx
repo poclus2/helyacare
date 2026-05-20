@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import RichContentEditor from "./RichContentEditor";
 
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
@@ -62,6 +63,30 @@ export default function ModifierProduitPage() {
     ambassador_min_qty: "5",
   });
 
+  // ── Contenu Riche & Timeline ──────────────────────────────────────────────────
+  const [richData, setRichData] = useState({
+    badge: "",
+    sku_label: "",
+    rating: "4.8",
+    reviews_count: "120",
+    cross_sell_handle: "",
+    cross_sell_text: "",
+    benefits: [] as string[],
+    ingredients: [] as any[],
+    testimonials: [] as any[],
+    faqs: [] as any[],
+  });
+
+  const [timelineSection, setTimelineSection] = useState({
+    title: "The DS-01 difference: Benefits that build over time",
+    subtitle: "Results you can feel in as little as 7 days.",
+    linkText: "See Clinical Evidence",
+    linkUrl: "#",
+    steps: [] as any[],
+    usage: { icon: "", title: "How to Use:", instruction: "Take 2 capsules daily, with or without food, day or night." },
+    media: { main: "", bottom_left: "", bottom_right: "" }
+  });
+
   // — Chargement initial du produit
   useEffect(() => {
     const fetchProduct = async () => {
@@ -101,6 +126,24 @@ export default function ModifierProduitPage() {
           ambassador_price: product.ambassador_price > 0 ? String(product.ambassador_price) : "",
           ambassador_min_qty: product.ambassador_min_qty ? String(product.ambassador_min_qty) : "5",
         });
+
+        // Contenu riche
+        setRichData({
+          badge: product.badge || "",
+          sku_label: product.sku_label || "",
+          rating: product.rating?.toString() || "4.8",
+          reviews_count: product.reviews_count?.toString() || "120",
+          cross_sell_handle: product.cross_sell_handle || "",
+          cross_sell_text: product.cross_sell_text || "",
+          benefits: product.benefits || [],
+          ingredients: product.ingredients || [],
+          testimonials: product.testimonials || [],
+          faqs: product.faqs || [],
+        });
+
+        if (product.timeline) {
+          setTimelineSection(product.timeline);
+        }
       } catch (err: any) {
         setError(err.message || "Impossible de charger le produit");
       } finally {
@@ -138,6 +181,17 @@ export default function ModifierProduitPage() {
           ambassador_min_qty: ambassadorMinQty,
           hero_image: heroImage,
           images: galleryImages,
+          badge: richData.badge,
+          sku_label: richData.sku_label,
+          rating: parseFloat(richData.rating),
+          reviews_count: parseInt(richData.reviews_count, 10),
+          benefits: richData.benefits,
+          ingredients: richData.ingredients,
+          testimonials: richData.testimonials,
+          faqs: richData.faqs,
+          cross_sell_handle: richData.cross_sell_handle,
+          cross_sell_text: richData.cross_sell_text,
+          timeline: timelineSection,
         }),
       });
 
@@ -693,6 +747,15 @@ export default function ModifierProduitPage() {
             </div>
           </div>
         </div>
+
+        {/* ── CONTENU RICHE & TIMELINE ── */}
+        <RichContentEditor
+          richData={richData}
+          setRichData={setRichData}
+          timelineSection={timelineSection}
+          setTimelineSection={setTimelineSection}
+          uploadFile={uploadFile}
+        />
 
         {/* Publication */}
         <div className="bg-white/3 border border-white/8 rounded-2xl p-6 space-y-4">

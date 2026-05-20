@@ -8,6 +8,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProductBuyBox from "@/components/product/ProductBuyBox";
 import ProductAccordions from "@/components/product/ProductAccordions";
+import ProductTimeline from "@/components/product/ProductTimeline";
 import ProductFaq from "@/components/product/ProductFaq";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
@@ -65,6 +66,7 @@ async function getProductByHandle(handle: string) {
       ingredients: p.metadata?.ingredients || [],
       testimonials: p.metadata?.testimonials || [],
       faqs: p.metadata?.faqs || [],
+      timeline: p.metadata?.timeline || null,
       cross_sell_handle: p.metadata?.cross_sell_handle || null,
       cross_sell_text: p.metadata?.cross_sell_text || "Ajoutez ce produit à votre routine et économisez.",
     };
@@ -301,6 +303,9 @@ export default async function DynamicProductPage(
             </div>
           </section>
         )}
+
+        {/* NOUVEAU: TIMELINE DES BENEFICES */}
+        <ProductTimeline timeline={product.timeline} />
 
         {/* 4. FAQs */}
         <section className="flex flex-col md:flex-row bg-[#0F3D3E] text-white">
