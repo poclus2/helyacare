@@ -8,7 +8,7 @@ const SECRET = new TextEncoder().encode(
 );
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
-const MAX_SIZE_MB = 5;
+const MAX_SIZE_MB = 20;
 
 async function verifyAdmin(request: Request) {
   const cookieHeader = request.headers.get("cookie") || "";
