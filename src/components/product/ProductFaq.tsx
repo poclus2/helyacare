@@ -6,8 +6,10 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
 interface FaqItem {
-  q: string;
-  a: string;
+  q?: string;
+  a?: string;
+  question?: string;
+  answer?: string;
 }
 
 interface ProductFaqProps {
@@ -28,7 +30,7 @@ export default function ProductFaq({ faqs }: ProductFaqProps) {
             className="w-full flex items-center justify-between py-6 text-left group"
           >
             <span className={`text-[15px] md:text-[16px] font-bold tracking-tight pr-8 ${inter.className}`}>
-              {faq.q}
+              {faq.question || faq.q}
             </span>
             <span className="text-2xl font-light leading-none">
               {openFaq === index ? "−" : "+"}
@@ -36,7 +38,7 @@ export default function ProductFaq({ faqs }: ProductFaqProps) {
           </button>
           <div className={`overflow-hidden transition-all duration-300 ease-in-out ${openFaq === index ? "max-h-[500px] pb-6 opacity-100" : "max-h-0 opacity-0"}`}>
             <p className={`text-[13px] md:text-[14px] text-white/90 leading-relaxed pr-6 ${inter.className}`}>
-              {faq.a}
+              {faq.answer || faq.a}
             </p>
           </div>
         </div>
