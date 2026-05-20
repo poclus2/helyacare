@@ -10,7 +10,7 @@ import type { ProductKey } from "@/lib/prices";
 const inter = Inter({ subsets: ["latin"], weight: ["600", "700"] });
 
 interface AddToCartButtonProps {
-  productKey: ProductKey;
+  productKey: string;
   purchaseType: "subscription" | "one-time";
   title: string;
   subtitle?: string;
