@@ -58,6 +58,7 @@ async function getProductByHandle(handle: string) {
       price_normal: amount,
       price_subscription: p.metadata?.subscription_price ? Number(p.metadata.subscription_price) : Math.round(amount * 0.85),
       gallery: p.images ? p.images.map((img: any) => img.url) : [],
+      hero_image: p.metadata?.hero_image || null,
       rating: p.metadata?.rating || 4.8,
       reviews_count: p.metadata?.reviews_count || 120,
       benefits: p.metadata?.benefits || [],
@@ -96,9 +97,10 @@ export default async function DynamicProductPage(
     notFound();
   }
 
-  // Récupérer toutes les images disponibles (thumbnail + galerie), sans doublons ni placeholders existants
+  // Récupérer toutes les images disponibles (hero + galerie), sans doublons ni placeholders existants.
+  // Note: on n'inclut plus product.image (thumbnail boutique) pour que l'image hero soit différente.
   const allImages = Array.from(
-    new Set([product.image, ...(product.gallery || [])]
+    new Set([product.hero_image, ...(product.gallery || [])]
       .filter(Boolean)
       .filter((img) => img !== "/placeholder.png"))
   );
