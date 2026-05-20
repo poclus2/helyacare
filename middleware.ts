@@ -57,6 +57,6 @@ export default function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     // Exclure : fichiers statiques (_next, assets), API routes, et les fichiers avec extension
-    '/((?!_next/static|_next/image|favicon.ico|api/|.*\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf|otf)).*)',
+    '/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf|otf|mp4|webm|ogg|mov|avif)).*)',
   ],
 };
