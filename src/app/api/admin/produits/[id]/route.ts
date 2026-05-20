@@ -55,6 +55,7 @@ export async function GET(
       price_subscription: p.metadata?.subscription_price || 0,
       ambassador_price: p.metadata?.ambassador_price || 0,
       ambassador_min_qty: p.metadata?.ambassador_min_qty || 5,
+      hero_image: p.metadata?.hero_image || "",
       variants: p.variants || [],
       collection: null,
     };
@@ -93,6 +94,7 @@ export async function POST(
       ...(body.price_subscription !== undefined && { subscription_price: body.price_subscription }),
       ...(body.ambassador_price !== undefined && { ambassador_price: body.ambassador_price }),
       ...(body.ambassador_min_qty !== undefined && { ambassador_min_qty: body.ambassador_min_qty }),
+      ...(body.hero_image !== undefined && { hero_image: body.hero_image }),
     };
 
     // Mise à jour partielle des champs de base du produit

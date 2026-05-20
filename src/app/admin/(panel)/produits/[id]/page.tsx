@@ -39,6 +39,10 @@ export default function ModifierProduitPage() {
 
   // ── Images ────────────────────────────────────────────────────────────────
   const [thumbnail, setThumbnail] = useState("");       // URL image principale
+  const [heroImage, setHeroImage] = useState("");
+  const [uploadingHero, setUploadingHero] = useState(false);
+  const heroInputRef = useRef<HTMLInputElement>(null);
+
   const [galleryImages, setGalleryImages] = useState<string[]>([]); // URLs galerie
   const [uploadingThumb, setUploadingThumb] = useState(false);
   const [uploadingGallery, setUploadingGallery] = useState(false);
@@ -82,6 +86,7 @@ export default function ModifierProduitPage() {
 
         // Images
         setThumbnail(product.thumbnail || "");
+        setHeroImage(product.hero_image || "");
         setGalleryImages(Array.isArray(product.images) ? product.images : [
           ...(product.thumbnail ? [product.thumbnail] : [])
         ]);
@@ -131,6 +136,7 @@ export default function ModifierProduitPage() {
           price_subscription: priceSub || undefined,
           ambassador_price: ambassadorPrice,
           ambassador_min_qty: ambassadorMinQty,
+          hero_image: heroImage,
           images: galleryImages,
         }),
       });
@@ -209,10 +215,21 @@ export default function ModifierProduitPage() {
     const url = await uploadFile(file);
     if (url) {
       setThumbnail(url);
-      setGalleryImages(prev => prev.includes(url) ? prev : [url, ...prev]);
     }
     setUploadingThumb(false);
     if (thumbInputRef.current) thumbInputRef.current.value = "";
+  };
+
+  const handleHeroFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingHero(true);
+    const url = await uploadFile(file);
+    if (url) {
+      setHeroImage(url);
+    }
+    setUploadingHero(false);
+    if (heroInputRef.current) heroInputRef.current.value = "";
   };
 
   const handleGalleryFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -324,13 +341,56 @@ export default function ModifierProduitPage() {
                     if (thumbnail && !galleryImages.includes(thumbnail))
                       setGalleryImages(prev => [thumbnail, ...prev]);
                   }}
-                  title="Ajouter aussi à la galerie"
-                  className="px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white/40 hover:text-[#CBF27A] transition-colors text-xs"
+                  title="Ajouter à la galerie"
+                  className="hidden" // Hiding this button to simplify UX since they are separate now
                 >
                   +Galerie
                 </button>
               </div>
-              <p className="text-white/20 text-[10px]">JPG, PNG, WebP · Max 50 MB · Affiché sur la carte boutique et en image hero</p>
+              <p className="text-white/20 text-[10px]">Image affichée sur les cartes produit (Boutique)</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Image Hero */}
+        <div className="space-y-3 pt-4 border-t border-white/5">
+          <p className="text-white/60 text-xs font-bold uppercase tracking-wider">Image Hero (Page Produit)</p>
+          <div className="flex items-start gap-4">
+            <div className="w-32 h-32 shrink-0 rounded-2xl overflow-hidden bg-white/5 border-2 border-[#CBF27A]/30 flex items-center justify-center">
+              {heroImage ? (
+                <img src={heroImage} alt="Hero" className="w-full h-full object-cover" />
+              ) : (
+                <Package className="w-8 h-8 text-white/20" />
+              )}
+            </div>
+            <div className="flex-1 space-y-3">
+              <input
+                ref={heroInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleHeroFile}
+              />
+              <button
+                type="button"
+                onClick={() => heroInputRef.current?.click()}
+                disabled={uploadingHero}
+                className="flex items-center gap-2 px-4 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-[#CBF27A]/30 text-white/60 hover:text-white text-xs font-bold rounded-xl transition-all w-full justify-center"
+              >
+                {uploadingHero
+                  ? <><Loader2 className="w-4 h-4 animate-spin" /> Upload en cours...</>
+                  : <><Upload className="w-4 h-4" /> Uploader une image Hero</>}
+              </button>
+              <div className="flex gap-2">
+                <input
+                  type="url"
+                  value={heroImage}
+                  onChange={e => setHeroImage(e.target.value)}
+                  placeholder="https://... ou /uploads/image.jpg"
+                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white text-xs placeholder:text-white/20 focus:outline-none focus:border-[#CBF27A]/40 transition-all"
+                />
+              </div>
+              <p className="text-white/20 text-[10px]">JPG, PNG, WebP · Max 50 MB · 1ère image de la page produit</p>
             </div>
           </div>
         </div>
@@ -362,16 +422,6 @@ export default function ModifierProduitPage() {
                   )}
                   {/* Actions au survol */}
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center gap-2">
-                    {thumbnail !== url && (
-                      <button
-                        type="button"
-                        onClick={() => setAsThumbnail(url)}
-                        title="Définir comme image principale"
-                        className="w-8 h-8 bg-[#CBF27A] text-[#0F3D3E] rounded-full flex items-center justify-center hover:scale-110 transition-transform"
-                      >
-                        <Star className="w-4 h-4" />
-                      </button>
-                    )}
                     <button
                       type="button"
                       onClick={() => removeGalleryImage(url)}
@@ -425,7 +475,6 @@ export default function ModifierProduitPage() {
               <Link2 className="w-3.5 h-3.5" /> Ajouter
             </button>
           </div>
-          <p className="text-white/20 text-[10px]">⭐ Survol d&apos;une image → cliquer l&apos;étoile pour la définir comme image principale</p>
         </div>
       </div>
 
