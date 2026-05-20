@@ -7,7 +7,7 @@ const SECRET = new TextEncoder().encode(
   process.env.ADMIN_SECRET || "helyacare-admin-fallback-secret"
 );
 
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml"];
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/svg+xml", "video/mp4", "video/webm", "video/ogg", "video/quicktime"];
 const MAX_SIZE_MB = 50;
 
 async function verifyAdmin(request: Request) {
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     // Validation type
     if (!ALLOWED_TYPES.includes(file.type)) {
       return NextResponse.json(
-        { error: `Type non supporté. Formats acceptés : JPG, PNG, WebP, GIF, SVG` },
+        { error: `Type non supporté. Formats acceptés : JPG, PNG, WebP, GIF, SVG, MP4, WEBM` },
         { status: 400 }
       );
     }
