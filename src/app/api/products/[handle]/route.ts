@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: { handle: string } }
+  { params }: { params: Promise<{ handle: string }> }
 ) {
+  const { handle } = await params;
   const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL;
   const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
 
@@ -14,7 +15,7 @@ export async function GET(
   try {
     const fields = ["id", "handle", "title", "description", "thumbnail", "status", "metadata", "*variants.prices"].join(",");
     const res = await fetch(
-      `${backendUrl}/store/products?handle=${params.handle}&fields=${encodeURIComponent(fields)}`,
+      `${backendUrl}/store/products?handle=${handle}&fields=${encodeURIComponent(fields)}`,
       {
         headers: { ...(publishableKey && { "x-publishable-api-key": publishableKey }) },
         signal: AbortSignal.timeout(4000),

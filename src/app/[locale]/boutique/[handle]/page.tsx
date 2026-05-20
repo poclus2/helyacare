@@ -72,7 +72,10 @@ async function getProductByHandle(handle: string) {
   }
 }
 
-export async function generateMetadata({ params }: { params: { handle: string } }) {
+export async function generateMetadata(
+  props: { params: Promise<{ handle: string }> }
+): Promise<Metadata> {
+  const params = await props.params;
   const product = await getProductByHandle(params.handle);
   if (!product) return { title: "Produit Introuvable - HelyaCare" };
   
@@ -82,7 +85,10 @@ export async function generateMetadata({ params }: { params: { handle: string } 
   };
 }
 
-export default async function DynamicProductPage({ params }: { params: { handle: string } }) {
+export default async function DynamicProductPage(
+  props: { params: Promise<{ handle: string }> }
+) {
+  const params = await props.params;
   const product = await getProductByHandle(params.handle);
 
   if (!product) {
