@@ -96,7 +96,7 @@ export async function POST(request: Request) {
       const taraData = await taraRes.json();
       console.log("[payment/initiate] Tara Response:", JSON.stringify(taraData, null, 2));
 
-      if (taraData.status === "success" && taraData.generalLink) {
+      if (taraData.status?.toLowerCase() === "success" && taraData.generalLink) {
         return NextResponse.json({
           success: true,
           tx_ref,
