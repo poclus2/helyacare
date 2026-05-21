@@ -27,7 +27,8 @@ export default function BoutiquePage() {
         const res = await fetch("/api/products");
         if (res.ok) {
           const data = await res.json();
-          setProducts(data.products || []);
+          const publicProducts = (data.products || []).filter((p: any) => !p.is_ambassador_only);
+          setProducts(publicProducts);
         }
       } catch (e) {
         console.error(e);

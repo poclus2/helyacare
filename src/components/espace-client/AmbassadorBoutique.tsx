@@ -35,7 +35,7 @@ export default function AmbassadorBoutique() {
   const handleAddToCart = async (product: any) => {
     const minQty = product.ambassador_min_qty || 5;
     const overridePrice = product.ambassador_price || product.price_normal;
-    const variantId = product.variants?.[0]?.id || `${product.handle}-v1`;
+    const variantId = product.variant_id || product.variants?.[0]?.id || `${product.handle}-v1`;
 
     await addItem({
       variantId: variantId,

@@ -22,7 +22,7 @@ export async function GET() {
     if (res.ok) {
       const data = await res.json();
       const products = (data.products || [])
-        .filter((p: any) => p.status === "published" && p.metadata?.is_ambassador_only !== true)
+        .filter((p: any) => p.status === "published")
         .map((p: any) => {
           const variant = p.variants?.[0];
           const xofPrice = (variant?.prices || []).find((price: any) => price.currency_code === "xof") || variant?.prices?.[0];
