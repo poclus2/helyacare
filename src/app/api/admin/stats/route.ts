@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
-import { cookies } from "next/headers";
+import { getMedusaAdminToken } from "@/lib/medusa-admin-auth";
 
 const SECRET = new TextEncoder().encode(
   process.env.ADMIN_SECRET || "helyacare-admin-fallback-secret"
 );
 const BACKEND = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
-const API_KEY = process.env.MEDUSA_API_KEY || "";
 
 async function verifyAdmin(request: Request) {
   const cookieHeader = request.headers.get("cookie") || "";
@@ -18,12 +17,6 @@ async function verifyAdmin(request: Request) {
   await jwtVerify(token, SECRET);
 }
 
-const adminHeaders = {
-  "Content-Type": "application/json",
-  // Medusa v2 : les clés API s'authentifient en Basic (clé = username, mot de passe vide)
-  ...(API_KEY && { Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}` }),
-};
-
 /**
  * GET /api/admin/stats
  * Agrège les KPIs depuis Medusa pour le dashboard admin
@@ -32,9 +25,15 @@ export async function GET(request: Request) {
   try {
     await verifyAdmin(request);
 
+    const medusaToken = await getMedusaAdminToken();
+    const adminHeaders = {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${medusaToken}`,
+    };
+
     const [ordersRes, customersRes] = await Promise.allSettled([
-      fetch(`${BACKEND}/admin/orders?limit=250`, { headers: adminHeaders }),
-      fetch(`${BACKEND}/admin/customers?limit=500`, { headers: adminHeaders }),
+      fetch(`${BACKEND}/admin/orders?limit=250`, { headers: adminHeaders, cache: "no-store" }),
+      fetch(`${BACKEND}/admin/customers?limit=500`, { headers: adminHeaders, cache: "no-store" }),
     ]);
 
     let orders: any[] = [];
