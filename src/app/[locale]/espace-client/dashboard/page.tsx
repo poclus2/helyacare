@@ -48,7 +48,8 @@ export default async function AmbassadorDashboardPage() {
     // 2. If role is ambassadeur but no ambassador record exists → auto-provision
     if (!ambassador && role === "ambassadeur") {
       try {
-        const generatedCode = `HELYA-${firstName.toUpperCase().replace(/\s/g, '').slice(0, 8)}`;
+        const randomSuffix = Math.random().toString(36).substring(2, 9).toUpperCase();
+        const generatedCode = `HL-${randomSuffix}`;
         const createRes = await fetch(`${backendUrl}/store/ambassadors`, {
           method: "POST",
           headers,
