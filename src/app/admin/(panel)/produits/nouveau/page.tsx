@@ -22,6 +22,7 @@ export default function NouveauProduitPage() {
     ambassador_price: "",
     ambassador_min_qty: "5",
     ambassador_bonus_points: "0",
+    is_ambassador_only: false,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,6 +44,7 @@ export default function NouveauProduitPage() {
         ambassador_price: formData.ambassador_price ? Math.round(parseFloat(formData.ambassador_price)) : 0,
         ambassador_min_qty: formData.ambassador_min_qty ? parseInt(formData.ambassador_min_qty, 10) : 5,
         ambassador_bonus_points: formData.ambassador_bonus_points ? parseInt(formData.ambassador_bonus_points, 10) : 0,
+        is_ambassador_only: !!formData.is_ambassador_only,
         options: [{ title: "Défaut", values: ["Unique"] }],
         variants: [
           {

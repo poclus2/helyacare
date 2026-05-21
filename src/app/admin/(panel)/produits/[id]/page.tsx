@@ -25,6 +25,7 @@ interface ProductForm {
   ambassador_price: string;   // Prix ambassadeur (XOF)
   ambassador_min_qty: string; // Quantité minimum ambassadeur
   ambassador_bonus_points: string; // Points bonus ambassadeur (PV)
+  is_ambassador_only?: boolean; // Uniquement pour ambassadeurs
 }
 
 export default function ModifierProduitPage() {
