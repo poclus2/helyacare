@@ -31,17 +31,25 @@ export async function GET() {
           return {
             id: p.id,
             priceKey: p.handle,
+            handle: p.handle,
             badge: p.metadata?.badge || null,
             sku: p.metadata?.sku || null,
             title: p.title,
             desc: p.description,
-            image: p.thumbnail || "/placeholder.png", // fallback image
+            image: p.thumbnail || "/placeholder.png",
+            thumbnail: p.thumbnail || "/placeholder.png",
             cta: "Ajouter au panier",
             href: `/boutique/${p.handle}`,
             saveBadge: p.metadata?.saveBadge || null,
             price_normal: amount,
             price_subscription: p.metadata?.subscription_price ? Number(p.metadata.subscription_price) : Math.round(amount * 0.85),
             variant_id: variant?.id,
+            // Champs ambassadeur
+            ambassador_price: p.metadata?.ambassador_price ? Number(p.metadata.ambassador_price) : 0,
+            ambassador_min_qty: p.metadata?.ambassador_min_qty ? Number(p.metadata.ambassador_min_qty) : 5,
+            ambassador_bonus_points: p.metadata?.ambassador_bonus_points ? Number(p.metadata.ambassador_bonus_points) : 0,
+            is_ambassador_only: !!p.metadata?.is_ambassador_only,
+            status: p.status,
           };
         });
 

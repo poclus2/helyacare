@@ -106,7 +106,7 @@ export default function AmbassadorBoutique() {
                   <div className="seed-card-content-col">
                     {product.sku_label && <span className="seed-sku-light">{product.sku_label}</span>}
                     <h3 className="seed-card-title">{product.title}</h3>
-                    <p className="seed-card-desc">{product.description}</p>
+                    <p className="seed-card-desc">{product.desc}</p>
 
                     <div className="mt-4 bg-[#0F3D3E]/5 border border-[#0F3D3E]/10 rounded-lg p-3 relative overflow-hidden">
                       {bonusPoints > 0 && (
