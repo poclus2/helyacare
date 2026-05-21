@@ -143,6 +143,11 @@ export default function CheckoutPage() {
         email: form.email, firstName: form.first_name, lastName: form.last_name, phone: form.phone,
       }));
 
+      if (data.gateway === "tara" && data.paymentUrl) {
+        window.location.href = data.paymentUrl;
+        return;
+      }
+
       window.FlutterwaveCheckout({
         ...data.flutterwaveConfig,
         callback: async (response: any) => {

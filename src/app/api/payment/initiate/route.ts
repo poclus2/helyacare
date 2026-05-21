@@ -46,8 +46,64 @@ export async function POST(request: Request) {
       address: JSON.stringify(address || {}),
     };
 
-    // Paramètres Flutterwave inline — retournés au client
-    // Le client les utilise directement dans FlutterwaveCheckout()
+    // Récupérer la passerelle active depuis les paramètres
+    const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
+    const apiKey = process.env.MEDUSA_API_KEY || "";
+    const adminHeaders = {
+      "Content-Type": "application/json",
+      ...(apiKey && { Authorization: `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}` }),
+    };
+    
+    let activeGateway = "tara";
+    try {
+      const storeRes = await fetch(`${backendUrl}/admin/stores`, { headers: adminHeaders, cache: "no-store" });
+      if (storeRes.ok) {
+        const storeData = await storeRes.json();
+        const store = storeData.stores?.[0];
+        activeGateway = store?.metadata?.active_payment_gateway || "tara";
+      }
+    } catch (err) {
+      console.warn("Erreur récupération store, fallback sur tara", err);
+    }
+
+    if (activeGateway === "tara") {
+      // Configuration Tara
+      const taraApiKey = process.env.TARA_API_KEY || "nwcpNGDWxWDQpWziZg7g8Tj4";
+      const taraBusinessId = process.env.TARA_BUSINESS_ID || "5AuML9WXgI";
+
+      const taraPayload = {
+        apiKey: taraApiKey,
+        businessId: taraBusinessId,
+        productId: cart?.id || "cart-default",
+        productName: `Commande HelyaCare — ${cart?.items?.length || 1} article(s)`,
+        productPrice: amount,
+        productDescription: `Paiement pour ${customer.first_name} ${customer.last_name}`,
+        productPictureUrl: `${baseUrl}/logo-white.png`,
+        returnUrl: `${baseUrl}/commande/succes?tx_ref=${tx_ref}&amount=${amount}`,
+        webHookUrl: `${baseUrl}/api/payment/webhook-tara?tx_ref=${tx_ref}&cart_id=${cart?.id || ""}`,
+      };
+
+      const taraRes = await fetch("https://www.dklo.co/api/tara/paymentlinks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(taraPayload),
+      });
+
+      const taraData = await taraRes.json();
+
+      if (taraData.status === "success" && taraData.generalLink) {
+        return NextResponse.json({
+          success: true,
+          tx_ref,
+          paymentUrl: taraData.generalLink,
+          gateway: "tara"
+        });
+      } else {
+        throw new Error("Erreur de génération du lien Tara");
+      }
+    }
+
+    // Paramètres Flutterwave (fallback ou choix explicite)
     const flutterwaveConfig = {
       public_key: process.env.NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY,
       tx_ref,
@@ -72,6 +128,7 @@ export async function POST(request: Request) {
       success: true,
       tx_ref,
       flutterwaveConfig,
+      gateway: "flutterwave"
     });
   } catch (error: any) {
     console.error("[payment/initiate]", error);

@@ -34,6 +34,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       whatsapp_number: store?.metadata?.whatsapp_number || "",
       ambassador_settings: store?.metadata?.ambassador_settings || { min_qty: 5, prices: {} },
+      active_payment_gateway: store?.metadata?.active_payment_gateway || "tara", // tara is default now
     });
   } catch (error: any) {
     if (error.message === "Non authentifié") {
@@ -64,6 +65,7 @@ export async function POST(request: Request) {
     const updatedMetadata = { ...store.metadata };
     if (whatsapp_number !== undefined) updatedMetadata.whatsapp_number = whatsapp_number;
     if (ambassador_settings !== undefined) updatedMetadata.ambassador_settings = ambassador_settings;
+    if (body.active_payment_gateway !== undefined) updatedMetadata.active_payment_gateway = body.active_payment_gateway;
 
     // 2. Mettre à jour le store
     const updateRes = await fetch(`${BACKEND}/admin/stores/${store.id}`, {
@@ -78,7 +80,7 @@ export async function POST(request: Request) {
       throw new Error("Erreur lors de la mise à jour du store");
     }
 
-    return NextResponse.json({ success: true, whatsapp_number, ambassador_settings });
+    return NextResponse.json({ success: true, whatsapp_number, ambassador_settings, active_payment_gateway: updatedMetadata.active_payment_gateway });
   } catch (error: any) {
     if (error.message === "Non authentifié") {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
