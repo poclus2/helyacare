@@ -177,10 +177,22 @@ export default function NouveauProduitPage() {
 
           {/* Section Ambassadeur */}
           <div className="md:col-span-2 bg-white/3 border border-[#E56B2D]/20 rounded-2xl p-5 space-y-4">
-            <div className="flex items-center gap-2">
-              <span className="text-[#E56B2D] text-base">🤝</span>
-              <h3 className="text-white font-bold text-sm">Tarification Ambassadeur</h3>
-              <span className="ml-auto text-[10px] font-bold px-2 py-0.5 bg-[#E56B2D]/10 text-[#E56B2D] border border-[#E56B2D]/20 rounded-full">AMBASSADEURS</span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-[#E56B2D] text-base">🤝</span>
+                <h3 className="text-white font-bold text-sm">Tarification Ambassadeur</h3>
+                <span className="ml-auto text-[10px] font-bold px-2 py-0.5 bg-[#E56B2D]/10 text-[#E56B2D] border border-[#E56B2D]/20 rounded-full">AMBASSADEURS</span>
+              </div>
+              
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.is_ambassador_only || false}
+                  onChange={e => setFormData({ ...formData, is_ambassador_only: e.target.checked })}
+                  className="w-4 h-4 rounded border-white/20 bg-white/5 text-[#E56B2D] focus:ring-[#E56B2D]/50"
+                />
+                <span className="text-white/80 text-sm font-semibold">Visible uniquement pour les ambassadeurs</span>
+              </label>
             </div>
             <p className="text-white/30 text-xs">Si le prix ambassadeur est à 0, le prix public sera utilisé. La quantité minimum définit le lot minimum à commander.</p>
             <div className="grid grid-cols-2 gap-4">

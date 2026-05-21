@@ -63,6 +63,7 @@ export default function ModifierProduitPage() {
     ambassador_price: "",
     ambassador_min_qty: "5",
     ambassador_bonus_points: "0",
+    is_ambassador_only: false,
   });
 
   // ── Contenu Riche & Timeline ──────────────────────────────────────────────────
@@ -128,6 +129,7 @@ export default function ModifierProduitPage() {
           ambassador_price: product.ambassador_price > 0 ? String(product.ambassador_price) : "",
           ambassador_min_qty: product.ambassador_min_qty ? String(product.ambassador_min_qty) : "5",
           ambassador_bonus_points: product.ambassador_bonus_points ? String(product.ambassador_bonus_points) : "0",
+          is_ambassador_only: !!product.is_ambassador_only,
         });
 
         // Contenu riche
@@ -184,6 +186,7 @@ export default function ModifierProduitPage() {
           ambassador_price: ambassadorPrice,
           ambassador_min_qty: ambassadorMinQty,
           ambassador_bonus_points: ambassadorBonusPoints,
+          is_ambassador_only: !!form.is_ambassador_only,
           hero_image: heroImage,
           images: galleryImages,
           badge: richData.badge,
@@ -690,10 +693,22 @@ export default function ModifierProduitPage() {
 
         {/* Section Ambassadeur */}
         <div className="bg-white/3 border border-[#E56B2D]/20 rounded-2xl p-6 space-y-5">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-[#E56B2D] text-lg">🤝</span>
-            <h2 className="text-white font-bold text-sm">Tarification Ambassadeur</h2>
-            <span className="ml-auto text-[10px] font-bold px-2 py-0.5 bg-[#E56B2D]/10 text-[#E56B2D] border border-[#E56B2D]/20 rounded-full">AMBASSADEURS</span>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <span className="text-[#E56B2D] text-lg">🤝</span>
+              <h2 className="text-white font-bold text-sm">Tarification Ambassadeur</h2>
+              <span className="ml-auto text-[10px] font-bold px-2 py-0.5 bg-[#E56B2D]/10 text-[#E56B2D] border border-[#E56B2D]/20 rounded-full">AMBASSADEURS</span>
+            </div>
+            
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.is_ambassador_only || false}
+                onChange={e => setForm({ ...form, is_ambassador_only: e.target.checked })}
+                className="w-4 h-4 rounded border-white/20 bg-white/5 text-[#E56B2D] focus:ring-[#E56B2D]/50"
+              />
+              <span className="text-white/80 text-sm font-semibold">Visible uniquement pour les ambassadeurs</span>
+            </label>
           </div>
           <p className="text-white/30 text-xs">Ces valeurs s'appliquent uniquement aux ambassadeurs dans leur boutique dédiée. Si le prix est à 0, le prix public sera utilisé.</p>
 
