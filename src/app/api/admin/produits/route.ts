@@ -50,6 +50,7 @@ export async function GET(request: Request) {
         price_subscription: p.metadata?.subscription_price || 0,
         ambassador_price: p.metadata?.ambassador_price || 0,
         ambassador_min_qty: p.metadata?.ambassador_min_qty || 5,
+        ambassador_bonus_points: p.metadata?.ambassador_bonus_points || 0,
         variants: p.variants || [],
         collection: null,
       };
@@ -95,6 +96,7 @@ export async function POST(request: Request) {
         subscription_price: body.price_subscription || 0,
         ambassador_price: body.ambassador_price || 0,
         ambassador_min_qty: body.ambassador_min_qty || 5,
+        ambassador_bonus_points: body.ambassador_bonus_points || 0,
         is_ambassador_only: false,
         is_pack: false,
         pack_contents: []

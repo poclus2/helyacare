@@ -101,6 +101,10 @@ export default async function AmbassadorDashboardPage() {
   const downlines = ambassador?.downlines || [];
   const transactions = ambassador?.wallet?.transactions || [];
 
+  const leftBv = Number(ambassador?.left_bv || 0);
+  const rightBv = Number(ambassador?.right_bv || 0);
+  const placementPreference = ambassador?.placement_preference || "AUTOMATIC";
+
   return (
     <AmbassadorDashboardClient
       balance={balance}
@@ -111,6 +115,9 @@ export default async function AmbassadorDashboardPage() {
       inter={inter.className}
       pjs={pjs.className}
       ambassadorId={ambassador?.id || ""}
+      leftBv={leftBv}
+      rightBv={rightBv}
+      placementPreference={placementPreference}
     />
   );
 }

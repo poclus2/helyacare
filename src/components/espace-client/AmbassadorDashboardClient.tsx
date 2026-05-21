@@ -354,6 +354,29 @@ export default function AmbassadorDashboardClient({
   const [activeTab, setActiveTab] = useState<"transactions" | "reseau">("transactions");
   const [showTree, setShowTree] = useState(false);
   const rootName = "Votre Réseau";
+  
+  const [currentPref, setCurrentPref] = useState(placementPreference);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleUpdatePreference = async (val: string) => {
+    setCurrentPref(val);
+    setIsUpdating(true);
+    try {
+      const res = await fetch("/api/ambassadeur/placement", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ placement_preference: val }),
+      });
+      if (!res.ok) throw new Error("Failed to update");
+      // Could show a toast here
+    } catch (error) {
+      console.error(error);
+      // Revert on error
+      setCurrentPref(placementPreference);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
   const directDownlineCount = downlines.filter(d => !d.level || d.level === 1).length;
   const totalDownlineCount = downlines.length;
@@ -556,12 +579,13 @@ export default function AmbassadorDashboardClient({
             </div>
           </div>
           
-          <div className="flex items-center gap-3 bg-white border border-[#E8E3DC] px-4 py-2.5 rounded-xl w-full sm:w-auto">
+          <div className={`flex items-center gap-3 bg-white border border-[#E8E3DC] px-4 py-2.5 rounded-xl w-full sm:w-auto transition-opacity ${isUpdating ? 'opacity-50 pointer-events-none' : ''}`}>
             <span className="text-xs font-semibold text-gray-500 hidden sm:inline">Stratégie :</span>
             <select 
-              value={placementPreference}
+              value={currentPref}
               className="text-sm font-bold text-[#0F3D3E] bg-transparent outline-none cursor-pointer w-full sm:w-auto"
-              onChange={(e) => onUpdatePreference?.(e.target.value)}
+              onChange={(e) => handleUpdatePreference(e.target.value)}
+              disabled={isUpdating}
             >
               <option value="AUTOMATIC">Automatique (Jambe Faible)</option>
               <option value="LEFT">Extrême Gauche</option>

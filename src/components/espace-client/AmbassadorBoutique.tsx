@@ -3,78 +3,27 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
 import { useCurrency } from "@/contexts/CurrencyContext";
-import { useLivePrices } from "@/contexts/PricesContext";
 import { useCart } from "@/contexts/CartContext";
 import { useState, useEffect } from "react";
 import "@/app/[locale]/boutique/boutique.css"; // Reuse shop styles
 
-const products = [
-  {
-    id: 1,
-    priceKey: "crave-control" as const,
-    badge: "Populaire",
-    sku: "CC-01™",
-    title: "Crave Control",
-    desc: "Un bouclier neuro-métabolique qui régule l'appétit, aide à limiter les fringales et soutient le métabolisme au quotidien.",
-    image: "/crave-control.png",
-    cta: "Acheter le lot",
-    href: "/boutique/crave-control",
-  },
-  {
-    id: 2,
-    priceKey: "pack-bien-etre" as const,
-    title: "Pack Bien-Être Essentiel",
-    desc: "Duo quotidien validé cliniquement associant Crave Control et Helya Hydrate pour une santé optimale au quotidien.",
-    image: "/crave-control.png",
-    cta: "Acheter le lot",
-    href: "/boutique/pack-bien-etre",
-  },
-  {
-    id: 3,
-    priceKey: "apple-satiety-shot" as const,
-    sku: "AS-02™",
-    title: "Apple Satiety Shot",
-    desc: "Shot de satiété formulé avec des extraits de pomme et de plantes adaptogènes pour couper les envies entre les repas.",
-    image: "/crave-control.png",
-    cta: "Acheter le lot",
-    href: "/boutique/apple-satiety-shot",
-  },
-  {
-    id: 4,
-    priceKey: "helya-hydrate" as const,
-    sku: "HH-03™",
-    title: "Helya Hydrate",
-    desc: "Électrolytes premium enrichis en minéraux essentiels pour une hydratation cellulaire optimale et une récupération accélérée.",
-    image: "/crave-control.png",
-    cta: "Acheter le lot",
-    href: "/boutique/helya-hydrate",
-  },
-  {
-    id: 5,
-    priceKey: "helya-vigor" as const,
-    sku: "HV-04™",
-    title: "Helya Vigor",
-    desc: "Formule vitalité et énergie à base de plantes et de vitamines B pour soutenir l'endurance physique et mentale.",
-    image: "/crave-control.png",
-    cta: "Acheter le lot",
-    href: "/boutique/helya-vigor",
-  },
-];
-
 export default function AmbassadorBoutique() {
   const { formatPrice } = useCurrency();
   const { addItem } = useCart();
-  const { getPrice, getVariantId } = useLivePrices();
   const [addedId, setAddedId] = useState<string | number | null>(null);
-  // Keyed by product handle: { price, min_qty }
-  const [ambassadorProducts, setAmbassadorProducts] = useState<Record<string, { price: number; min_qty: number }>>({});
+  
+  const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/settings/ambassador")
+    fetch("/api/products")
       .then(res => res.json())
       .then(data => {
-        setAmbassadorProducts(data.ambassador_products || {});
+        // Ne garder que les produits publiés avec un prix ambassadeur > 0
+        const ambassadorProducts = (data.products || []).filter(
+          (p: any) => p.status === "published" && p.ambassador_price > 0
+        );
+        setProducts(ambassadorProducts);
         setLoading(false);
       })
       .catch(err => {
@@ -83,27 +32,20 @@ export default function AmbassadorBoutique() {
       });
   }, []);
 
-  const getAmbassadorConfig = (priceKey: string) => {
-    const config = ambassadorProducts[priceKey];
-    return {
-      price: config?.price || 0,
-      minQty: config?.min_qty || 5,
-    };
-  };
-
   const handleAddToCart = async (product: any) => {
-    const { price: overridePrice, minQty } = getAmbassadorConfig(product.priceKey);
-    const originalPrice = getPrice(product.priceKey, "normal");
-    const price = overridePrice > 0 ? overridePrice : originalPrice;
+    const minQty = product.ambassador_min_qty || 5;
+    const overridePrice = product.ambassador_price || product.price_normal;
+    const variantId = product.variants?.[0]?.id || `${product.handle}-v1`;
 
     await addItem({
-      variantId: getVariantId(product.priceKey) || `${product.priceKey}-v1`,
+      variantId: variantId,
       quantity: minQty,
       title: product.title,
       subtitle: `Achat Revendeur (Lot de ${minQty})`,
-      thumbnail: product.image,
-      unit_price: price,
+      thumbnail: product.thumbnail || product.images?.[0] || "",
+      unit_price: overridePrice,
       currency_code: "XOF",
+      bonus_points: product.ambassador_bonus_points || 0,
     });
     setAddedId(product.id);
     setTimeout(() => setAddedId(null), 2000);
@@ -113,6 +55,19 @@ export default function AmbassadorBoutique() {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="animate-spin w-8 h-8 border-4 border-[#CBF27A] border-t-transparent rounded-full" />
+      </div>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <div className="seed-page bg-transparent pt-0 pb-10">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-[#0F3D3E] mb-2">Boutique Ambassadeur</h2>
+          <p className="text-gray-600">
+            Aucun produit n'est actuellement disponible au tarif ambassadeur.
+          </p>
+        </div>
       </div>
     );
   }
@@ -129,10 +84,10 @@ export default function AmbassadorBoutique() {
       <section className="seed-grid-section pt-0">
         <div className="seed-grid-container px-0 max-w-full">
           {products.map((product) => {
-            const { price: overridePrice, minQty } = getAmbassadorConfig(product.priceKey);
-            const originalPrice = getPrice(product.priceKey, "normal");
-            const price = overridePrice > 0 ? overridePrice : originalPrice;
-            const displayPrice = formatPrice(price);
+            const overridePrice = product.ambassador_price || product.price_normal;
+            const minQty = product.ambassador_min_qty || 5;
+            const bonusPoints = product.ambassador_bonus_points || 0;
+            const displayPrice = formatPrice(overridePrice);
 
             return (
               <div key={product.id} className="seed-card border border-[#E8E3DC] shadow-sm hover:shadow-md">
@@ -140,22 +95,31 @@ export default function AmbassadorBoutique() {
 
                 <div className="seed-card-layout">
                   <div className="seed-card-image-col">
-                    <Link href={product.href}>
-                      <img src={product.image} alt={product.title} className="cursor-pointer hover:scale-105 transition-transform duration-500" />
+                    <Link href={`/boutique/${product.handle}`}>
+                      <img 
+                        src={product.thumbnail || product.images?.[0] || "/placeholder.png"} 
+                        alt={product.title} 
+                        className="cursor-pointer hover:scale-105 transition-transform duration-500 w-full h-auto object-cover" 
+                      />
                     </Link>
                   </div>
                   <div className="seed-card-content-col">
-                    {product.sku && <span className="seed-sku-light">{product.sku}</span>}
+                    {product.sku_label && <span className="seed-sku-light">{product.sku_label}</span>}
                     <h3 className="seed-card-title">{product.title}</h3>
-                    <p className="seed-card-desc">{product.desc}</p>
+                    <p className="seed-card-desc">{product.description}</p>
 
-                    <div className="mt-4 bg-[#0F3D3E]/5 border border-[#0F3D3E]/10 rounded-lg p-3">
+                    <div className="mt-4 bg-[#0F3D3E]/5 border border-[#0F3D3E]/10 rounded-lg p-3 relative overflow-hidden">
+                      {bonusPoints > 0 && (
+                        <div className="absolute top-0 right-0 bg-[#CBF27A] text-[#0F3D3E] text-[10px] font-bold px-2 py-1 rounded-bl-lg">
+                          +{bonusPoints} PV
+                        </div>
+                      )}
                       <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Prix Ambassadeur</p>
                       <div className="seed-card-price mb-0 text-[#0F3D3E]">
                         {displayPrice} <span className="text-sm font-normal text-gray-500">/ unité</span>
                       </div>
                       <p className="text-[11px] text-[#E56B2D] font-medium mt-1">
-                        Achat par lot de {minQty} min. ({formatPrice(price * minQty)})
+                        Achat par lot de {minQty} min. ({formatPrice(overridePrice * minQty)})
                       </p>
                     </div>
 

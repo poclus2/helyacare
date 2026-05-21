@@ -28,15 +28,20 @@ export async function POST(request: Request) {
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
+    // Calculate total bonus points
+    const total_bonus_points = cart?.items?.reduce((sum: number, item: any) => sum + ((item.bonus_points || 0) * (item.quantity || 1)), 0) || 0;
+
     // Métadonnées à transmettre à Flutterwave (récupérées dans le webhook)
     const meta = {
       customer_id: session?.customer_id || null,
       cart_id: cart?.id || null,
+      total_bonus_points: total_bonus_points,
       cart_items: JSON.stringify(cart?.items?.map((item: any) => ({
         variant_id: item.variant_id,
         title: item.title,
         quantity: item.quantity,
         unit_price: item.unit_price,
+        bonus_points: item.bonus_points || 0,
       })) || []),
       address: JSON.stringify(address || {}),
     };

@@ -21,6 +21,7 @@ export default function NouveauProduitPage() {
     status: "published" as "published" | "draft",
     ambassador_price: "",
     ambassador_min_qty: "5",
+    ambassador_bonus_points: "0",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -41,6 +42,7 @@ export default function NouveauProduitPage() {
         price_normal: priceAmount,
         ambassador_price: formData.ambassador_price ? Math.round(parseFloat(formData.ambassador_price)) : 0,
         ambassador_min_qty: formData.ambassador_min_qty ? parseInt(formData.ambassador_min_qty, 10) : 5,
+        ambassador_bonus_points: formData.ambassador_bonus_points ? parseInt(formData.ambassador_bonus_points, 10) : 0,
         options: [{ title: "Défaut", values: ["Unique"] }],
         variants: [
           {
@@ -210,6 +212,21 @@ export default function NouveauProduitPage() {
                     className="w-full bg-white/5 border border-[#E56B2D]/20 rounded-xl px-4 py-3 pr-20 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#E56B2D]/50 transition-all"
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 text-sm font-bold">unités</span>
+                </div>
+              </div>
+              <div className="space-y-2 col-span-2">
+                <label className="text-white/60 text-xs font-bold uppercase tracking-wider block">Points Bonus Ambassadeur (PV)</label>
+                <div className="relative">
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={formData.ambassador_bonus_points}
+                    onChange={e => setFormData({ ...formData, ambassador_bonus_points: e.target.value })}
+                    placeholder="ex: 50"
+                    className="w-full bg-white/5 border border-[#E56B2D]/20 rounded-xl px-4 py-3 pr-16 text-white text-sm placeholder:text-white/20 focus:outline-none focus:border-[#E56B2D]/50 transition-all"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 text-sm font-bold">PV</span>
                 </div>
               </div>
             </div>

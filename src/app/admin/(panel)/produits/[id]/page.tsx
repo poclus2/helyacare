@@ -24,6 +24,7 @@ interface ProductForm {
   price_subscription: string; // Prix abonnement mensuel (XOF)
   ambassador_price: string;   // Prix ambassadeur (XOF)
   ambassador_min_qty: string; // Quantité minimum ambassadeur
+  ambassador_bonus_points: string; // Points bonus ambassadeur (PV)
 }
 
 export default function ModifierProduitPage() {
@@ -61,6 +62,7 @@ export default function ModifierProduitPage() {
     price_subscription: "",
     ambassador_price: "",
     ambassador_min_qty: "5",
+    ambassador_bonus_points: "0",
   });
 
   // ── Contenu Riche & Timeline ──────────────────────────────────────────────────
@@ -125,6 +127,7 @@ export default function ModifierProduitPage() {
           price_subscription: priceSub > 0 ? String(priceSub) : "",
           ambassador_price: product.ambassador_price > 0 ? String(product.ambassador_price) : "",
           ambassador_min_qty: product.ambassador_min_qty ? String(product.ambassador_min_qty) : "5",
+          ambassador_bonus_points: product.ambassador_bonus_points ? String(product.ambassador_bonus_points) : "0",
         });
 
         // Contenu riche
@@ -164,6 +167,7 @@ export default function ModifierProduitPage() {
       const priceSub = form.price_subscription ? parseFloat(form.price_subscription) : 0;
       const ambassadorPrice = form.ambassador_price ? parseFloat(form.ambassador_price) : 0;
       const ambassadorMinQty = form.ambassador_min_qty ? parseInt(form.ambassador_min_qty, 10) : 5;
+      const ambassadorBonusPoints = form.ambassador_bonus_points ? parseInt(form.ambassador_bonus_points, 10) : 0;
 
       const res = await fetch(`/api/admin/produits/${id}`, {
         method: "POST",
@@ -179,6 +183,7 @@ export default function ModifierProduitPage() {
           price_subscription: priceSub || undefined,
           ambassador_price: ambassadorPrice,
           ambassador_min_qty: ambassadorMinQty,
+          ambassador_bonus_points: ambassadorBonusPoints,
           hero_image: heroImage,
           images: galleryImages,
           badge: richData.badge,
@@ -740,10 +745,27 @@ export default function ModifierProduitPage() {
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 text-sm font-bold">unités</span>
               </div>
               {form.ambassador_price && form.ambassador_min_qty && (
-                <p className="text-white/20 text-[11px]">
+                <div className="text-[11px] text-[#CBF27A] mt-2 font-medium bg-[#CBF27A]/10 px-3 py-1.5 rounded-lg inline-block">
                   Valeur minimale du lot : {(parseFloat(form.ambassador_price || "0") * parseInt(form.ambassador_min_qty || "0")).toLocaleString("fr-FR")} XOF
-                </p>
+                </div>
               )}
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-white/60 text-xs font-bold uppercase tracking-wider block">
+                Points Bonus Ambassadeur (PV)
+              </label>
+              <div className="relative">
+                <input 
+                  type="number" min="0" step="1"
+                  className="w-full bg-white/5 border border-[#E56B2D]/20 rounded-xl px-4 py-3 pr-16 text-white text-sm
+                    placeholder:text-white/20 focus:outline-none focus:border-[#E56B2D]/50 transition-all"
+                  placeholder="Ex: 50"
+                  value={form.ambassador_bonus_points}
+                  onChange={e => setForm({ ...form, ambassador_bonus_points: e.target.value })}
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 text-sm font-bold">PV</span>
+              </div>
             </div>
           </div>
         </div>

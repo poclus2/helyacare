@@ -14,6 +14,7 @@ export interface CartItem {
   quantity: number;
   unit_price: number;   // in cents / smallest unit
   currency_code: string;
+  bonus_points?: number; // PV
 }
 
 export interface CartState {
@@ -46,6 +47,7 @@ export interface AddItemParams {
   thumbnail?: string;
   unit_price: number;
   currency_code?: string;
+  bonus_points?: number;
 }
 
 // ─── Defaults ──────────────────────────────────────────────────────────────
@@ -152,6 +154,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       quantity: item.quantity,
       unit_price: item.unit_price,
       currency_code: medusaCart.currency_code || "XOF",
+      bonus_points: item.metadata?.bonus_points || 0,
     })),
   });
 
@@ -212,6 +215,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           quantity: params.quantity,
           unit_price: params.unit_price,
           currency_code: params.currency_code || "XOF",
+          bonus_points: params.bonus_points || 0,
         };
         newItems = [...prev.items, newItem];
       }

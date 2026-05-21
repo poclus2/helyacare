@@ -50,6 +50,7 @@ export async function POST(request: Request) {
     let cartId: string | null = null;
     let cartItems: any[] = [];
     let customerId: string | null = null;
+    let totalBonusPoints = 0;
 
     if (secretKey && !secretKey.includes("XXXX")) {
       const verifyRes = await fetch(
@@ -64,6 +65,7 @@ export async function POST(request: Request) {
           cartId = meta.cart_id || null;
           cartItems = meta.cart_items ? JSON.parse(meta.cart_items) : [];
           customerId = meta.customer_id || null;
+          totalBonusPoints = meta.total_bonus_points ? parseInt(meta.total_bonus_points, 10) : 0;
         }
       }
     } else {
@@ -73,6 +75,7 @@ export async function POST(request: Request) {
       cartId = meta.cart_id || null;
       cartItems = meta.cart_items ? JSON.parse(meta.cart_items) : [];
       customerId = meta.customer_id || null;
+      totalBonusPoints = meta.total_bonus_points ? parseInt(meta.total_bonus_points, 10) : 0;
     }
 
     if (!verified) {
@@ -118,6 +121,7 @@ export async function POST(request: Request) {
             customer_id: customerId,
             order_id: orderId,
             amount: data.amount,
+            bonus_points: totalBonusPoints,
           }),
         });
         console.log("[webhook] Commission MLM traitée pour:", customerId);
