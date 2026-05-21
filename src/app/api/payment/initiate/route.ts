@@ -17,6 +17,7 @@ export async function POST(request: Request) {
       address,    // { line1, line2, city, country, zip }
       amount,
       currency = "XOF",
+      gateway,
     } = body;
 
     if (!amount || !customer?.email) {
@@ -54,16 +55,18 @@ export async function POST(request: Request) {
       ...(apiKey && { Authorization: `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}` }),
     };
     
-    let activeGateway = "tara";
-    try {
-      const storeRes = await fetch(`${backendUrl}/admin/stores`, { headers: adminHeaders, cache: "no-store" });
-      if (storeRes.ok) {
-        const storeData = await storeRes.json();
-        const store = storeData.stores?.[0];
-        activeGateway = store?.metadata?.active_payment_gateway || "tara";
+    let activeGateway = gateway || "tara";
+    if (!gateway) {
+      try {
+        const storeRes = await fetch(`${backendUrl}/admin/stores`, { headers: adminHeaders, cache: "no-store" });
+        if (storeRes.ok) {
+          const storeData = await storeRes.json();
+          const store = storeData.stores?.[0];
+          activeGateway = store?.metadata?.active_payment_gateway || "tara";
+        }
+      } catch (err) {
+        console.warn("Erreur récupération store, fallback sur tara", err);
       }
-    } catch (err) {
-      console.warn("Erreur récupération store, fallback sur tara", err);
     }
 
     if (activeGateway === "tara") {

@@ -33,7 +33,7 @@ export default function CheckoutPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [flwLoaded, setFlwLoaded] = useState(false);
   const [error, setError] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"flutterwave" | "wave" | "orange_money" | "mtn_momo" | "bank" | "">("flutterwave");
+  const [paymentMethod, setPaymentMethod] = useState<"flutterwave" | "wave" | "tara" | "bank" | "">("flutterwave");
   const [manualDone, setManualDone] = useState<{ ref: string; target: string; amount: string } | null>(null);
 
   const [form, setForm] = useState({
@@ -76,8 +76,7 @@ export default function CheckoutPage() {
   const PAYMENT_METHODS = [
     { id: "flutterwave", label: "Carte bancaire", sub: "Visa, Mastercard — paiement immédiat", icon: "💳", badge: "Recommandé", badgeColor: "bg-[#CBF27A]/20 text-[#0F3D3E]" },
     { id: "wave",         label: "Wave",          sub: "Sénégal — paiement manuel", icon: "🌊", badge: null },
-    { id: "orange_money", label: "Orange Money",  sub: "Sénégal, CI, Cameroun",    icon: "🍊", badge: null },
-    { id: "mtn_momo",    label: "MTN MoMo",      sub: "Cameroun",                 icon: "📱", badge: null },
+    { id: "tara",         label: "Mobile Money Cameroun", sub: "Orange Money, MTN MoMo — Tara Money", icon: "📱", badge: null },
     { id: "bank",        label: "Virement",       sub: "Diaspora · 2–3 jours",    icon: "🏦", badge: null },
   ] as const;
 
@@ -86,7 +85,7 @@ export default function CheckoutPage() {
     setError("");
 
     // ── Paiements manuels Mobile Money / Virement ──────────────────────────
-    if (paymentMethod !== "flutterwave") {
+    if (paymentMethod !== "flutterwave" && paymentMethod !== "tara") {
       try {
         const res = await fetch("/api/deposit/request", {
           method: "POST",
@@ -121,8 +120,10 @@ export default function CheckoutPage() {
       return;
     }
 
-    // ── Flutterwave (carte / mobile money automatique) ─────────────────────
-    if (!flwLoaded) { setError("Le module de paiement charge, veuillez patienter..."); setIsProcessing(false); return; }
+    // ── Flutterwave / Tara (carte / mobile money automatique) ─────────────────────
+    if (paymentMethod === "flutterwave") {
+      if (!flwLoaded) { setError("Le module de paiement charge, veuillez patienter..."); setIsProcessing(false); return; }
+    }
 
     try {
       const res = await fetch("/api/payment/initiate", {
@@ -134,6 +135,7 @@ export default function CheckoutPage() {
           address: { line1: form.line1, line2: form.line2, city: form.city, country: form.country, zip: form.zip },
           amount: total,
           currency: "XOF",
+          gateway: paymentMethod === "tara" ? "tara" : "flutterwave",
         }),
       });
       const data = await res.json();
@@ -457,7 +459,7 @@ export default function CheckoutPage() {
                       </div>
 
                       {/* Info méthode sélectionnée */}
-                      {paymentMethod && paymentMethod !== "flutterwave" && (
+                      {paymentMethod && paymentMethod !== "flutterwave" && paymentMethod !== "tara" && (
                         <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 flex gap-2">
                           <AlertCircle className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
                           <p className="text-blue-700 text-xs leading-relaxed">
@@ -485,6 +487,8 @@ export default function CheckoutPage() {
                           <><Loader2 className="w-5 h-5 animate-spin" />Traitement...</>
                         ) : paymentMethod === "flutterwave" ? (
                           <><CreditCard className="w-5 h-5" />Payer {formatPrice(total)}<Lock className="w-4 h-4 opacity-70" /></>
+                        ) : paymentMethod === "tara" ? (
+                          <><Smartphone className="w-5 h-5" />Payer par Mobile Money · {formatPrice(total)}<Lock className="w-4 h-4 opacity-70" /></>
                         ) : (
                           <><Smartphone className="w-5 h-5" />Générer ma référence · {formatPrice(total)}</>
                         )}
@@ -557,7 +561,7 @@ export default function CheckoutPage() {
                 <div className="px-6 pb-5">
                   <p className="text-[11px] text-gray-400 text-center mb-3">Moyens de paiement acceptés</p>
                   <div className="flex items-center justify-center gap-2 flex-wrap">
-                    {["Visa", "MasterCard", "Wave", "Orange Money", "MTN MoMo"].map(pm => (
+                    {["Visa", "MasterCard", "Wave", "Mobile Money", "Tara Money"].map(pm => (
                       <span key={pm} className="px-2.5 py-1 bg-[#F6F4F1] text-[10px] font-bold text-gray-600 rounded-lg border border-[#E8E3DC]">
                         {pm}
                       </span>
