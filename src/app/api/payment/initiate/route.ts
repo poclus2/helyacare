@@ -86,6 +86,7 @@ export async function POST(request: Request) {
         webHookUrl: `${baseUrl}/api/payment/webhook-tara?tx_ref=${tx_ref}&cart_id=${cart?.id || ""}`,
       };
 
+      console.log("[payment/initiate] Tara Payload:", JSON.stringify(taraPayload, null, 2));
       const taraRes = await fetch("https://www.dklo.co/api/tara/paymentlinks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -93,6 +94,7 @@ export async function POST(request: Request) {
       });
 
       const taraData = await taraRes.json();
+      console.log("[payment/initiate] Tara Response:", JSON.stringify(taraData, null, 2));
 
       if (taraData.status === "success" && taraData.generalLink) {
         return NextResponse.json({
@@ -102,7 +104,7 @@ export async function POST(request: Request) {
           gateway: "tara"
         });
       } else {
-        throw new Error("Erreur de génération du lien Tara");
+        throw new Error(`Erreur de génération du lien Tara: ${JSON.stringify(taraData)}`);
       }
     }
 
