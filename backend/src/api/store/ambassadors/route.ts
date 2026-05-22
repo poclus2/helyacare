@@ -1,12 +1,13 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { MLM_MODULE } from "../../../modules/mlm"
 import MlmModuleService from "../../../modules/mlm/service"
+import { Modules } from "@medusajs/framework/utils"
 
 export async function POST(
   req: MedusaRequest,
   res: MedusaResponse
 ) {
-  const { customer_id, referral_code, sponsor_referral_code } = req.body as {
+  let { customer_id, referral_code, sponsor_referral_code } = req.body as {
     customer_id: string
     referral_code: string
     sponsor_referral_code?: string
@@ -17,12 +18,25 @@ export async function POST(
   }
 
   const mlmService: MlmModuleService = req.scope.resolve(MLM_MODULE)
+  const customerService = req.scope.resolve(Modules.CUSTOMER)
 
   try {
     // Check if ambassador already exists for this customer
     const existing = await mlmService.listAmbassadors({ customer_id })
     if (existing && existing.length > 0) {
       return res.json({ ambassador: existing[0], already_exists: true })
+    }
+
+    // Retrieve sponsor from customer metadata if not directly provided
+    if (!sponsor_referral_code) {
+      try {
+        const customer = await customerService.retrieveCustomer(customer_id)
+        if (customer && customer.metadata?.referral_code) {
+          sponsor_referral_code = customer.metadata.referral_code as string
+        }
+      } catch (err) {
+        console.warn("Could not retrieve customer to check metadata sponsor:", err)
+      }
     }
 
     // Check referral code uniqueness
@@ -59,11 +73,26 @@ async function createAmbassador(
     }
   }
 
+  // Assign binary placement if sponsor exists
+  let placementId: string | undefined = undefined
+  let binaryPosition: "LEFT" | "RIGHT" | undefined = undefined
+  if (sponsorId) {
+    try {
+      const placementInfo = await mlmService.assignBinaryPlacement(sponsorId)
+      placementId = placementInfo.placement_id
+      binaryPosition = placementInfo.binary_position
+    } catch (err) {
+      console.error("Failed to assign binary placement:", err)
+    }
+  }
+
   // Create the ambassador record
   const ambassador = await mlmService.createAmbassadors({
     customer_id,
     referral_code: referral_code.toUpperCase(),
     ...(sponsorId && { sponsor: sponsorId }),
+    ...(placementId && { placement: placementId }),
+    ...(binaryPosition && { binary_position: binaryPosition }),
   } as any)
 
   // Create the wallet for this ambassador

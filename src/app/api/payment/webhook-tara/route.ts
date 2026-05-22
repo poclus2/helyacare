@@ -6,21 +6,24 @@ import { sendOrderConfirmationSms } from "@/lib/sms";
  * POST /api/payment/webhook-tara
  * Reçoit les événements de la passerelle Tara.
  * L'URL configurée lors de l'initiation est de la forme:
- * /api/payment/webhook-tara?tx_ref=HC-XXXX&cart_id=cart_XXXX
+ * /api/payment/webhook-tara?tx_ref=HC-XXXX&cart_id=cart_XXXX&customer_id=cus_XXXX&amount=XXXX&bonus_points=XX
  */
 export async function POST(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const tx_ref = searchParams.get("tx_ref");
     const cartId = searchParams.get("cart_id");
+    const customerId = searchParams.get("customer_id");
+    const amountStr = searchParams.get("amount");
+    const bonusPointsStr = searchParams.get("bonus_points");
+
+    const amount = amountStr ? parseFloat(amountStr) : 0;
+    const bonusPoints = bonusPointsStr ? parseInt(bonusPointsStr, 10) : 0;
 
     const body = await request.text();
     console.log("[webhook-tara] Événement reçu. tx_ref:", tx_ref, "cart_id:", cartId);
     console.log("[webhook-tara] Payload:", body);
 
-    // TODO: Ajouter la vérification de la signature Tara ou du statut dans le payload
-    // Pour l'instant, on suppose que si le webhook est appelé, c'est que le paiement est réussi,
-    // mais il est crucial d'adapter cette partie en fonction de la documentation de Tara.
     let parsedBody;
     try {
       parsedBody = JSON.parse(body);
@@ -28,19 +31,26 @@ export async function POST(request: Request) {
       parsedBody = body;
     }
 
-    if (parsedBody && parsedBody.status && parsedBody.status !== "success") {
+    if (parsedBody && parsedBody.status && parsedBody.status.toLowerCase() !== "success") {
        console.log("[webhook-tara] Paiement non réussi selon le payload:", parsedBody.status);
        return NextResponse.json({ received: true });
     }
 
-    const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL;
+    const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
+    const apiKey = process.env.MEDUSA_API_KEY || "";
+
     const medusaHeaders = {
       "Content-Type": "application/json",
       ...(publishableKey && { "x-publishable-api-key": publishableKey }),
     };
 
-    // Compléter le panier Medusa si disponible
+    const adminHeaders = {
+      "Content-Type": "application/json",
+      ...(apiKey && { Authorization: `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}` }),
+    };
+
+    // 1. Compléter le panier Medusa si disponible
     let orderId: string | null = null;
     if (cartId) {
       try {
@@ -50,19 +60,100 @@ export async function POST(request: Request) {
         });
         if (completeRes.ok) {
           const completeData = await completeRes.json();
-          orderId = completeData.data?.id;
+          orderId = completeData.order?.id || completeData.data?.id || null;
           console.log(`[webhook-tara] Panier ${cartId} complété avec succès. Order: ${orderId}`);
         } else {
-          console.warn(`[webhook-tara] Échec de la complétion du panier ${cartId}`);
+          console.warn(`[webhook-tara] Échec de la complétion du panier ${cartId}. Status: ${completeRes.status}`);
         }
       } catch (e) {
         console.error(`[webhook-tara] Erreur lors de la complétion:`, e);
       }
     }
 
-    // Note: L'attribution des points et les emails dépendent de la récupération des infos client 
-    // et des articles, ce qui nécessiterait soit de les passer via les paramètres de requête, 
-    // soit de récupérer la commande Medusa fraîchement créée.
+    // 2. Créditer les commissions ambassadeur (si applicable)
+    if (customerId && orderId) {
+      try {
+        const commissionRes = await fetch(`${backendUrl}/store/ambassadors/commission`, {
+          method: "POST",
+          headers: {
+            ...medusaHeaders,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            customer_id: customerId,
+            order_id: orderId,
+            amount: amount,
+            bonus_points: bonusPoints,
+          }),
+        });
+        if (commissionRes.ok) {
+          console.log("[webhook-tara] Commission MLM traitée pour:", customerId);
+        } else {
+          console.warn("[webhook-tara] Échec du traitement de la commission:", await commissionRes.text());
+        }
+      } catch (err) {
+        console.error("[webhook-tara] Erreur commission MLM:", err);
+      }
+    }
+
+    // 3. Récupérer les détails de la commande pour notifications (email/SMS)
+    if (orderId) {
+      try {
+        const orderRes = await fetch(`${backendUrl}/admin/orders/${orderId}`, {
+          headers: adminHeaders,
+        });
+
+        if (orderRes.ok) {
+          const { order } = await orderRes.json();
+          
+          const customerEmail = order.email;
+          const customerName = `${order.shipping_address?.first_name || ""} ${order.shipping_address?.last_name || ""}`.trim();
+          const firstName = order.shipping_address?.first_name || customerName.split(" ")[0] || "";
+          const customerPhone = order.shipping_address?.phone;
+          const currency = order.currency_code?.toUpperCase() || "XOF";
+          const cartItems = order.items?.map((item: any) => ({
+            title: item.title,
+            quantity: item.quantity,
+            unit_price: item.unit_price
+          })) || [];
+
+          // 3a. Email de confirmation
+          if (customerEmail) {
+            try {
+              await sendOrderConfirmationEmail(
+                customerEmail,
+                firstName,
+                orderId,
+                amount || (order.total / 100),
+                currency,
+                cartItems
+              );
+              console.log("[webhook-tara] Email confirmation envoyé à:", customerEmail);
+            } catch (emailErr) {
+              console.error("[webhook-tara] Email confirmation failed:", emailErr);
+            }
+          }
+
+          // 3b. SMS de confirmation
+          if (customerPhone) {
+            try {
+              await sendOrderConfirmationSms(
+                customerPhone,
+                firstName,
+                orderId,
+                amount || (order.total / 100),
+                currency
+              );
+              console.log("[webhook-tara] SMS confirmation envoyé à:", customerPhone);
+            } catch (smsErr) {
+              console.error("[webhook-tara] SMS confirmation failed:", smsErr);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("[webhook-tara] Erreur lors de l'envoi des notifications:", err);
+      }
+    }
 
     return NextResponse.json({ received: true, success: true });
   } catch (error) {

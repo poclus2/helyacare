@@ -96,15 +96,17 @@ class MlmModuleService extends MedusaService({
       const parentId = current.placement.id
       const position = current.binary_position
 
+      const parent = await this.retrieveAmbassador(parentId)
+
       if (position === "LEFT") {
         await this.updateAmbassadors({
           id: parentId,
-          left_bv: current.placement.left_bv + volumeToAdd // Will need transaction-safety in production
+          left_bv: Number(parent.left_bv || 0) + volumeToAdd
         })
       } else if (position === "RIGHT") {
         await this.updateAmbassadors({
           id: parentId,
-          right_bv: current.placement.right_bv + volumeToAdd // Will need transaction-safety in production
+          right_bv: Number(parent.right_bv || 0) + volumeToAdd
         })
       }
 

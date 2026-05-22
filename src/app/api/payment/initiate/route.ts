@@ -83,7 +83,7 @@ export async function POST(request: Request) {
         productDescription: `Paiement pour ${customer.first_name} ${customer.last_name}`,
         productPictureUrl: `${baseUrl}/logo-white.png`,
         returnUrl: `${baseUrl}/commande/succes?tx_ref=${tx_ref}&amount=${amount}`,
-        webHookUrl: `${baseUrl}/api/payment/webhook-tara?tx_ref=${tx_ref}&cart_id=${cart?.id || ""}`,
+        webHookUrl: `${baseUrl}/api/payment/webhook-tara?tx_ref=${tx_ref}&cart_id=${cart?.id || ""}&customer_id=${session?.customer_id || ""}&amount=${amount}&bonus_points=${total_bonus_points}`,
       };
 
       console.log("[payment/initiate] Tara Payload:", JSON.stringify(taraPayload, null, 2));
