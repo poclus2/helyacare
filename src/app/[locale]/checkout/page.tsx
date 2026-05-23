@@ -155,6 +155,7 @@ export default function CheckoutPage() {
           target: data.instructions.target,
           amount: data.instructions.amount,
         });
+        clearCart();
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -464,6 +465,14 @@ export default function CheckoutPage() {
                         <p className="text-orange-700 text-xs leading-relaxed">
                           Mentionnez impérativement la référence <strong>{manualDone.ref}</strong> dans le libellé du virement. Sans référence, le crédit ne peut être effectué.
                         </p>
+                      </div>
+                      <div className="flex gap-3 pt-2">
+                        <Link href="/boutique" className={`flex-1 py-3 text-center text-sm font-bold rounded-xl border border-[#E8E3DC] text-[#0F3D3E] hover:bg-[#F6F4F1] transition-colors ${inter.className}`}>
+                          Retour à la boutique
+                        </Link>
+                        <Link href="/espace-client/commandes" className={`flex-1 py-3 text-center text-sm font-bold rounded-xl bg-[#0F3D3E] text-white hover:bg-[#1a5556] transition-colors ${inter.className}`}>
+                          Mes commandes
+                        </Link>
                       </div>
                     </div>
                   ) : (

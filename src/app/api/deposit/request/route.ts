@@ -110,7 +110,7 @@ export async function POST(request: Request) {
       // Contexte commande (si paiement checkout)
       cart_id: cart_id || null,
       cart_items: cart_items || null,
-      type: cart_id ? "order" : "wallet",
+      type: (cart_items && cart_items.length > 0) ? "order" : "wallet",
     };
 
     const adminHeaders = getAdminHeaders();
@@ -139,7 +139,7 @@ export async function POST(request: Request) {
     currentMeta.deposit_requests = JSON.stringify(existingDeposits);
 
     // ── 3. Si c'est un paiement de commande → enregistrer aussi comme commande en attente ──
-    if (cart_id) {
+    if (cart_items && cart_items.length > 0) {
       const pendingOrder = {
         id: `ORD-MANUAL-${Date.now()}`,
         deposit_id: depositId,
@@ -147,7 +147,7 @@ export async function POST(request: Request) {
         amount,
         currency,
         method,
-        cart_id,
+        cart_id: cart_id || null,
         cart_items: cart_items || [],
         customer_id: session.customer_id,
         status: "awaiting_payment",

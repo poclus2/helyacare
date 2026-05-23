@@ -206,6 +206,22 @@ export async function POST(request: Request) {
       });
 
       meta.wallet = JSON.stringify(wallet);
+
+      // Mettre à jour la pending_order liée (si c'est une commande)
+      if (meta.pending_orders) {
+        try {
+          const pendingOrders: any[] = JSON.parse(meta.pending_orders);
+          const poIdx = pendingOrders.findIndex((po: any) => po.deposit_id === deposit_id);
+          if (poIdx !== -1) {
+            pendingOrders[poIdx] = {
+              ...pendingOrders[poIdx],
+              status: "completed",
+              processed_at: new Date().toISOString(),
+            };
+            meta.pending_orders = JSON.stringify(pendingOrders);
+          }
+        } catch {}
+      }
     }
 
     meta.deposit_requests = JSON.stringify(deposits);
