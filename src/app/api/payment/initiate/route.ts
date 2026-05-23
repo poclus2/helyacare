@@ -55,6 +55,39 @@ export async function POST(request: Request) {
       ...(apiKey && { Authorization: `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}` }),
     };
     
+    // ── Update Medusa Cart with Customer Email & Address ──
+    const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
+    const medusaHeaders = {
+      "Content-Type": "application/json",
+      ...(publishableKey && { "x-publishable-api-key": publishableKey }),
+    };
+
+    if (cart?.id) {
+      try {
+        await fetch(`${backendUrl}/store/carts/${cart.id}`, {
+          method: "POST",
+          headers: medusaHeaders,
+          body: JSON.stringify({
+            email: customer.email,
+            customer_id: session?.customer_id || undefined,
+            shipping_address: {
+              first_name: customer.first_name || "",
+              last_name: customer.last_name || "",
+              phone: customer.phone || "",
+              address_1: address?.line1 || "",
+              address_2: address?.line2 || "",
+              city: address?.city || "",
+              country_code: "sn", // Fallback sur SN car Medusa exige un ISO code 2 lettres
+              postal_code: address?.zip || "",
+            }
+          })
+        });
+        console.log(`[payment/initiate] Panier ${cart.id} mis à jour avec le client ${customer.email}`);
+      } catch (err) {
+        console.error(`[payment/initiate] Erreur mise à jour panier Medusa:`, err);
+      }
+    }
+    
     let activeGateway = gateway || "tara";
     if (!gateway) {
       try {

@@ -64,6 +64,49 @@ export default function CheckoutPage() {
     document.head.appendChild(script);
   }, []);
 
+  // Fetch customer profile from Medusa to pre-fill address
+  useEffect(() => {
+    async function fetchCustomer() {
+      if (!session?.medusa_token) return;
+      try {
+        const backend = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
+        const res = await fetch(`${backend}/store/customers/me`, {
+          headers: { Authorization: `Bearer ${session.medusa_token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          const customer = data.customer;
+          if (customer) {
+            setForm(f => ({
+              ...f,
+              first_name: customer.first_name || f.first_name,
+              last_name: customer.last_name || f.last_name,
+              phone: customer.phone || f.phone,
+            }));
+            if (customer.shipping_addresses?.length > 0) {
+              const addr = customer.shipping_addresses[0]; // Take the first address
+              setForm(f => ({
+                ...f,
+                line1: addr.address_1 || f.line1,
+                line2: addr.address_2 || f.line2,
+                city: addr.city || f.city,
+                zip: addr.postal_code || f.zip,
+                // Si country_code est 'sn', on remet 'Sénégal' pour le sélecteur
+                country: addr.country_code ? (addr.country_code.toLowerCase() === "sn" ? "Sénégal" : addr.country_code) : f.country,
+                first_name: f.first_name || addr.first_name || "",
+                last_name: f.last_name || addr.last_name || "",
+                phone: f.phone || addr.phone || "",
+              }));
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Erreur de récupération profil client:", err);
+      }
+    }
+    fetchCustomer();
+  }, [session]);
+
   const handleField = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
   };
