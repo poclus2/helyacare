@@ -74,6 +74,42 @@ export async function POST(request: Request) {
       }
     }
 
+    // 1b. Fallback : Si produit 100% virtuel (aucun panier Medusa), on l'enregistre dans les metadata du client
+    if (!orderId && customerId) {
+      try {
+        const customerRes = await fetch(`${backendUrl}/admin/customers/${customerId}`, { headers: adminHeaders });
+        if (customerRes.ok) {
+          const custData = await customerRes.json();
+          let depositReqs = custData.customer?.metadata?.deposit_requests ? JSON.parse(custData.customer.metadata.deposit_requests) : [];
+          
+          const virtualOrder = {
+             id: tx_ref,
+             reference_code: tx_ref,
+             amount: amount,
+             status: "completed",
+             method: "tara",
+             created_at: new Date().toISOString(),
+             processed_at: new Date().toISOString(),
+             cart_items: [
+               { title: bonusPoints > 0 ? `Pack Ambassadeur HelyaCare (${bonusPoints} PV)` : "Commande Virtuelle HelyaCare", unit_price: amount, quantity: 1 }
+             ]
+          };
+          
+          if (!depositReqs.some((d: any) => d.id === tx_ref)) {
+            depositReqs.push(virtualOrder);
+            await fetch(`${backendUrl}/admin/customers/${customerId}`, {
+              method: "POST",
+              headers: adminHeaders,
+              body: JSON.stringify({ metadata: { ...custData.customer.metadata, deposit_requests: JSON.stringify(depositReqs) }})
+            });
+            console.log(`[webhook-tara] Commande virtuelle enregistrée dans metadata pour le client ${customerId}`);
+          }
+        }
+      } catch (err) {
+        console.error(`[webhook-tara] Erreur enregistrement commande virtuelle:`, err);
+      }
+    }
+
     // 2. Créditer les commissions ambassadeur (si applicable)
     if (customerId && orderId) {
       try {

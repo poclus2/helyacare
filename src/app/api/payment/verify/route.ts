@@ -88,6 +88,43 @@ export async function GET(request: Request) {
       } catch {}
     }
 
+    const apiKey = process.env.MEDUSA_API_KEY || "";
+    const adminHeaders = {
+      "Content-Type": "application/json",
+      ...(apiKey && { Authorization: `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}` }),
+    };
+
+    // 4b. Fallback : Si produit 100% virtuel (aucun panier Medusa), on l'enregistre dans les metadata du client
+    if (!orderId && customerId) {
+      try {
+        const customerRes = await fetch(`${backendUrl}/admin/customers/${customerId}`, { headers: adminHeaders });
+        if (customerRes.ok) {
+          const custData = await customerRes.json();
+          let depositReqs = custData.customer?.metadata?.deposit_requests ? JSON.parse(custData.customer.metadata.deposit_requests) : [];
+          
+          const virtualOrder = {
+             id: tx.tx_ref,
+             reference_code: tx.tx_ref,
+             amount: tx.amount,
+             status: "completed",
+             method: "flutterwave",
+             created_at: new Date().toISOString(),
+             processed_at: new Date().toISOString(),
+             cart_items: cartItems.length > 0 ? cartItems : [{ title: "Commande Virtuelle HelyaCare", unit_price: tx.amount, quantity: 1 }]
+          };
+          
+          if (!depositReqs.some((d: any) => d.id === tx.tx_ref)) {
+             depositReqs.push(virtualOrder);
+             await fetch(`${backendUrl}/admin/customers/${customerId}`, {
+               method: "POST",
+               headers: adminHeaders,
+               body: JSON.stringify({ metadata: { ...custData.customer.metadata, deposit_requests: JSON.stringify(depositReqs) }})
+             });
+          }
+        }
+      } catch (err) {}
+    }
+
     return NextResponse.json({
       success: true,
       tx_ref: tx.tx_ref,
