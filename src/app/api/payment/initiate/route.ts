@@ -49,11 +49,17 @@ export async function POST(request: Request) {
 
     // Récupérer la passerelle active depuis les paramètres
     const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
-    const apiKey = process.env.MEDUSA_API_KEY || "";
-    const adminHeaders = {
-      "Content-Type": "application/json",
-      ...(apiKey && { Authorization: `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}` }),
-    };
+    let adminHeaders: Record<string, string> = { "Content-Type": "application/json" };
+    try {
+      const { getMedusaAdminToken } = await import("@/lib/medusa-admin-auth");
+      const token = await getMedusaAdminToken();
+      adminHeaders["Authorization"] = `Bearer ${token}`;
+    } catch (e) {
+      const apiKey = process.env.MEDUSA_API_KEY || "";
+      if (apiKey) {
+        adminHeaders["Authorization"] = `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}`;
+      }
+    }
     
     // ── Update Medusa Cart with Customer Email & Address ──
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;

@@ -42,17 +42,23 @@ export async function POST(request: Request) {
 
     const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
-    const apiKey = process.env.MEDUSA_API_KEY || "";
 
     const medusaHeaders = {
       "Content-Type": "application/json",
       ...(publishableKey && { "x-publishable-api-key": publishableKey }),
     };
 
-    const adminHeaders = {
-      "Content-Type": "application/json",
-      ...(apiKey && { Authorization: `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}` }),
-    };
+    let adminHeaders: Record<string, string> = { "Content-Type": "application/json" };
+    try {
+      const { getMedusaAdminToken } = await import("@/lib/medusa-admin-auth");
+      const token = await getMedusaAdminToken();
+      adminHeaders["Authorization"] = `Bearer ${token}`;
+    } catch (e) {
+      const apiKey = process.env.MEDUSA_API_KEY || "";
+      if (apiKey) {
+        adminHeaders["Authorization"] = `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}`;
+      }
+    }
 
     // 1. Compléter le panier Medusa si disponible
     let orderId: string | null = null;

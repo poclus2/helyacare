@@ -32,14 +32,29 @@ const MEDUSA_HEADERS = {
   ...(PUB_KEY && { "x-publishable-api-key": PUB_KEY }),
 };
 
-async function getCustomer(customerId: string) {
-  const API_KEY = process.env.MEDUSA_API_KEY || "";
-  const res = await fetch(`${BACKEND}/admin/customers/${customerId}`, {
-    headers: {
+import { getMedusaAdminToken } from "@/lib/medusa-admin-auth";
+
+async function getAdminHeaders() {
+  try {
+    const token = await getMedusaAdminToken();
+    return {
       ...MEDUSA_HEADERS,
-      // Medusa v2 : Basic auth (clé = username, mot de passe vide)
+      Authorization: `Bearer ${token}`,
+    };
+  } catch (err) {
+    console.warn("Failed to get medusa token, falling back to basic auth", err);
+    const API_KEY = process.env.MEDUSA_API_KEY || "";
+    return {
+      ...MEDUSA_HEADERS,
       Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}`,
-    },
+    };
+  }
+}
+
+async function getCustomer(customerId: string) {
+  const adminHeaders = await getAdminHeaders();
+  const res = await fetch(`${BACKEND}/admin/customers/${customerId}`, {
+    headers: adminHeaders,
   });
   if (!res.ok) return null;
   const data = await res.json();
@@ -47,14 +62,10 @@ async function getCustomer(customerId: string) {
 }
 
 async function updateCustomerMeta(customerId: string, metadata: Record<string, string>) {
-  const API_KEY = process.env.MEDUSA_API_KEY || "";
+  const adminHeaders = await getAdminHeaders();
   return fetch(`${BACKEND}/admin/customers/${customerId}`, {
     method: "POST",
-    headers: {
-      ...MEDUSA_HEADERS,
-      // Medusa v2 : Basic auth (clé = username, mot de passe vide)
-      Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}`,
-    },
+    headers: adminHeaders,
     body: JSON.stringify({ metadata }),
   });
 }
@@ -72,12 +83,9 @@ export async function GET(request: Request) {
 
   try {
     // Récupérer tous les clients (paginated)
-    const API_KEY = process.env.MEDUSA_API_KEY || "";
+    const adminHeaders = await getAdminHeaders();
     const res = await fetch(`${BACKEND}/admin/customers?limit=500`, {
-      headers: {
-        ...MEDUSA_HEADERS,
-        Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}`,
-      },
+      headers: adminHeaders,
     });
 
     if (!res.ok) {

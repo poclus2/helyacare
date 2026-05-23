@@ -51,12 +51,23 @@ function generateReference(): string {
   return ref;
 }
 
-function getAdminHeaders() {
-  const API_KEY = process.env.MEDUSA_API_KEY || "";
-  return {
-    "Content-Type": "application/json",
-    Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}`,
-  };
+import { getMedusaAdminToken } from "@/lib/medusa-admin-auth";
+
+async function getAdminHeaders() {
+  try {
+    const token = await getMedusaAdminToken();
+    return {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+  } catch (err) {
+    console.warn("Failed to get medusa token, falling back to basic auth", err);
+    const API_KEY = process.env.MEDUSA_API_KEY || "";
+    return {
+      "Content-Type": "application/json",
+      Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}`,
+    };
+  }
 }
 
 // ─── POST /api/deposit/request ────────────────────────────────────────────────
@@ -113,7 +124,7 @@ export async function POST(request: Request) {
       type: (cart_items && cart_items.length > 0) ? "order" : "wallet",
     };
 
-    const adminHeaders = getAdminHeaders();
+    const adminHeaders = await getAdminHeaders();
 
     // ── 1. Récupérer le client via Admin API (fiable, pas dépendant du token store) ──
     const getRes = await fetch(`${BACKEND}/admin/customers/${session.customer_id}`, {
@@ -204,7 +215,7 @@ export async function GET(_request: Request) {
       return NextResponse.json({ error: "Authentification requise" }, { status: 401 });
     }
 
-    const adminHeaders = getAdminHeaders();
+    const adminHeaders = await getAdminHeaders();
 
     const getRes = await fetch(`${BACKEND}/admin/customers/${session.customer_id}`, {
       headers: adminHeaders,

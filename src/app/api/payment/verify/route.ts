@@ -86,13 +86,17 @@ export async function GET(request: Request) {
           orderId = completeData.order?.id || completeData.data?.id || null;
         }
       } catch {}
+    let adminHeaders: Record<string, string> = { "Content-Type": "application/json" };
+    try {
+      const { getMedusaAdminToken } = await import("@/lib/medusa-admin-auth");
+      const token = await getMedusaAdminToken();
+      adminHeaders["Authorization"] = `Bearer ${token}`;
+    } catch (e) {
+      const apiKey = process.env.MEDUSA_API_KEY || "";
+      if (apiKey) {
+        adminHeaders["Authorization"] = `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}`;
+      }
     }
-
-    const apiKey = process.env.MEDUSA_API_KEY || "";
-    const adminHeaders = {
-      "Content-Type": "application/json",
-      ...(apiKey && { Authorization: `Basic ${Buffer.from(`${apiKey}:`).toString("base64")}` }),
-    };
 
     // 4b. Fallback : Si produit 100% virtuel (aucun panier Medusa), on l'enregistre dans les metadata du client
     if (!orderId && customerId) {
