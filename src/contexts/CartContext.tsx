@@ -76,6 +76,7 @@ const CartContext = createContext<CartContextType>({
 // ─── Provider ──────────────────────────────────────────────────────────────
 
 const CART_ID_KEY = "helyacare_cart_id";
+const LOCAL_CART_ITEMS_KEY = "helyacare_local_items";
 const BACKEND = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
 const PUB_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "";
 
@@ -92,24 +93,52 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // ── Restore cart from Medusa on mount ──────────────────────────────────
   useEffect(() => {
     const savedCartId = typeof window !== "undefined" ? localStorage.getItem(CART_ID_KEY) : null;
+    const savedLocalItemsStr = typeof window !== "undefined" ? localStorage.getItem(LOCAL_CART_ITEMS_KEY) : null;
+    let initialLocalItems: CartItem[] = [];
+    
+    if (savedLocalItemsStr) {
+      try {
+        initialLocalItems = JSON.parse(savedLocalItemsStr);
+      } catch {}
+    }
+
     if (savedCartId) {
-      fetchCart(savedCartId);
+      fetchCart(savedCartId, initialLocalItems);
+    } else if (initialLocalItems.length > 0) {
+      const subtotal = initialLocalItems.reduce((sum, i) => sum + i.unit_price * i.quantity, 0);
+      setCart({ ...emptyCart, items: initialLocalItems, subtotal, total: subtotal });
     }
   }, []);
 
-  const fetchCart = async (cartId: string) => {
+  const fetchCart = async (cartId: string, localItems: CartItem[] = []) => {
     try {
       const res = await fetch(`${BACKEND}/store/carts/${cartId}`, { headers: medusaHeaders });
       if (res.ok) {
         const data = await res.json();
-        setCart(mapMedusaCart(data.cart));
+        const mappedCart = mapMedusaCart(data.cart);
+        if (localItems.length > 0) {
+          mappedCart.items = [...mappedCart.items, ...localItems];
+          const subtotal = mappedCart.items.reduce((sum, i) => sum + i.unit_price * i.quantity, 0);
+          mappedCart.subtotal = subtotal;
+          mappedCart.total = subtotal;
+        }
+        setCart(mappedCart);
       } else {
         // Cart expired or not found → reset
         localStorage.removeItem(CART_ID_KEY);
-        setCart(emptyCart);
+        if (localItems.length > 0) {
+          const subtotal = localItems.reduce((sum, i) => sum + i.unit_price * i.quantity, 0);
+          setCart({ ...emptyCart, items: localItems, subtotal, total: subtotal });
+        } else {
+          setCart(emptyCart);
+        }
       }
     } catch {
       // Offline or backend not available → use local state
+      if (localItems.length > 0) {
+        const subtotal = localItems.reduce((sum, i) => sum + i.unit_price * i.quantity, 0);
+        setCart({ ...emptyCart, id: cartId, items: localItems, subtotal, total: subtotal });
+      }
     }
   };
 
@@ -221,6 +250,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
 
       const subtotal = newItems.reduce((sum, i) => sum + i.unit_price * i.quantity, 0);
+      
+      const localItems = newItems.filter(i => i.id.startsWith("local_"));
+      if (localItems.length > 0) {
+        localStorage.setItem(LOCAL_CART_ITEMS_KEY, JSON.stringify(localItems));
+      } else {
+        localStorage.removeItem(LOCAL_CART_ITEMS_KEY);
+      }
+
       return {
         ...prev,
         id: cartId || prev.id,
@@ -248,6 +285,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCart(prev => {
       const newItems = prev.items.filter(i => i.id !== lineItemId);
       const subtotal = newItems.reduce((sum, i) => sum + i.unit_price * i.quantity, 0);
+      
+      const localItems = newItems.filter(i => i.id.startsWith("local_"));
+      if (localItems.length > 0) {
+        localStorage.setItem(LOCAL_CART_ITEMS_KEY, JSON.stringify(localItems));
+      } else {
+        localStorage.removeItem(LOCAL_CART_ITEMS_KEY);
+      }
+
       return { ...prev, items: newItems, subtotal, total: subtotal };
     });
     setIsLoading(false);
@@ -271,12 +316,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCart(prev => {
       const newItems = prev.items.map(i => i.id === lineItemId ? { ...i, quantity } : i);
       const subtotal = newItems.reduce((sum, i) => sum + i.unit_price * i.quantity, 0);
+      
+      const localItems = newItems.filter(i => i.id.startsWith("local_"));
+      if (localItems.length > 0) {
+        localStorage.setItem(LOCAL_CART_ITEMS_KEY, JSON.stringify(localItems));
+      } else {
+        localStorage.removeItem(LOCAL_CART_ITEMS_KEY);
+      }
+
       return { ...prev, items: newItems, subtotal, total: subtotal };
     });
   }, [cart, removeItem]);
 
   const clearCart = () => {
     localStorage.removeItem(CART_ID_KEY);
+    localStorage.removeItem(LOCAL_CART_ITEMS_KEY);
     setCart(emptyCart);
   };
 
