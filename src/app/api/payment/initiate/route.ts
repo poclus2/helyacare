@@ -74,17 +74,20 @@ export async function POST(request: Request) {
       const taraApiKey = process.env.TARA_API_KEY || "nwcpNGDWxWDQpWziZg7g8Tj4";
       const taraBusinessId = process.env.TARA_BUSINESS_ID || "5AuML9WXgI";
 
-      const taraPayload = {
-        apiKey: taraApiKey,
-        businessId: taraBusinessId,
-        productId: cart?.id || "cart-default",
-        productName: `Commande HelyaCare — ${cart?.items?.length || 1} article(s)`,
-        productPrice: amount,
-        productDescription: `Paiement pour ${customer.first_name} ${customer.last_name}`,
-        productPictureUrl: `${baseUrl}/logo-white.png`,
-        returnUrl: `${baseUrl}/commande/succes?tx_ref=${tx_ref}&amount=${amount}`,
-        webHookUrl: `${baseUrl}/api/payment/webhook-tara?tx_ref=${tx_ref}&cart_id=${cart?.id || ""}&customer_id=${session?.customer_id || ""}&amount=${amount}&bonus_points=${total_bonus_points}`,
-      };
+        // Pack extra data into tx_ref to avoid multiple query params breaking Tara
+        const custom_tx_ref = `${tx_ref}__${session?.customer_id || "none"}__${amount}__${total_bonus_points}__${cart?.id || "none"}`;
+        
+        const taraPayload = {
+          apiKey: taraApiKey,
+          businessId: taraBusinessId,
+          productId: cart?.id || "cart-default",
+          productName: `Commande HelyaCare — ${cart?.items?.length || 1} article(s)`,
+          productPrice: amount,
+          productDescription: `Paiement pour ${customer.first_name} ${customer.last_name}`,
+          productPictureUrl: `${baseUrl}/logo-white.png`,
+          returnUrl: `${baseUrl}/commande/succes?tx_ref=${tx_ref}&amount=${amount}`,
+          webHookUrl: `${baseUrl}/api/payment/webhook-tara?tx_ref=${custom_tx_ref}`,
+        };
 
       console.log("[payment/initiate] Tara Payload:", JSON.stringify(taraPayload, null, 2));
       const taraRes = await fetch("https://www.dklo.co/api/tara/paymentlinks", {

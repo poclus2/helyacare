@@ -11,11 +11,15 @@ import { sendOrderConfirmationSms } from "@/lib/sms";
 export async function POST(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const tx_ref = searchParams.get("tx_ref");
-    const cartId = searchParams.get("cart_id");
-    const customerId = searchParams.get("customer_id");
-    const amountStr = searchParams.get("amount");
-    const bonusPointsStr = searchParams.get("bonus_points");
+    const raw_tx_ref = searchParams.get("tx_ref") || "";
+    
+    // Parse the packed custom tx_ref (HC-XXXX__cus_XXXX__1000__100__cart_XXXX)
+    const parts = raw_tx_ref.split("__");
+    const tx_ref = parts[0] || raw_tx_ref;
+    const customerId = parts.length > 1 && parts[1] !== "none" ? parts[1] : searchParams.get("customer_id");
+    const amountStr = parts.length > 2 ? parts[2] : searchParams.get("amount");
+    const bonusPointsStr = parts.length > 3 ? parts[3] : searchParams.get("bonus_points");
+    const cartId = parts.length > 4 && parts[4] !== "none" ? parts[4] : searchParams.get("cart_id");
 
     const amount = amountStr ? parseFloat(amountStr) : 0;
     const bonusPoints = bonusPointsStr ? parseInt(bonusPointsStr, 10) : 0;
