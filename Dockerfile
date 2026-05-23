@@ -52,9 +52,9 @@ COPY --from=builder /app/.next             ./.next
 COPY --from=builder /app/node_modules      ./node_modules
 COPY --from=builder /app/package.json      ./package.json
 
-# Dossier uploads persistant
-RUN mkdir -p ./public/uploads && \
-    chown -R nextjs:nodejs ./public/uploads
+# Dossier uploads persistant et droits cache
+RUN mkdir -p ./public/uploads ./.next/cache && \
+    chown -R nextjs:nodejs ./public/uploads ./.next
 
 USER nextjs
 
