@@ -9,8 +9,15 @@ export default async function CommandesPage() {
 
   const BACKEND = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
   const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "";
-  const ADMIN_KEY = process.env.MEDUSA_API_KEY || "";
-  const adminAuth = `Basic ${Buffer.from(`${ADMIN_KEY}:`).toString("base64")}`;
+  let adminAuth = "";
+  try {
+    const { getMedusaAdminToken } = await import("@/lib/medusa-admin-auth");
+    const token = await getMedusaAdminToken();
+    adminAuth = `Bearer ${token}`;
+  } catch (err) {
+    const ADMIN_KEY = process.env.MEDUSA_API_KEY || "";
+    adminAuth = `Basic ${Buffer.from(`${ADMIN_KEY}:`).toString("base64")}`;
+  }
 
   if (session?.customer_id) {
 
