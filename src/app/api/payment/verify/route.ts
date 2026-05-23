@@ -86,6 +86,7 @@ export async function GET(request: Request) {
           orderId = completeData.order?.id || completeData.data?.id || null;
         }
       } catch {}
+    }
     let adminHeaders: Record<string, string> = { "Content-Type": "application/json" };
     try {
       const { getMedusaAdminToken } = await import("@/lib/medusa-admin-auth");
