@@ -80,7 +80,7 @@ export async function POST(request: Request) {
         const taraPayload = {
           apiKey: taraApiKey,
           businessId: taraBusinessId,
-          productId: cart?.id || "cart-default",
+          productId: tx_ref,
           productName: `Commande HelyaCare — ${cart?.items?.length || 1} article(s)`,
           productPrice: amount,
           price: amount,
