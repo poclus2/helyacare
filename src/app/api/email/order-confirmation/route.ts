@@ -143,10 +143,13 @@ export async function POST(request: Request) {
           <!-- CTA -->
           <tr>
             <td style="background-color: white; padding: 0 48px 40px; text-align: center;">
-              <a href="${process.env.NEXT_PUBLIC_BASE_URL}/espace-client"
+              <a href="${process.env.NEXT_PUBLIC_BASE_URL}/inscription?email=${encodeURIComponent(to)}"
                  style="display: inline-block; background-color: #E56B2D; color: white; font-size: 15px; font-weight: 700; padding: 16px 40px; border-radius: 12px; text-decoration: none;">
-                Voir ma commande →
+                 Suivre mon colis et accéder à mon Espace →
               </a>
+              <p style="margin: 16px 0 0; font-size: 13px; color: #666;">
+                Créez votre mot de passe pour suivre votre commande et gagner des récompenses. (Si vous avez déjà un compte, connectez-vous).
+              </p>
             </td>
           </tr>
 

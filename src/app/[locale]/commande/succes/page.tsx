@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
+import { useSession, signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import { CheckCircle2, Package, ArrowRight, Share2, Sparkles, Loader2 } from "lucide-react";
@@ -23,6 +24,57 @@ function SuccessContent() {
   const [verificationStatus, setVerificationStatus] = useState<"loading" | "success" | "error">("loading");
   const [orderRef] = useState(() => tx_ref || `HC-${Date.now().toString(36).toUpperCase()}`);
   const [emailSent, setEmailSent] = useState(false);
+
+  const { data: sessionData, status } = useSession();
+  const [password, setPassword] = useState("");
+  const [isRegistering, setIsRegistering] = useState(false);
+  const [registerSuccess, setRegisterSuccess] = useState(false);
+  const [registerError, setRegisterError] = useState("");
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const sessionRaw = localStorage.getItem("helyacare_checkout_session");
+    const localSession = sessionRaw ? JSON.parse(sessionRaw) : null;
+    const checkoutEmail = localSession?.email;
+    const checkoutFirstName = localSession?.firstName || "";
+    const checkoutLastName = localSession?.lastName || "";
+    const checkoutPhone = localSession?.phone || "";
+
+    if (!password || !checkoutEmail) {
+      setRegisterError("Informations manquantes. Veuillez contacter le support.");
+      return;
+    }
+    
+    setIsRegistering(true);
+    setRegisterError("");
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: checkoutEmail,
+          password: password,
+          first_name: checkoutFirstName,
+          last_name: checkoutLastName,
+          phone: checkoutPhone,
+          role: "customer"
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Erreur d'inscription");
+      
+      setRegisterSuccess(true);
+      await signIn("credentials", {
+        email: checkoutEmail,
+        password: password,
+        redirect: false,
+      });
+    } catch (err: any) {
+      setRegisterError(err.message);
+    } finally {
+      setIsRegistering(false);
+    }
+  };
 
   const sendConfirmationEmail = async (ref: string, amt: string | null) => {
     if (emailSent) return;
@@ -178,6 +230,48 @@ function SuccessContent() {
               </div>
             </div>
           </div>
+
+          {/* Upsell Inscription */}
+          {status === "unauthenticated" && !registerSuccess && (
+            <div className="bg-white rounded-3xl border border-[#CBF27A] shadow-lg p-8 mb-6 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#CBF27A]/20 rounded-bl-full -z-0" />
+              <div className="relative z-10">
+                <h2 className={`text-xl font-extrabold text-[#0F3D3E] mb-2 ${inter.className}`}>
+                  🎁 N'en restez pas là !
+                </h2>
+                <p className="text-gray-600 text-sm mb-6 leading-relaxed max-w-md">
+                  Créez votre mot de passe pour accéder à votre Espace Client. Suivez votre commande et rejoignez la communauté.
+                </p>
+                <form onSubmit={handleRegister} className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex-1">
+                    <input 
+                      type="password" 
+                      placeholder="Choisissez un mot de passe"
+                      required
+                      minLength={6}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full px-5 py-3.5 bg-[#F6F4F1] border border-[#E8E3DC] rounded-xl focus:outline-none focus:border-[#CBF27A] transition-colors"
+                    />
+                  </div>
+                  <button 
+                    type="submit" 
+                    disabled={isRegistering}
+                    className="px-6 py-3.5 bg-[#0F3D3E] text-white font-bold rounded-xl hover:bg-[#1a5556] transition-colors whitespace-nowrap flex items-center justify-center gap-2"
+                  >
+                    {isRegistering ? <Loader2 className="w-5 h-5 animate-spin" /> : "Activer mon compte"}
+                  </button>
+                </form>
+                {registerError && <p className="text-red-500 text-sm mt-3">{registerError}</p>}
+              </div>
+            </div>
+          )}
+
+          {registerSuccess && (
+            <div className="bg-[#CBF27A]/20 text-[#0F3D3E] rounded-3xl p-6 mb-6 text-center font-semibold border border-[#CBF27A]/50">
+              🎉 Compte créé avec succès ! Bienvenue dans votre Espace Client.
+            </div>
+          )}
 
           {/* Next Steps */}
           <div className="bg-white rounded-3xl border border-[#E8E3DC] shadow-sm p-8 mb-6">
