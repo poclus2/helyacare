@@ -31,9 +31,8 @@ export default function NouveauProduitPage() {
     setError("");
 
     try {
-      // Préparation du payload pour Medusa (v1 / v2 compatible basique)
-      // Note: Le prix en XOF est souvent géré avec 2 décimales implicites dans Medusa, donc on multiplie par 100.
-      const priceAmount = Math.round(parseFloat(formData.price || "0") * 100);
+      // Préparation du payload pour Medusa
+      const priceAmount = Math.round(parseFloat(formData.price || "0"));
 
       const payload = {
         title: formData.title,

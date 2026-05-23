@@ -109,7 +109,7 @@ export default function ModifierProduitPage() {
               const variant = product.variants?.[0];
               const prices: any[] = Array.isArray(variant?.prices) ? variant.prices : [];
               const xofPrice = prices.find((p: any) => p.currency_code === "xof") || prices[0];
-              return xofPrice ? Math.round(Number(xofPrice.amount) / 100) : 0;
+              return xofPrice ? Math.round(Number(xofPrice.amount)) : 0;
             })();
         const priceSub = product.price_subscription || 0;
 

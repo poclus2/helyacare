@@ -128,7 +128,7 @@ export async function POST(request: Request) {
                 customerEmail,
                 firstName,
                 orderId,
-                amount || (order.total / 100),
+                amount || order.total,
                 currency,
                 cartItems
               );
@@ -145,7 +145,7 @@ export async function POST(request: Request) {
                 customerPhone,
                 firstName,
                 orderId,
-                amount || (order.total / 100),
+                amount || order.total,
                 currency
               );
               console.log("[webhook-tara] SMS confirmation envoyé à:", customerPhone);
