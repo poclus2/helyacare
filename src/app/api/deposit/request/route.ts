@@ -39,7 +39,7 @@ const PAYMENT_INSTRUCTIONS: Record<string, { label: string; target: string; note
 };
 
 const MIN_AMOUNT: Record<string, number> = {
-  wave: 500, orange_money: 500, mtn_momo: 500, bank: 5000, other: 500,
+  wave: 500, orange_money: 500, mtn_momo: 500, bank: 100, other: 500,
 };
 
 function generateReference(): string {
