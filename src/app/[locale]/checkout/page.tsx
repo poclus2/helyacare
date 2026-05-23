@@ -220,7 +220,7 @@ export default function CheckoutPage() {
     }
   };
 
-  if (itemCount === 0) {
+  if (itemCount === 0 && !manualDone) {
     return (
       <>
         <Header />
@@ -265,7 +265,7 @@ export default function CheckoutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             {/* ── Left: Form ─────────────────────────────────────────────────── */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className={`space-y-6 ${manualDone ? 'lg:col-span-3 max-w-2xl mx-auto w-full' : 'lg:col-span-2'}`}>
 
               {/* Step Indicator */}
               <div className="flex items-center gap-0">
@@ -556,8 +556,9 @@ export default function CheckoutPage() {
             </div>
 
             {/* ── Right: Order Summary (sticky) ─────────────────────────────── */}
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-3xl border border-[#E8E3DC] shadow-sm overflow-hidden sticky top-28">
+            {!manualDone && (
+              <div className="lg:col-span-1">
+                <div className="bg-white rounded-3xl border border-[#E8E3DC] shadow-sm overflow-hidden sticky top-28">
 
                 <div className="px-6 py-5 border-b border-[#E8E3DC]">
                   <h2 className={`text-lg font-bold text-[#0F3D3E] ${inter.className}`}>
@@ -629,7 +630,7 @@ export default function CheckoutPage() {
                   </p>
                 </div>
               </div>
-            </div>
+            )}
 
           </div>
         </div>
