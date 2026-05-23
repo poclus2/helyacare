@@ -1,0 +1,1 @@
+UPDATE provider_identity SET provider_metadata = jsonb_set(COALESCE(provider_metadata, '{}'::jsonb), '{password}', '"$2b$10$tukEaoZdNSVYySyozdH5VemS5.o2El1E3Ef/9hZs7EY5jUvlBFkmi"') WHERE entity_id = 'admin@helyacare.com';

@@ -71,7 +71,7 @@ export async function POST(request: Request) {
 
     if (activeGateway === "tara") {
       // Configuration Tara
-      const taraApiKey = process.env.TARA_API_KEY || "nwcpNGDWxWDQpWziZg7g8Tj4";
+      const taraApiKey = process.env.TARA_API_KEY || "eO4qfliMGo6yvkSmPqDPKUoH";
       const taraBusinessId = process.env.TARA_BUSINESS_ID || "5AuML9WXgI";
 
         // Pack extra data into tx_ref to avoid multiple query params breaking Tara
@@ -83,9 +83,11 @@ export async function POST(request: Request) {
           productId: cart?.id || "cart-default",
           productName: `Commande HelyaCare — ${cart?.items?.length || 1} article(s)`,
           productPrice: amount,
+          price: amount,
+          amount: amount,
           productDescription: `Paiement pour ${customer.first_name} ${customer.last_name}`,
           productPictureUrl: `${baseUrl}/logo-white.png`,
-          returnUrl: `${baseUrl}/commande/succes?tx_ref=${tx_ref}&amount=${amount}`,
+          returnUrl: `${baseUrl}/commande/succes?tx_ref=${tx_ref}`,
           webHookUrl: `${baseUrl}/api/payment/webhook-tara?tx_ref=${custom_tx_ref}`,
         };
 
