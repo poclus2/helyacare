@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback } from "react";
 import { Inter } from "next/font/google";
 import {
   Loader2, Search, ShoppingBag, RefreshCcw,
-  Loader2, Search, ShoppingBag, RefreshCcw,
   CreditCard, Smartphone, CheckCircle2, Clock, XCircle, Package, MoreHorizontal
 } from "lucide-react";
 

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { verifyAdminAuth } from "../../_auth";
+import { verifyAdminAuth } from "../../../_auth";
 import { getMedusaAdminToken } from "@/lib/medusa-admin-auth";
 
 const BACKEND = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
