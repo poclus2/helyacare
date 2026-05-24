@@ -22,11 +22,11 @@ const fmtXOF = (n: number) =>
   new Intl.NumberFormat("fr-FR", { style: "currency", currency: "XOF", maximumFractionDigits: 0 }).format(n);
 
 const METHOD_LABEL: Record<string, string> = {
-  flutterwave: "Carte bancaire", wave: "Wave", orange_money: "Orange Money",
+  tara_card: "Carte bancaire", tara: "Mobile Money", wave: "Wave", orange_money: "Orange Money",
   mtn_momo: "MTN MoMo", bank: "Virement bancaire", other: "Autre",
 };
 const METHOD_ICON: Record<string, string> = {
-  flutterwave: "💳", wave: "🌊", orange_money: "🍊", mtn_momo: "📱", bank: "🏦", other: "💰",
+  tara_card: "💳", tara: "📱", wave: "🌊", orange_money: "🍊", mtn_momo: "📱", bank: "🏦", other: "💰",
 };
 
 // ─── Timeline ─────────────────────────────────────────────────────────────────

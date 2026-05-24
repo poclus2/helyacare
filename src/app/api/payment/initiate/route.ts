@@ -94,21 +94,7 @@ export async function POST(request: Request) {
       }
     }
     
-    let activeGateway = gateway || "tara";
-    if (!gateway) {
-      try {
-        const storeRes = await fetch(`${backendUrl}/admin/stores`, { headers: adminHeaders, cache: "no-store" });
-        if (storeRes.ok) {
-          const storeData = await storeRes.json();
-          const store = storeData.stores?.[0];
-          activeGateway = store?.metadata?.active_payment_gateway || "tara";
-        }
-      } catch (err) {
-        console.warn("Erreur récupération store, fallback sur tara", err);
-      }
-    }
-
-    if (activeGateway === "tara") {
+    let activeGateway = "tara"; // Force Tara
       // Configuration Tara
       const taraApiKey = process.env.TARA_API_KEY || "eO4qfliMGo6yvkSmPqDPKUoH";
       const taraBusinessId = process.env.TARA_BUSINESS_ID || "5AuML9WXgI";
@@ -150,35 +136,6 @@ export async function POST(request: Request) {
       } else {
         throw new Error(`Erreur de génération du lien Tara: ${JSON.stringify(taraData)}`);
       }
-    }
-
-    // Paramètres Flutterwave (fallback ou choix explicite)
-    const flutterwaveConfig = {
-      public_key: process.env.NEXT_PUBLIC_FLUTTERWAVE_PUBLIC_KEY,
-      tx_ref,
-      amount,
-      currency,
-      payment_options: "card,mobilemoney,ussd,banktransfer",
-      redirect_url: `${baseUrl}/commande/succes`,
-      customer: {
-        email: customer.email,
-        phone_number: customer.phone || "",
-        name: `${customer.first_name || ""} ${customer.last_name || ""}`.trim(),
-      },
-      customizations: {
-        title: "HelyaCare",
-        description: `Commande HelyaCare — ${cart?.items?.length || 1} article(s)`,
-        logo: `${baseUrl}/logo-white.png`,
-      },
-      meta,
-    };
-
-    return NextResponse.json({
-      success: true,
-      tx_ref,
-      flutterwaveConfig,
-      gateway: "flutterwave"
-    });
   } catch (error: any) {
     console.error("[payment/initiate]", error);
     return NextResponse.json({ error: "Erreur interne du serveur" }, { status: 500 });

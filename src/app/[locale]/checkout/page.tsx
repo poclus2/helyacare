@@ -31,9 +31,8 @@ export default function CheckoutPage() {
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [flwLoaded, setFlwLoaded] = useState(false);
   const [error, setError] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<"flutterwave" | "wave" | "tara" | "bank" | "">("flutterwave");
+  const [paymentMethod, setPaymentMethod] = useState<"tara_card" | "wave" | "tara" | "bank" | "">("tara_card");
   const [manualDone, setManualDone] = useState<{ ref: string; target: string; amount: string } | null>(null);
 
   const [form, setForm] = useState({
@@ -51,18 +50,6 @@ export default function CheckoutPage() {
   const subtotal = cart.items.reduce((s, i) => s + i.unit_price * i.quantity, 0);
   const total = subtotal; // Livraison offerte
 
-  // Load Flutterwave script
-  useEffect(() => {
-    if (document.getElementById("flutterwave-script")) {
-      setFlwLoaded(true);
-      return;
-    }
-    const script = document.createElement("script");
-    script.id = "flutterwave-script";
-    script.src = "https://checkout.flutterwave.com/v3.js";
-    script.onload = () => setFlwLoaded(true);
-    document.head.appendChild(script);
-  }, []);
 
   // Fetch customer profile from Medusa to pre-fill address
   useEffect(() => {
@@ -117,7 +104,7 @@ export default function CheckoutPage() {
 
   // Labels/icônes par méthode
   const PAYMENT_METHODS = [
-    { id: "flutterwave", label: "Carte bancaire", sub: "Visa, Mastercard — paiement immédiat", icon: "💳", badge: "Recommandé", badgeColor: "bg-[#CBF27A]/20 text-[#0F3D3E]" },
+    { id: "tara_card", label: "Carte bancaire", sub: "Visa, Mastercard — paiement immédiat", icon: "💳", badge: "Recommandé", badgeColor: "bg-[#CBF27A]/20 text-[#0F3D3E]" },
     { id: "wave",         label: "Wave",          sub: "Sénégal — paiement manuel", icon: "🌊", badge: null },
     { id: "tara",         label: "Mobile Money Cameroun", sub: "Orange Money, MTN MoMo — Tara Money", icon: "📱", badge: null },
     { id: "bank",        label: "Virement",       sub: "Diaspora · 2–3 jours",    icon: "🏦", badge: null },
@@ -128,7 +115,7 @@ export default function CheckoutPage() {
     setError("");
 
     // ── Paiements manuels Mobile Money / Virement ──────────────────────────
-    if (paymentMethod !== "flutterwave" && paymentMethod !== "tara") {
+    if (paymentMethod !== "tara_card" && paymentMethod !== "tara") {
       try {
         const res = await fetch("/api/deposit/request", {
           method: "POST",
@@ -164,11 +151,7 @@ export default function CheckoutPage() {
       return;
     }
 
-    // ── Flutterwave / Tara (carte / mobile money automatique) ─────────────────────
-    if (paymentMethod === "flutterwave") {
-      if (!flwLoaded) { setError("Le module de paiement charge, veuillez patienter..."); setIsProcessing(false); return; }
-    }
-
+    // ── Tara (carte / mobile money automatique) ─────────────────────
     try {
       const res = await fetch("/api/payment/initiate", {
         method: "POST",
@@ -179,7 +162,7 @@ export default function CheckoutPage() {
           address: { line1: form.line1, line2: form.line2, city: form.city, country: form.country, zip: form.zip },
           amount: total,
           currency: "XOF",
-          gateway: paymentMethod === "tara" ? "tara" : "flutterwave",
+          gateway: "tara", // Always Tara now
         }),
       });
       const data = await res.json();
@@ -193,27 +176,6 @@ export default function CheckoutPage() {
         window.location.href = data.paymentUrl;
         return;
       }
-
-      window.FlutterwaveCheckout({
-        ...data.flutterwaveConfig,
-        callback: async (response: any) => {
-          if (response.status === "successful" || response.status === "completed") {
-            const verifyRes = await fetch(`/api/payment/verify?transaction_id=${response.transaction_id}&tx_ref=${response.tx_ref}&status=${response.status}`);
-            const verifyData = await verifyRes.json();
-            if (verifyData.success) {
-              clearCart();
-              window.location.href = `/commande/succes?tx_ref=${response.tx_ref}&amount=${total}`;
-            } else {
-              setError("Vérification échouée. Contactez le support.");
-              setIsProcessing(false);
-            }
-          } else {
-            setError("Le paiement n'a pas abouti. Veuillez réessayer.");
-            setIsProcessing(false);
-          }
-        },
-        onclose: () => setIsProcessing(false),
-      });
     } catch (err: any) {
       setError(err.message || "Une erreur est survenue");
       setIsProcessing(false);

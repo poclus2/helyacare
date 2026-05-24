@@ -19,7 +19,7 @@ const fmtXOF = (n: number) =>
 
 const METHOD_LABEL: Record<string, string> = {
   wave: "Wave", orange_money: "Orange Money", mtn_momo: "MTN MoMo",
-  bank: "Virement", other: "Autre", flutterwave: "Carte bancaire",
+  bank: "Virement", other: "Autre", tara_card: "Carte bancaire", tara: "Mobile Money",
 };
 
 function StatusBadge({ status }: { status: string }) {
@@ -48,7 +48,7 @@ export function CommandesClient({ medusaOrders, manualDeposits }: Props) {
     email: o.email,
     amount: Math.round(o.total || 0),
     payment_status: o.payment_status || o.status,
-    payment_method: "flutterwave",
+    payment_method: "tara_card",
     fulfillment_status: o.fulfillment_status,
     created_at: o.created_at,
     updated_at: o.updated_at,

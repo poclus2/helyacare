@@ -13,7 +13,6 @@ export default function ParametresPage() {
     "helya-hydrate": 0,
     "helya-vigor": 0,
   });
-  const [activePaymentGateway, setActivePaymentGateway] = useState<"tara" | "flutterwave">("tara");
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -27,9 +26,6 @@ export default function ParametresPage() {
         if (data.ambassador_settings) {
           setMinQty(data.ambassador_settings.min_qty || 5);
           setPrices((prev) => ({ ...prev, ...data.ambassador_settings.prices }));
-        }
-        if (data.active_payment_gateway) {
-          setActivePaymentGateway(data.active_payment_gateway);
         }
         setLoading(false);
       })
@@ -52,7 +48,6 @@ export default function ParametresPage() {
             min_qty: minQty,
             prices,
           },
-          active_payment_gateway: activePaymentGateway,
         }),
       });
       const data = await res.json();
@@ -111,34 +106,6 @@ export default function ParametresPage() {
           {message.text}
         </div>
       )}
-
-      {/* Section Paiement */}
-      <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-6">
-        <div className="flex items-center gap-3 border-b border-white/5 pb-4">
-          <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center">
-            <CreditCard className="w-5 h-5 text-blue-400" />
-          </div>
-          <div>
-            <h2 className="text-white font-semibold">Passerelle de Paiement Principale</h2>
-            <p className="text-white/40 text-xs">Choisissez l'API de paiement qui sera utilisée lors du checkout</p>
-          </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-4 max-w-lg">
-          <label className={`flex-1 flex items-center justify-center gap-2 p-4 rounded-xl border cursor-pointer transition-all ${
-            activePaymentGateway === "tara" ? "bg-blue-500/10 border-blue-500/30 text-blue-400" : "bg-white/5 border-white/10 text-white/40 hover:bg-white/10"
-          }`}>
-            <input type="radio" name="payment_gateway" className="hidden" checked={activePaymentGateway === "tara"} onChange={() => setActivePaymentGateway("tara")} />
-            <span className="font-bold text-sm">Tara (DKLO)</span>
-          </label>
-          <label className={`flex-1 flex items-center justify-center gap-2 p-4 rounded-xl border cursor-pointer transition-all ${
-            activePaymentGateway === "flutterwave" ? "bg-orange-500/10 border-orange-500/30 text-orange-400" : "bg-white/5 border-white/10 text-white/40 hover:bg-white/10"
-          }`}>
-            <input type="radio" name="payment_gateway" className="hidden" checked={activePaymentGateway === "flutterwave"} onChange={() => setActivePaymentGateway("flutterwave")} />
-            <span className="font-bold text-sm">Flutterwave</span>
-          </label>
-        </div>
-      </div>
 
       {/* Section WhatsApp */}
       <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-6">

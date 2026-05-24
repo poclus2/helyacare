@@ -19,7 +19,8 @@ const fmtDateShort = (d: string) =>
   new Date(d).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "numeric" });
 
 const METHOD_META: Record<string, { label: string; icon: string; color: string }> = {
-  flutterwave:  { label: "Flutterwave",  icon: "💳", color: "text-purple-400 bg-purple-400/10 border-purple-400/20" },
+  tara_card:    { label: "Carte bancaire",  icon: "💳", color: "text-purple-400 bg-purple-400/10 border-purple-400/20" },
+  tara:         { label: "Mobile Money", icon: "📱", color: "text-orange-400 bg-orange-400/10 border-orange-400/20" },
   wave:         { label: "Wave",         icon: "🌊", color: "text-blue-400 bg-blue-400/10 border-blue-400/20" },
   orange_money: { label: "Orange Money", icon: "🍊", color: "text-orange-400 bg-orange-400/10 border-orange-400/20" },
   mtn_momo:    { label: "MTN MoMo",     icon: "📱", color: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20" },
@@ -546,7 +547,7 @@ export default function AdminCommandesPage() {
             items: items.map((i: any) => ({ title: i.title, quantity: i.quantity, unit_price: i.unit_price })),
             items_label: items.length > 0 ? (items.length > 1 ? `${items[0].title} +${items.length - 1}` : items[0].title) : "Produit HelyaCare",
             amount: Math.round(o.total || 0),
-            payment_method: "flutterwave",
+            payment_method: "tara_card",
             payment_status: o.payment_status || o.status || "—",
             fulfillment_status: o.metadata?.helya_fulfillment_status || (o.payment_status === "captured" ? "not_fulfilled" : undefined),
             tracking_number: o.metadata?.helya_tracking_number,
