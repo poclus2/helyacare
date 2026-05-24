@@ -24,6 +24,7 @@ export default async function AmbassadorDashboardPage() {
   let ambassador: any = null;
   let stats: any = null;
   let debugError = "";
+  let customerMeta: Record<string, any> = {};
 
   if (token && customerId) {
     // 1. Try to fetch existing ambassador record
@@ -43,6 +44,20 @@ export default async function AmbassadorDashboardPage() {
     } catch (e: any) {
       console.error("Failed to fetch ambassador:", e);
       debugError += `[GET] Exception: ${e.message} | `;
+    }
+
+    // Fetch customer metadata to get the HL- referral code (source of truth)
+    try {
+      const custRes = await fetch(`${backendUrl}/store/customers/me`, {
+        headers,
+        cache: "no-store",
+      });
+      if (custRes.ok) {
+        const custData = await custRes.json();
+        customerMeta = custData.customer?.metadata || {};
+      }
+    } catch (e: any) {
+      console.error("Failed to fetch customer metadata:", e);
     }
 
     // 2. If role is ambassadeur but no ambassador record exists → auto-provision
@@ -98,7 +113,31 @@ export default async function AmbassadorDashboardPage() {
   }
 
   const balance = ambassador?.wallet?.balance || 0;
-  const referralCode = ambassador?.referral_code || "—";
+
+  // Normalise referral code: always prefer HL-XXXXXX format.
+  // Priority: (1) customer metadata if HL- format, (2) MLM module code if HL- format,
+  // (3) generate a fresh one and store it in customer metadata.
+  const mlmCode: string = ambassador?.referral_code || "";
+  const metaCode: string = customerMeta?.referral_code || "";
+  let referralCode: string;
+  if (metaCode.startsWith("HL-")) {
+    referralCode = metaCode;
+  } else if (mlmCode.startsWith("HL-")) {
+    referralCode = mlmCode;
+  } else {
+    // Generate a fresh HL- code and persist it in customer metadata
+    const newCode = `HL-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+    referralCode = newCode;
+    // Persist asynchronously (non-blocking)
+    try {
+      const adminToken = await import("@/lib/medusa-admin-auth").then(m => m.getMedusaAdminToken());
+      fetch(`${backendUrl}/admin/customers/${customerId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${adminToken}` },
+        body: JSON.stringify({ metadata: { ...customerMeta, referral_code: newCode } }),
+      }).catch(() => {});
+    } catch {}
+  }
   const downlines = ambassador?.downlines || [];
   const transactions = ambassador?.wallet?.transactions || [];
 
