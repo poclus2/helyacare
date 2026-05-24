@@ -4,7 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import { Inter } from "next/font/google";
 import {
   Loader2, Search, ShoppingBag, RefreshCcw,
-  CreditCard, Smartphone, CheckCircle2, Clock, XCircle, Package
+  Loader2, Search, ShoppingBag, RefreshCcw,
+  CreditCard, Smartphone, CheckCircle2, Clock, XCircle, Package, MoreHorizontal
 } from "lucide-react";
 
 const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
@@ -36,6 +37,7 @@ interface UnifiedOrder {
   created_at: string;
   reference_code?: string;
   source: "medusa" | "manual";
+  customer_id?: string;
 }
 
 function PayBadge({ status }: { status: string }) {
@@ -89,9 +91,10 @@ export default function AdminCommandesPage() {
             amount: Math.round(o.total || 0),  // Medusa stocke la devise sans decimale pour XOF
             payment_method: "flutterwave",
             payment_status: o.payment_status || o.status || "—",
-            fulfillment_status: o.fulfillment_status,
+            fulfillment_status: o.metadata?.helya_fulfillment_status || o.fulfillment_status,
             created_at: o.created_at,
             source: "medusa",
+            customer_id: o.customer_id,
           });
         });
       }
@@ -114,9 +117,10 @@ export default function AdminCommandesPage() {
             amount: dep.amount,   // déjà en XOF
             payment_method: dep.method,
             payment_status: dep.status,
-            fulfillment_status: dep.status === "approved" ? "not_fulfilled" : undefined,
+            fulfillment_status: dep.fulfillment_status || (dep.status === "approved" ? "not_fulfilled" : undefined),
             created_at: dep.created_at,
             source: "manual",
+            customer_id: dep.customer_id,
           });
         });
       }
@@ -131,6 +135,36 @@ export default function AdminCommandesPage() {
   }, []);
 
   useEffect(() => { load(); }, [load]);
+
+  const [selectedOrder, setSelectedOrder] = useState<UnifiedOrder | null>(null);
+  const [processingStatus, setProcessingStatus] = useState<string>("not_fulfilled");
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleUpdateStatus = async () => {
+    if (!selectedOrder) return;
+    setIsUpdating(true);
+    try {
+      const res = await fetch(`/api/admin/commandes/${selectedOrder.id}/status`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: selectedOrder.source,
+          status: processingStatus,
+          customer_id: selectedOrder.customer_id,
+        })
+      });
+      if (res.ok) {
+        setSelectedOrder(null);
+        await load();
+      } else {
+        alert("Erreur lors de la mise à jour");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur interne");
+    }
+    setIsUpdating(false);
+  };
 
   const filtered = orders.filter(o => {
     if (sourceFilter !== "all" && o.source !== sourceFilter) return false;
@@ -231,7 +265,7 @@ export default function AdminCommandesPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/5">
-                  {["Référence", "Client", "Articles", "Montant", "Méthode", "Paiement", "Livraison", "Date"].map(h => (
+                  {["Référence", "Client", "Articles", "Montant", "Méthode", "Paiement", "Livraison", "Date", "Action"].map(h => (
                     <th key={h} className="text-left px-5 py-3.5 text-white/30 text-[11px] font-bold uppercase tracking-wider">{h}</th>
                   ))}
                 </tr>
@@ -265,6 +299,19 @@ export default function AdminCommandesPage() {
                     <td className="px-4 py-4 text-white/30 text-xs whitespace-nowrap">
                       {order.created_at ? fmtDate(order.created_at) : "—"}
                     </td>
+                    <td className="px-4 py-4">
+                      {order.payment_status !== "pending" && order.payment_status !== "awaiting_payment" && order.payment_status !== "rejected" && (
+                        <button
+                          onClick={() => {
+                            setSelectedOrder(order);
+                            setProcessingStatus(order.fulfillment_status || "not_fulfilled");
+                          }}
+                          className="px-3 py-1.5 bg-white/5 hover:bg-white/10 text-white text-xs font-semibold rounded-lg transition-colors"
+                        >
+                          Traiter
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -272,6 +319,49 @@ export default function AdminCommandesPage() {
           </div>
         )}
       </div>
+
+      {/* Modal Traitement */}
+      {selectedOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-[#1A1A1A] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
+            <div className="px-6 py-5 border-b border-white/5">
+              <h2 className="text-lg font-bold text-white">Traiter la commande</h2>
+              <p className="text-white/40 text-sm mt-1">Ref: {selectedOrder.reference_code || selectedOrder.display_id || selectedOrder.id}</p>
+            </div>
+            <div className="p-6 space-y-5">
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-bold text-white/50 uppercase tracking-wider">Statut d'expédition</label>
+                <select
+                  value={processingStatus}
+                  onChange={(e) => setProcessingStatus(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-[#CBF27A]/40 transition-colors"
+                >
+                  <option value="not_fulfilled">À préparer</option>
+                  <option value="shipped">Expédié (en cours de livraison)</option>
+                  <option value="delivered">Livré</option>
+                </select>
+              </div>
+            </div>
+            <div className="px-6 py-4 border-t border-white/5 bg-white/[0.02] flex items-center justify-end gap-3">
+              <button
+                onClick={() => setSelectedOrder(null)}
+                disabled={isUpdating}
+                className="px-4 py-2 text-sm font-semibold text-white/50 hover:text-white transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={handleUpdateStatus}
+                disabled={isUpdating}
+                className="flex items-center gap-2 px-5 py-2 bg-[#CBF27A] text-[#0F3D3E] text-sm font-bold rounded-xl hover:bg-[#b8e068] transition-colors"
+              >
+                {isUpdating && <Loader2 className="w-4 h-4 animate-spin" />}
+                Enregistrer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
