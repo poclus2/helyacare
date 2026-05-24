@@ -473,7 +473,7 @@ export default function CheckoutPage() {
                       </div>
 
                       {/* Info méthode sélectionnée */}
-                      {paymentMethod && paymentMethod !== "flutterwave" && paymentMethod !== "tara" && (
+                      {paymentMethod && paymentMethod !== "tara_card" && paymentMethod !== "tara" && (
                         <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 flex gap-2">
                           <AlertCircle className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
                           <p className="text-blue-700 text-xs leading-relaxed">
@@ -499,7 +499,7 @@ export default function CheckoutPage() {
                       >
                         {isProcessing ? (
                           <><Loader2 className="w-5 h-5 animate-spin" />Traitement...</>
-                        ) : paymentMethod === "flutterwave" ? (
+                        ) : paymentMethod === "tara_card" ? (
                           <><CreditCard className="w-5 h-5" />Payer {formatPrice(total)}<Lock className="w-4 h-4 opacity-70" /></>
                         ) : paymentMethod === "tara" ? (
                           <><Smartphone className="w-5 h-5" />Payer par Mobile Money · {formatPrice(total)}<Lock className="w-4 h-4 opacity-70" /></>
