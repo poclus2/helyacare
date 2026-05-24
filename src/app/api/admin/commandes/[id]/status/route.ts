@@ -14,14 +14,14 @@ async function getAdminHeaders() {
 
 export async function POST(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   if (!(await verifyAdminAuth())) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
     const { source, status, customer_id } = body;
 
