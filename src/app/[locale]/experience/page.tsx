@@ -30,12 +30,10 @@ export default function ExperiencePage() {
         <section className="relative min-h-[50vh] md:min-h-[60vh] flex flex-col justify-end pt-32 pb-12 px-6 md:px-10 overflow-hidden">
           {/* Image de fond */}
           <div className="absolute inset-0 z-0 bg-[#0F3D3E]">
-            <Image 
-              src="/images/experience/experience_hero_v3.png" 
+            <img 
+              src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?q=80&w=2038&auto=format&fit=crop" 
               alt="HelyaCare Experience" 
-              fill
-              className="object-cover object-center opacity-90"
-              priority
+              className="w-full h-full object-cover object-center opacity-90"
             />
             {/* Overlay gradient similaire à boutique/mission */}
             <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/70 mix-blend-multiply" />
