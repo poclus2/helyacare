@@ -1,640 +1,610 @@
-/* =========================================================
-   Experience Page — Seed-inspired design (matches boutique)
-   ========================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
-.exp-page {
-  font-family: var(--font-poppins), 'Plus Jakarta Sans', sans-serif;
-  color: #1A1A1A;
+.seed-page {
+  font-family: 'Poppins', sans-serif;
+  color: #0F3D3E;
   background-color: #F7F6F2;
-  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* =========================================================
-   PROMO BANNER
-   ========================================================= */
-.exp-promo-banner {
-  background-color: #CBF27A;
-  color: #173620;
-  text-align: center;
-  padding: 10px 20px;
-  font-size: 13px;
-  font-weight: 500;
+/* 1. Hero Centered */
+.seed-hero-centered {
   position: relative;
-  z-index: 50;
-  letter-spacing: 0.2px;
-}
-
-/* =========================================================
-   HERO SECTION
-   ========================================================= */
-.exp-hero {
-  position: relative;
-  padding-top: 40px;
-  padding-bottom: 0;
-  min-height: 88vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-
-.exp-hero-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
-  z-index: 1;
+  height: 80vh; /* Like the image, tall hero */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   overflow: hidden;
 }
 
-.exp-hero-bg img {
+.seed-hero-centered img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center top;
 }
 
-.exp-hero-overlay {
+.seed-hero-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.1) 55%, rgba(0,0,0,0.55) 100%);
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%);
 }
 
-.exp-hero-content {
+.seed-hero-centered-content {
   position: relative;
   z-index: 10;
-  width: 100%;
-  max-width: 1300px;
-  margin: 0 auto;
-  padding: 0 40px 24px;
+  padding: 0 20px;
 }
 
-.exp-hero-title {
+.seed-hero-title-huge {
+  font-size: clamp(3rem, 10vw, 8rem);
+  font-weight: 900;
   color: #FFFFFF;
-  font-size: 52px;
-  line-height: 1.08;
-  font-weight: 500;
-  margin-bottom: 40px;
-  max-width: 620px;
-  letter-spacing: -0.8px;
-}
-
-.exp-hero-cards {
-  display: flex;
-  gap: 20px;
-  align-items: stretch;
-  height: 380px;
-}
-
-/* =========================================================
-   HERO LEFT CARD — STATS
-   ========================================================= */
-.exp-stats-card {
-  flex: 3;
-  background-color: #0F3D3E;
-  border-radius: 20px;
-  padding: 44px;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0;
-}
-
-.exp-stats-card-label {
-  font-size: 10px;
-  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: rgba(255,255,255,0.55);
-  margin-bottom: 28px;
-}
-
-.exp-stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 24px;
-}
-
-.exp-stat-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.exp-stat-number {
-  font-size: 44px;
-  font-weight: 800;
-  color: #FFFFFF;
-  letter-spacing: -2px;
+  letter-spacing: -0.02em;
+  margin: 0;
   line-height: 1;
 }
 
-.exp-stat-number.accent {
-  color: #CBF27A;
-}
-
-.exp-stat-label {
-  font-size: 12px;
-  color: rgba(255,255,255,0.65);
-  line-height: 1.4;
-  max-width: 120px;
-}
-
-.exp-stats-divider {
-  width: 1px;
-  background: rgba(255,255,255,0.12);
-  height: auto;
-  margin: 0 4px;
-}
-
-/* =========================================================
-   HERO RIGHT CARD — AI
-   ========================================================= */
-.exp-ai-card {
-  flex: 1;
-  background-color: #0F3D3E;
-  border-radius: 20px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-}
-
-.exp-ai-card img {
-  width: 100%;
-  height: 72%;
-  object-fit: cover;
-}
-
-.exp-ai-text {
-  background-color: rgba(203, 242, 122, 0.12);
-  backdrop-filter: blur(8px);
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 20px 22px;
-  color: #FFFFFF;
-  border-top: 1px solid rgba(203, 242, 122, 0.2);
-}
-
-.exp-ai-text p {
-  font-size: 13px;
-  margin: 0 0 5px;
-  font-weight: 500;
-  color: #CBF27A;
-}
-
-.exp-ai-text span {
-  font-size: 12px;
-  color: rgba(255,255,255,0.7);
-}
-
-/* =========================================================
-   CONNECTING THE DOTS BENTO
-   ========================================================= */
-.exp-bento-section {
+/* 2. Split Section (Text Left, Image Right) */
+.seed-split-section {
+  padding: 100px 20px;
   background-color: #FFFFFF;
-  padding: 64px 40px;
 }
 
-.exp-bento-container {
-  max-width: 1300px;
+.seed-split-container {
+  max-width: 1200px;
   margin: 0 auto;
-}
-
-.exp-bento-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 36px;
-}
-
-.exp-bento-title {
-  font-size: 34px;
-  font-weight: 700;
-  color: #0F3D3E;
-  letter-spacing: -0.8px;
-  line-height: 1.15;
-  max-width: 420px;
-}
-
-.exp-bento-desc {
-  font-size: 14px;
-  color: #5A6A5C;
-  max-width: 320px;
-  line-height: 1.6;
-  text-align: right;
-}
-
-.exp-bento-grid {
   display: grid;
-  grid-template-columns: 1.7fr 1fr;
-  grid-template-rows: 340px 280px;
-  gap: 16px;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
 }
 
-.exp-bento-cell {
-  border-radius: 20px;
-  overflow: hidden;
-  position: relative;
+.seed-split-text {
+  max-width: 500px;
 }
 
-.exp-bento-cell.tall {
-  grid-row: span 2;
-}
-
-.exp-bento-cell img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s ease;
-}
-
-.exp-bento-cell:hover img {
-  transform: scale(1.03);
-}
-
-.exp-bento-cell-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 40%, rgba(15,61,62,0.9) 100%);
-}
-
-.exp-bento-cell-content {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 28px;
-  color: #FFFFFF;
-}
-
-.exp-bento-step-num {
-  font-size: 10px;
+.seed-tag {
+  color: #E56B2D;
+  font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  color: #CBF27A;
-  margin-bottom: 8px;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
   display: block;
 }
 
-.exp-bento-step-label {
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -0.3px;
-}
-
-.exp-bento-cell.green-card {
-  background-color: #0F3D3E;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 36px;
-}
-
-.exp-bento-cell.green-card .exp-bento-step-label {
-  font-size: 18px;
-  color: #FFFFFF;
-}
-
-.exp-bento-tag {
-  display: inline-block;
-  background-color: rgba(203,242,122,0.15);
-  color: #CBF27A;
-  font-size: 10px;
+.seed-split-title {
+  font-size: 3rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  margin-bottom: 16px;
-  width: fit-content;
+  color: #0F3D3E;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  letter-spacing: -0.03em;
 }
 
-/* =========================================================
-   EXPERTS SECTION
-   ========================================================= */
-.exp-experts-section {
-  background-color: #F7F6F2;
-  padding: 64px 40px;
-}
-
-.exp-experts-container {
-  max-width: 1300px;
-  margin: 0 auto;
-}
-
-.exp-experts-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+.seed-split-desc {
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.6;
   margin-bottom: 40px;
 }
 
-.exp-experts-title {
-  font-size: 34px;
-  font-weight: 700;
+.seed-quote-box {
+  background-color: #F7F6F2;
+  padding: 24px;
+  border-left: 4px solid #E56B2D;
+  border-radius: 0 12px 12px 0;
+}
+
+.seed-quote-text {
+  font-weight: 600;
   color: #0F3D3E;
-  letter-spacing: -0.8px;
-  line-height: 1.15;
+  margin-bottom: 10px;
 }
 
-.exp-experts-sub {
-  font-size: 14px;
-  color: #5A6A5C;
-  max-width: 280px;
-  line-height: 1.6;
-  text-align: right;
+.seed-quote-author {
+  font-size: 0.85rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.exp-experts-feature {
-  display: grid;
-  grid-template-columns: 1.6fr 1fr;
-  gap: 16px;
-  min-height: 480px;
-}
-
-.exp-experts-main-img {
-  border-radius: 20px;
-  overflow: hidden;
-  position: relative;
-}
-
-.exp-experts-main-img img {
+.seed-split-image {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
+  border-radius: 20px;
 }
 
-.exp-experts-main-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 50%, rgba(15,61,62,0.85) 100%);
-}
-
-.exp-experts-main-content {
-  position: absolute;
-  bottom: 0;
-  padding: 36px;
+/* 3. Banner Solid (Orange) */
+.seed-banner-orange {
+  background: linear-gradient(135deg, #E56B2D 0%, #d45920 100%);
+  padding: 100px 20px;
   color: #FFFFFF;
 }
 
-.exp-experts-main-content h3 {
-  font-size: 22px;
-  font-weight: 600;
-  margin: 0 0 6px;
-  letter-spacing: -0.4px;
-}
-
-.exp-experts-main-content p {
-  font-size: 13px;
-  color: rgba(255,255,255,0.7);
-  margin: 0 0 14px;
-}
-
-.exp-experts-main-content blockquote {
-  font-size: 13px;
-  color: rgba(255,255,255,0.85);
-  line-height: 1.5;
-  font-style: italic;
-  border-left: 2px solid #CBF27A;
-  padding-left: 12px;
-  margin: 0;
-}
-
-.exp-experts-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.exp-expert-mini-card {
-  flex: 1;
-  background-color: #FFFFFF;
-  border-radius: 16px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: box-shadow 0.2s;
-}
-
-.exp-expert-mini-card:hover {
-  box-shadow: 0 4px 24px rgba(15,61,62,0.1);
-}
-
-.exp-expert-mini-name {
-  font-size: 14px;
-  font-weight: 700;
-  color: #0F3D3E;
-  margin: 0 0 3px;
-}
-
-.exp-expert-mini-role {
-  font-size: 11px;
-  color: #E56B2D;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0 0 12px;
-}
-
-.exp-expert-mini-quote {
-  font-size: 12px;
-  color: #5A6A5C;
-  line-height: 1.5;
-  font-style: italic;
-}
-
-/* =========================================================
-   SCIENCE + CTA CARDS (matches boutique science section)
-   ========================================================= */
-.exp-science-section {
-  background-color: #FFFFFF;
-  padding: 0 40px 64px;
-}
-
-.exp-science-container {
-  max-width: 1300px;
+.seed-banner-container {
+  max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 20px;
-  align-items: stretch;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
 }
 
-.exp-journal-card {
+.seed-banner-title {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  letter-spacing: -0.03em;
+}
+
+.seed-banner-desc {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+.seed-banner-floating-img {
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  display: block;
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.3));
+  transform: rotate(15deg);
+}
+
+/* 4. Drinkable (Reverse Split) */
+/* Reuses seed-split-container */
+
+/* 5. Testimonials Grid */
+.seed-testimonials-section {
+  padding: 100px 20px;
+  background-color: #FFFFFF;
+}
+
+.seed-testimonials-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.seed-testimonial-card {
   position: relative;
   border-radius: 20px;
   overflow: hidden;
-  min-height: 380px;
+  aspect-ratio: 16/9;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  align-items: flex-end;
+  padding: 30px;
 }
 
-.exp-journal-bg {
+.seed-testimonial-bg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
 }
 
-.exp-journal-overlay {
+.seed-testimonial-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(15,61,62,0.25) 0%, rgba(15,61,62,0.88) 100%);
-  z-index: 1;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 100%);
 }
 
-.exp-journal-content {
+.seed-testimonial-content {
   position: relative;
-  z-index: 2;
-  padding: 36px;
-  color: #FFFFFF;
+  z-index: 10;
+  color: #FFF;
 }
 
-.exp-journal-label {
-  display: block;
-  font-size: 10px;
+.seed-testimonial-quote {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.seed-testimonial-author {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* 6. Tabs & Science */
+.seed-science-section {
+  padding: 100px 20px;
+  background-color: #F7F6F2;
+  text-align: center;
+}
+
+.seed-science-header {
+  max-width: 600px;
+  margin: 0 auto 40px;
+}
+
+.seed-science-title {
+  font-size: 2.5rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: rgba(255,255,255,0.65);
-  margin-bottom: 14px;
-}
-
-.exp-journal-title {
-  font-size: 30px;
-  font-weight: 700;
-  line-height: 1.15;
-  margin: 0 0 14px;
-  letter-spacing: -0.5px;
-}
-
-.exp-journal-desc {
-  font-size: 14px;
-  line-height: 1.6;
-  color: rgba(255,255,255,0.8);
-  margin: 0 0 26px;
-  max-width: 400px;
-}
-
-.exp-journal-btn {
-  background-color: #FFFFFF;
   color: #0F3D3E;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  font-family: var(--font-poppins), sans-serif;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  letter-spacing: -0.02em;
 }
 
-.exp-journal-btn:hover {
+.seed-tabs-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.seed-tab {
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #666;
+  background-color: transparent;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.seed-tab.active {
+  background-color: #0F3D3E;
+  color: #FFF;
+  border-color: #0F3D3E;
+}
+
+.seed-science-ui-box {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #FFF;
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 30px;
+  padding: 40px;
+  text-align: left;
+}
+
+.seed-ui-column-title {
+  font-weight: 700;
+  color: #0F3D3E;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.seed-ui-column-desc {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.5;
+}
+
+.seed-ui-center-img {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.seed-ui-center-img img {
+  max-width: 80%;
+}
+
+/* 7. Comparison Table */
+.seed-comparison-section {
+  padding: 100px 20px;
+  background-color: #FFFFFF;
+  text-align: center;
+}
+
+.seed-comparison-table-wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  overflow-x: auto;
+}
+
+.seed-comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.seed-comparison-table th {
+  padding: 20px;
+  font-weight: 700;
+  color: #0F3D3E;
+  border-bottom: 2px solid #EEE;
+}
+
+.seed-comparison-table td {
+  padding: 20px;
+  border-bottom: 1px solid #EEE;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.seed-comparison-table td:first-child {
+  text-align: left;
+  font-weight: 600;
+  color: #0F3D3E;
+}
+
+.seed-comparison-product-img {
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.seed-check {
+  color: #E56B2D;
+  font-weight: bold;
+}
+
+/* 8. Doctors/Brain Fuel */
+.seed-experts-section {
+  padding: 100px 20px;
   background-color: #F7F6F2;
 }
 
-.exp-faq-card {
-  background-color: #F4F3EE;
-  border-radius: 20px;
-  padding: 44px 36px;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
+.seed-experts-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
 }
 
-.exp-faq-card-title {
-  font-size: 22px;
+.seed-experts-photos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.seed-expert-portrait {
+  background: #FFF;
+  border-radius: 20px;
+  overflow: hidden;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.seed-expert-portrait img {
+  width: 100%;
+  aspect-ratio: 3/4;
+  object-fit: cover;
+}
+
+.seed-expert-info {
+  padding: 20px;
+}
+
+.seed-expert-name {
   font-weight: 700;
   color: #0F3D3E;
-  margin: 0 0 28px;
-  letter-spacing: -0.4px;
+  font-size: 1.1rem;
+}
+
+.seed-expert-role {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+/* 9. Dark Ambassador */
+.seed-dark-ambassador {
+  position: relative;
+  background-color: #000;
+  padding: 120px 20px;
+  display: flex;
+  align-items: center;
+}
+
+.seed-dark-ambassador-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5;
+}
+
+.seed-dark-ambassador-content {
+  position: relative;
+  z-index: 10;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.seed-dark-tag {
+  display: inline-block;
+  background: #E56B2D;
+  color: #FFF;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+}
+
+.seed-dark-title {
+  font-size: 4rem;
+  font-weight: 800;
+  color: #FFF;
+  line-height: 1;
+  margin-bottom: 20px;
+  letter-spacing: -0.03em;
+  max-width: 500px;
+}
+
+.seed-dark-desc {
+  font-size: 1.2rem;
+  color: rgba(255,255,255,0.8);
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+/* 10. Clinical Evidence */
+.seed-clinical-section {
+  padding: 100px 20px;
+  background-color: #F7F6F2;
+}
+
+.seed-clinical-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.seed-clinical-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #0F3D3E;
+  letter-spacing: -0.02em;
+}
+
+.seed-clinical-cards {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.seed-clinical-card-large {
+  background: #FFF;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.seed-clinical-card-large-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+.seed-clinical-card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0F3D3E;
+  margin-bottom: 15px;
   line-height: 1.2;
 }
 
-.exp-faq-item {
-  border-top: 1px solid #E0DED8;
-  padding: 16px 0;
-  cursor: pointer;
+.seed-clinical-card-desc {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.6;
 }
 
-.exp-faq-item:last-child {
-  border-bottom: 1px solid #E0DED8;
+.seed-clinical-chart-img {
+  width: 100%;
+  object-fit: contain;
 }
 
-.exp-faq-question {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14px;
-  font-weight: 600;
-  color: #173620;
-  gap: 12px;
+.seed-clinical-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  border-top: 1px solid #EEE;
+  padding-top: 30px;
 }
 
-.exp-faq-icon {
-  font-size: 20px;
-  font-weight: 300;
+.seed-stat-block h4 {
+  font-size: 2rem;
+  font-weight: 800;
   color: #0F3D3E;
-  flex-shrink: 0;
-  transition: transform 0.25s ease;
-  line-height: 1;
+  margin: 0 0 5px 0;
 }
 
-.exp-faq-icon.open {
-  transform: rotate(45deg);
+.seed-stat-block p {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
 }
 
-.exp-faq-answer {
-  font-size: 13px;
-  color: #5A6A5C;
-  line-height: 1.65;
-  margin-top: 10px;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-  opacity: 0;
+.seed-clinical-card-horizontal {
+  background: #FFF;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  align-items: center;
 }
 
-.exp-faq-answer.open {
-  max-height: 200px;
-  opacity: 1;
+.seed-clinical-card-horizontal img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
 }
 
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
-@media (max-width: 1024px) {
-  .exp-hero-title { font-size: 38px; }
-  .exp-hero-cards { flex-direction: column; height: auto; }
-  .exp-stats-card, .exp-ai-card { min-height: 280px; }
-  .exp-bento-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
-  .exp-bento-cell.tall { grid-row: span 1; }
-  .exp-experts-feature { grid-template-columns: 1fr; }
-  .exp-science-container { grid-template-columns: 1fr; }
+.seed-read-more {
+  color: #E56B2D;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-block;
+  margin-top: 15px;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .seed-split-container,
+  .seed-banner-container,
+  .seed-experts-container,
+  .seed-clinical-card-large-top,
+  .seed-clinical-card-horizontal {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .seed-science-ui-box {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .seed-ui-center-img img {
+    max-width: 200px;
+    margin: 30px auto;
+  }
 }
 
 @media (max-width: 768px) {
-  .exp-hero-content { padding: 0 20px 20px; }
-  .exp-hero-title { font-size: 28px; }
-  .exp-bento-section { padding: 40px 20px; }
-  .exp-experts-section { padding: 40px 20px; }
-  .exp-science-section { padding: 0 20px 40px; }
-  .exp-stats-grid { grid-template-columns: 1fr; gap: 18px; }
-  .exp-bento-header, .exp-experts-header { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .exp-bento-desc, .exp-experts-sub { text-align: left; }
+  .seed-hero-title-huge {
+    font-size: 3.5rem;
+  }
+  
+  .seed-testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .seed-clinical-stats {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .seed-split-title, .seed-banner-title {
+    font-size: 2.2rem;
+  }
 }
