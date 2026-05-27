@@ -137,72 +137,52 @@
     }
   },
   "Experience": {
-    "hero": { "title": "Science d'avant-garde", "subtitle": "La nutrition métabolique soutenue par des données pures." },
-    "scrolling": { "t1": "+2M Données Analysées", "t2": "Essais Cliniques Indépendants", "t3": "Efficacité Prouvée", "t4": "Suivi IA en temps réel" },
-    "stats": {
-      "title": "Nos ambassadeurs constatent des améliorations tangibles pour leur santé.",
-      "s1_label": "signalent un sommeil de meilleure qualité",
-      "s2_label": "remarquent une meilleure régulation glycémique",
-      "s3_label": "ressentent une hausse d'énergie continue"
+    "hero": {
+      "eyebrow": "L'Expérience HelyaCare",
+      "title1": "La nature augmentée",
+      "title2": "par l'intelligence.",
+      "subtitle": "Nous croisons la puissance des extraits botaniques avec la précision de vos données métaboliques."
     },
-    "dots": {
-      "title": "Connecter les points pour vous aider à atteindre vos objectifs",
-      "desc": "La nutrition de précision n'est plus une promesse abstraite. En combinant des formules cliniquement testées avec l'intelligence artificielle générative de Botpress, HelyaCare crée une boucle de rétroaction continue. Vos données façonnent votre parcours.",
-      "step1": "1. Recevez votre cure HelyaCare", "step2": "2. Scannez pour partager vos données",
-      "step3": "3. Ajustement de la juste dose", "step4": "4. Recommandations par l'IA HelyaCare"
+    "method": {
+      "eyebrow": "Comment ça marche",
+      "title1": "De l'analyse à la vitalité",
+      "title2": "— Simplifié",
+      "subtitle": "Notre processus sur-mesure vous aide à comprendre, cibler et combler vos carences sans complexité inutile.",
+      "steps": {
+        "s1_title": "Analyse Métabolique",
+        "s1_desc": "Notre algorithme croise vos biomarqueurs pour déterminer les extraits dont votre corps a besoin. Fini les approximations, chaque recommandation est basée sur vos données réelles.",
+        "s2_title": "Synergie Botanique",
+        "s2_desc": "Sélection rigoureuse d'extraits naturels certifiés, formulés pour travailler en synergie. Nous puisons dans la richesse botanique africaine pour des résultats optimisés.",
+        "s3_title": "Dosage de Précision",
+        "s3_desc": "Ajustement au milligramme près pour optimiser l'assimilation. Votre métabolisme reçoit exactement la dose nécessaire pour une efficacité maximale sans surcharger l'organisme.",
+        "s4_title": "Validation Clinique",
+        "s4_desc": "Validation rigoureuse pour garantir pureté, qualité et biodisponibilité. Nos protocoles sont développés avec un panel d'experts médicaux pour une sécurité totale."
+      }
     },
-    "split": {
-      "statDesc": "de nos membres voient une différence après 30 jours, lorsqu'ils lient leur cure à l'IA.",
-      "statBtn": "Lire l'étude", "aiTitle": "Notre IA Coach",
-      "aiDesc": "2.4 millions de points de données analysés pour apprendre des habitudes métaboliques et fournir des recommandations ultra-personnalisées en temps réel.",
-      "aiBtn": "Explorer la technologie"
+    "results": {
+      "eyebrow": "Preuves Cliniques",
+      "title1": "Des résultats mesurables.",
+      "title2": "Une efficacité prouvée.",
+      "subtitle": "Nos formules ne se contentent pas de cibler des symptômes. Elles rééquilibrent votre métabolisme de l'intérieur, avec des bénéfices ressentis rapidement.",
+      "badge_eyebrow": "Suivi Clinique",
+      "badge_title": "Métabolisme",
+      "badge_val": "+ 82%",
+      "res1_title": "95% — Sommeil Profond",
+      "res1_desc": "Amélioration significative de la qualité du sommeil et de la récupération nocturne. Vous vous réveillez enfin reposé.",
+      "res2_title": "87% — Contrôle des Envies",
+      "res2_desc": "Réduction drastique des envies de sucre et des grignotages émotionnels au quotidien, stabilisant votre glycémie.",
+      "res3_title": "75% — Énergie Durable",
+      "res3_desc": "Augmentation de l'énergie ressentie et disparition du brouillard mental dès la première semaine de cure."
     },
-    "edge": {
-      "title": "Notre approche vous donne l'avantage",
-      "desc": "Contrairement aux compléments classiques qui stagnent dans l'estomac, nos formules sont conçues pour une biodisponibilité maximale et une absorption ciblée.",
-      "p1_title": "Absorption maximisée", "p1_desc": "Traverse l'acidité gastrique pour se libérer dans l'intestin grêle.",
-      "p2_title": "Plus de nutriments", "p2_desc": "Chaque dose est hyper-concentrée sans agents de remplissage inutiles.",
-      "p3_title": "Précision clinique", "p3_desc": "Les dosages sont fondés sur les recommandations de nos experts en nutrition.",
-      "badges": ["Vegan", "Sans OGM", "Sans Gluten", "Sans Sucre", "Certifié"]
-    },
-    "experts": {
-      "title": "Recommandé par nos experts",
-      "doctors": [
-        { "name": "Dr Akim Njimogna", "role": "medecin consultant", "quote": "Une approche révolutionnaire de la gestion glycémique." },
-        { "name": "Dr. Sarah Ndiaye", "role": "Nutritionniste Clinique", "quote": "L'IA apporte la précision qui manquait à la supplémentation." },
-        { "name": "Prof. Marc Leblanc", "role": "Directeur de Recherche", "quote": "Les données collectées valident l'efficacité des formules." },
-        { "name": "Dr. Elena Rossi", "role": "Experte Longévité", "quote": "Une synergie parfaite entre nature et technologie." }
-      ]
-    },
-    "clinical": {
-      "title": "Essais cliniques : Rapides, précis et en temps réel.",
-      "desc": "HelyaCare ne se contente pas de données historiques. En connectant nos utilisateurs via WhatsApp, nous menons la plus grande étude d'observation en continu sur la santé métabolique, ajustant nos produits à l'échelle.",
-      "cta": "Découvrir notre méthodologie"
-    },
-    "research": {
-      "title": "Recherches et Publications", "readBtn": "Lire le rapport",
-      "items": [
-        { "tag": "Étude Botanique", "title": "L'impact des extraits botaniques sur la glycémie.", "desc": "Une étude menée démontrant une amélioration significative de la gestion glycémique après 60 jours." },
-        { "tag": "Data Science", "title": "IA et modélisation métabolique prédictive.", "desc": "Analyse de données pour anticiper les baisses d'énergie et adapter la supplémentation en temps réel." },
-        { "tag": "Essai Clinique", "title": "Biodisponibilité des formulations cliniques.", "desc": "Tests in vitro prouvant une absorption supérieure des nutriments grâce à notre micro-encapsulation." },
-        { "tag": "Revue Scientifique", "title": "Synergie adaptogène sur la réduction du cortisol.", "desc": "Revue scientifique sur l'efficacité combinée de nos ingrédients phares pour la gestion du stress." }
-      ]
-    },
-    "press": {
-      "label": "Ils parlent de nous",
-      "leftTitle": "HelyaCare dans la presse", "leftQuote": "\"Une approche révolutionnaire de la santé préventive.\"", "leftBtn": "Lire l'article",
-      "rightTitle": "Contactez-nous", "rightDesc": "Demandes de presse et partenariats.", "rightBtn": "Nous écrire"
-    },
-    "faq": {
-      "title": "Questions Fréquentes",
-      "tabs": { "all": "Tous", "product": "Produit", "ai": "Intelligence Artificielle", "delivery": "Livraison" },
-      "items": [
-        { "q": "Quelles données sont analysées par l'IA HelyaCare ?", "a": "Notre IA Botpress analyse vos retours quotidiens, votre niveau d'énergie, votre qualité de sommeil et vos variations de poids pour adapter ses recommandations nutritionnelles." },
-        { "q": "Les compléments sont-ils sûrs ?", "a": "Absolument. Nos formules sont développées en laboratoire et testées cliniquement pour garantir sécurité et efficacité maximale." },
-        { "q": "Comment le QR code fonctionne-t-il ?", "a": "Chaque produit HelyaCare possède un QR code unique. En le scannant, vous accédez directement à votre coach métabolique sur WhatsApp." },
-        { "q": "Combien de temps avant de voir des résultats ?", "a": "La majorité de nos utilisateurs ressentent les premiers effets sur leur énergie et leur digestion dès les 10 premiers jours." },
-        { "q": "Puis-je annuler mon abonnement ?", "a": "Oui, notre modèle est sans engagement. Vous pouvez suspendre ou annuler vos livraisons à tout moment depuis votre espace client." }
-      ]
+    "rigor": {
+      "eyebrow": "Notre Rigueur",
+      "title1": "Formulé par la science.",
+      "title2": "Validé par la médecine.",
+      "p1": "Chaque extrait botanique, chaque dosage et chaque synergie de la gamme HelyaCare est audité, testé et validé par notre comité scientifique interdisciplinaire.",
+      "p2": "Nous collaborons avec des pharmaciens, des chercheurs en phytothérapie africaine et des experts en endocrinologie pour vous garantir une supplémentation d'une pureté et d'une efficacité absolues.",
+      "btn": "Découvrir le Panel Médical",
+      "badge_title": "Qualité Premium",
+      "badge_desc": "100% Ingrédients Traçables"
     }
   },
   "Ambassadeur": {
