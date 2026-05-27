@@ -1,270 +1,301 @@
 "use client";
 
-import Image from "next/image";
-import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { ArrowRight, Beaker, Brain, Activity } from "lucide-react";
-import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { motion, useReducedMotion } from "motion/react";
-import { Link } from "@/navigation";
-
-const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700", "800", "900"] });
-const pjs = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
+import { useState } from "react";
+import "./experience.css";
 
 export default function ExperiencePage() {
   const t = useTranslations("Experience");
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const reduce = useReducedMotion();
-
   const doctors = t.raw("experts.doctors") as { name: string; role: string; quote: string }[];
   const faqItems = t.raw("faq.items") as { q: string; a: string }[];
 
+  const [activeTab, setActiveTab] = useState(0);
+  const tabs = ["Efficacité", "Pureté", "Innovation"];
+
   return (
-    <>
+    <div className="seed-page">
       <Header />
-      <main className={`min-h-[100dvh] bg-white text-gray-900 ${pjs.className}`}>
 
-        {/* ── 1. HERO (STYLE MISSION) */}
-        <section className="relative min-h-[50vh] md:min-h-[60vh] flex flex-col justify-end pt-32 pb-12 px-6 md:px-10 overflow-hidden">
-          {/* Image de fond */}
-          <div className="absolute inset-0 z-0 bg-[#0F3D3E]">
-            <img 
-              src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?q=80&w=2038&auto=format&fit=crop" 
-              alt="HelyaCare Experience" 
-              className="w-full h-full object-cover object-center opacity-90"
-            />
-            {/* Overlay gradient similaire à boutique/mission */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/70 mix-blend-multiply" />
+      {/* 1. Hero Centered */}
+      <section className="seed-hero-centered">
+        <img 
+          src="https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?q=80&w=2038&auto=format&fit=crop" 
+          alt="HelyaCare Experience" 
+        />
+        <div className="seed-hero-overlay" />
+        <div className="seed-hero-centered-content">
+          <p className="seed-tag" style={{ color: '#CBF27A', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>L'Expérience HelyaCare</p>
+          <h1 className="seed-hero-title-huge">L'EXPÉRIENCE</h1>
+        </div>
+      </section>
+
+      {/* 2. Intro Science (Split) */}
+      <section className="seed-split-section">
+        <div className="seed-split-container">
+          <div className="seed-split-text">
+            <span className="seed-tag">La Science</span>
+            <h2 className="seed-split-title">{t("hero.title")}</h2>
+            <p className="seed-split-desc">{t("hero.subtitle")}</p>
+            <div className="seed-quote-box">
+              <p className="seed-quote-text">« Une approche révolutionnaire qui relie la nature et vos biomarqueurs. »</p>
+              <div className="seed-quote-author">
+                <span style={{ color: '#E56B2D' }}>✓</span> Comité Médical HelyaCare
+              </div>
+            </div>
+          </div>
+          <div>
+            <img src="/images/experience/experience_clinical_lab.png" alt="Laboratoire HelyaCare" className="seed-split-image" />
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Bannière Orange */}
+      <section className="seed-banner-orange">
+        <div className="seed-banner-container">
+          <div>
+            <span className="seed-tag" style={{ color: '#FFF' }}>Pureté Botanique</span>
+            <h2 className="seed-banner-title">Conçu pour l'efficacité absolue</h2>
+            <p className="seed-banner-desc">
+              Nous avons extrait les composants les plus actifs de la nature africaine et mondiale pour vous offrir des résultats tangibles, sans compromis sur la pureté.
+            </p>
+          </div>
+          <div>
+            <img src="/images/products/crave-control/macro.png" alt="Flacon Crave Control" className="seed-banner-floating-img" />
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Action / Drinkable (Split Inversé) */}
+      <section className="seed-split-section">
+        <div className="seed-split-container">
+          <div className="seed-split-text">
+            <span className="seed-tag">Assimilation</span>
+            <h2 className="seed-split-title">L'intelligence de la nature</h2>
+            <p className="seed-split-desc">
+              Chaque capsule contient des extraits standardisés, garantissant une concentration optimale en principes actifs pour une biodisponibilité maximale.
+            </p>
+          </div>
+          <div>
+            <img src="/images/experience/experience_bento_botanical.png" alt="Ingrédients botaniques" className="seed-split-image" style={{ aspectRatio: '1/1', objectFit: 'cover' }} />
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Témoignages */}
+      <section className="seed-testimonials-section">
+        <div className="seed-testimonials-grid">
+          <div className="seed-testimonial-card">
+            <img src="/images/mission_botanical_field.png" alt="Champ" className="seed-testimonial-bg" />
+            <div className="seed-testimonial-overlay" />
+            <div className="seed-testimonial-content">
+              <p className="seed-testimonial-quote">« Je ressens enfin une énergie constante, sans la nervosité du café. »</p>
+              <p className="seed-testimonial-author">Sarah M., Patiente HelyaCare</p>
+            </div>
+          </div>
+          <div className="seed-testimonial-card">
+            <img src="https://images.unsplash.com/photo-1534062483808-0138d6df0266?q=80&w=2000" alt="Person" className="seed-testimonial-bg" />
+            <div className="seed-testimonial-overlay" />
+            <div className="seed-testimonial-content">
+              <p className="seed-testimonial-quote">« Le suivi par l'IA a complètement changé mon rapport à mon alimentation. »</p>
+              <p className="seed-testimonial-author">David T., Ambassadeur</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Onglets & Science */}
+      <section className="seed-science-section">
+        <div className="seed-science-header">
+          <span className="seed-tag">La Méthode</span>
+          <h2 className="seed-science-title">Comment HelyaCare agit sur votre corps</h2>
+          <p style={{ color: '#666' }}>Une approche en 3 étapes basées sur vos données.</p>
+        </div>
+
+        <div className="seed-tabs-container">
+          {tabs.map((tab, idx) => (
+            <button 
+              key={idx} 
+              className={`seed-tab ${activeTab === idx ? 'active' : ''}`}
+              onClick={() => setActiveTab(idx)}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
+        <div className="seed-science-ui-box">
+          <div>
+            <div className="seed-ui-column-title">1. Analyse IA</div>
+            <p className="seed-ui-column-desc">Vos données de santé sont croisées par notre algorithme propriétaire pour déterminer vos carences exactes.</p>
+            
+            <div className="seed-ui-column-title" style={{ marginTop: '30px' }}>2. Sélection Botanique</div>
+            <p className="seed-ui-column-desc">Sélection rigoureuse d'extraits naturels certifiés, formulés pour travailler en synergie.</p>
+          </div>
+          <div className="seed-ui-center-img">
+            <img src="/images/experience/experience_bento_data.png" style={{ borderRadius: '50%', aspectRatio: '1/1', objectFit: 'cover' }} alt="IA Analysis" />
+          </div>
+          <div>
+            <div className="seed-ui-column-title">3. Dosage de précision</div>
+            <p className="seed-ui-column-desc">Ajustement au milligramme près pour correspondre à vos besoins métaboliques réels.</p>
+            
+            <div className="seed-ui-column-title" style={{ marginTop: '30px' }}>4. Résultats cliniques</div>
+            <p className="seed-ui-column-desc">Suivi en temps réel de votre évolution via l'application HelyaCare.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Comparaison */}
+      <section className="seed-comparison-section">
+        <span className="seed-tag">Différence</span>
+        <h2 className="seed-science-title" style={{ marginBottom: '60px' }}>Pourquoi choisir HelyaCare ?</h2>
+        
+        <div className="seed-comparison-table-wrapper">
+          <table className="seed-comparison-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>
+                  <img src="/images/products/crave-control/macro.png" alt="HelyaCare" className="seed-comparison-product-img" />
+                  <br />HelyaCare
+                </th>
+                <th>
+                  <div style={{ height: '80px', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', marginBottom: '10px' }}>
+                    <div style={{ padding: '20px', background: '#F7F6F2', borderRadius: '8px' }}>Pilules standard</div>
+                  </div>
+                  Vitamines Classiques
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Origine</td>
+                <td className="seed-check">Plantes 100% Naturelles</td>
+                <td>Synthétique</td>
+              </tr>
+              <tr>
+                <td>Personnalisation</td>
+                <td className="seed-check">Basée sur l'IA</td>
+                <td>Générique</td>
+              </tr>
+              <tr>
+                <td>Biodisponibilité</td>
+                <td className="seed-check">Haute (Extraits fluides)</td>
+                <td>Faible (Comprimés secs)</td>
+              </tr>
+              <tr>
+                <td>Suivi</td>
+                <td className="seed-check">Application intégrée</td>
+                <td>Aucun</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* 8. Panel Médical */}
+      <section className="seed-experts-section">
+        <div className="seed-experts-container">
+          <div className="seed-split-text">
+            <span className="seed-tag">Les Experts</span>
+            <h2 className="seed-split-title">{t("experts.title")}</h2>
+            <p className="seed-split-desc">
+              Chaque formule est validée par notre comité médical indépendant, composé de médecins, pharmaciens et chercheurs de renommée internationale.
+            </p>
+          </div>
+          <div className="seed-experts-photos">
+            {doctors.slice(0, 2).map((doc, idx) => (
+              <div key={idx} className="seed-expert-portrait">
+                <img src={`/images/experience/experience_dr_${idx + 2}_1776847933658.png`} alt={doc.name} onError={(e) => { e.currentTarget.src = "/images/experience/experience_doctors_panel_new.png" }} />
+                <div className="seed-expert-info">
+                  <div className="seed-expert-name">{doc.name}</div>
+                  <div className="seed-expert-role">{doc.role}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 9. Dark Ambassador */}
+      <section className="seed-dark-ambassador">
+        <img src="/images/experience/experience_doctors_panel_new.png" alt="Standard of Excellence" className="seed-dark-ambassador-bg" />
+        <div className="seed-dark-ambassador-content">
+          <span className="seed-dark-tag">Validation Clinique</span>
+          <h2 className="seed-dark-title">Le standard d'excellence</h2>
+          <p className="seed-dark-desc">
+            Nous refusons le compromis. Si un ingrédient n'a pas prouvé son efficacité dans des études randomisées en double aveugle, il ne rentre pas dans nos flacons.
+          </p>
+        </div>
+      </section>
+
+      {/* 10. Clinical Evidence (Cartes empilées) */}
+      <section className="seed-clinical-section">
+        <div className="seed-clinical-header">
+          <span className="seed-tag">Études</span>
+          <h2 className="seed-clinical-title">{t("clinical.title")}</h2>
+        </div>
+
+        <div className="seed-clinical-cards">
+          
+          <div className="seed-clinical-card-large">
+            <div className="seed-clinical-card-large-top">
+              <div>
+                <span className="seed-tag">Méta-analyse</span>
+                <h3 className="seed-clinical-card-title">Impact sur la régulation métabolique globale</h3>
+                <p className="seed-clinical-card-desc">
+                  Nos études internes et externes montrent une corrélation forte entre l'utilisation de nos extraits de griffonia et de safran sur la gestion du stress et du poids.
+                </p>
+              </div>
+              <div>
+                <img src="/images/experience/experience_bento_data.png" alt="Graph" className="seed-clinical-chart-img" style={{ borderRadius: '12px' }} />
+              </div>
+            </div>
+            <div className="seed-clinical-stats">
+              <div className="seed-stat-block">
+                <h4>95%</h4>
+                <p>Amélioration du sommeil</p>
+              </div>
+              <div className="seed-stat-block">
+                <h4>87%</h4>
+                <p>Réduction des envies</p>
+              </div>
+              <div className="seed-stat-block">
+                <h4>75%</h4>
+                <p>Gain d'énergie</p>
+              </div>
+            </div>
           </div>
 
-          {/* Contenu */}
-          <div className="relative z-10 w-full max-w-[1300px] mx-auto pb-5">
-            <motion.p 
-              initial={reduce ? false : { opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-[11px] font-bold text-[#CBF27A] uppercase tracking-[0.25em] mb-4"
-            >
-              Science & Nature
-            </motion.p>
-            <motion.h1 
-              initial={reduce ? false : { opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className={`text-white text-4xl md:text-6xl lg:text-[72px] font-medium leading-[1.05] mb-6 max-w-[800px] tracking-[-1px] ${inter.className}`}
-            >
-              {t("hero.title")}
-            </motion.h1>
-            <motion.p 
-              initial={reduce ? false : { opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-white/90 text-lg md:text-xl font-light max-w-2xl leading-relaxed mb-8"
-            >
-              {t("hero.subtitle")}
-            </motion.p>
-          </div>
-        </section>
-
-        {/* ── 2. STATS (ASYMMETRIC, TASTE SKILL) */}
-        <section className="py-24 md:py-32 bg-white">
-          <div className="max-w-[1300px] mx-auto px-6">
-            <div className="flex flex-col md:flex-row items-start justify-between gap-12 mb-20">
-              <h2 className={`text-3xl md:text-5xl font-bold tracking-tight text-[#0F3D3E] max-w-lg leading-[1.1] ${inter.className}`}>
-                {t("stats.title")}
-              </h2>
-              <p className="text-gray-500 max-w-md text-base leading-relaxed">
-                Une approche holistique validée par des résultats cliniques probants sur l'ensemble du spectre du bien-être.
+          <div className="seed-clinical-card-horizontal">
+            <div>
+              <span className="seed-tag">Botanique</span>
+              <h3 className="seed-clinical-card-title">Pureté des extraits : Analyse spectrographique</h3>
+              <p className="seed-clinical-card-desc">
+                Chaque lot est testé pour garantir l'absence de métaux lourds et une concentration parfaite en principes actifs.
               </p>
+              <a href="#" className="seed-read-more">Lire l'étude &rarr;</a>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
-              {/* Stat 1 (Large) */}
-              <motion.div 
-                initial={reduce ? false : { opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                className="md:col-span-5 bg-[#F4F3EE] rounded-3xl p-10 flex flex-col justify-between min-h-[300px]"
-              >
-                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-12 shadow-sm">
-                  <Activity className="w-5 h-5 text-[#0F3D3E]" />
-                </div>
-                <div>
-                  <h3 className={`text-7xl font-black text-[#0F3D3E] tracking-tighter mb-4 ${inter.className}`}>95%</h3>
-                  <p className="text-gray-600 font-medium">{t("stats.s1_label")}</p>
-                </div>
-              </motion.div>
-
-              {/* Stat 2 & 3 (Stacked vertically or side-by-side in a subgrid) */}
-              <div className="md:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
-                <motion.div 
-                  initial={reduce ? false : { opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ delay: 0.1 }}
-                  className="bg-[#0F3D3E] rounded-3xl p-10 flex flex-col justify-between min-h-[300px]"
-                >
-                  <div className="w-12 h-12 bg-white/10 rounded-full flex items-center justify-center mb-12">
-                    <Brain className="w-5 h-5 text-[#CBF27A]" />
-                  </div>
-                  <div>
-                    <h3 className={`text-6xl font-black text-white tracking-tighter mb-4 ${inter.className}`}>87%</h3>
-                    <p className="text-white/80 font-medium">{t("stats.s2_label")}</p>
-                  </div>
-                </motion.div>
-
-                <motion.div 
-                  initial={reduce ? false : { opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ delay: 0.2 }}
-                  className="bg-white border border-gray-200 rounded-3xl p-10 flex flex-col justify-between min-h-[300px]"
-                >
-                  <div className="w-12 h-12 bg-[#F4F3EE] rounded-full flex items-center justify-center mb-12">
-                    <Beaker className="w-5 h-5 text-[#E56B2D]" />
-                  </div>
-                  <div>
-                    <h3 className={`text-6xl font-black text-[#E56B2D] tracking-tighter mb-4 ${inter.className}`}>75%</h3>
-                    <p className="text-gray-600 font-medium">{t("stats.s3_label")}</p>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
+            <img src="/images/experience/experience_science_journal_new.png" alt="Journal scientifique" />
           </div>
-        </section>
 
-        {/* ── 3. METHODOLOGY BENTO (ASYMMETRIC) */}
-        <section className="py-24 md:py-32 bg-[#0F3D3E]">
-          <div className="max-w-[1300px] mx-auto px-6">
-            <div className="mb-20 text-center md:text-left">
-              <p className="text-[11px] font-bold text-[#CBF27A] uppercase tracking-[0.2em] mb-4">La Méthode HelyaCare</p>
-              <h2 className={`text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.05] max-w-2xl ${inter.className}`}>
-                {t("dots.title")}
-              </h2>
+          <div className="seed-clinical-card-horizontal">
+            <div>
+              <span className="seed-tag">Technologie</span>
+              <h3 className="seed-clinical-card-title">La précision du profilage IA HelyaCare</h3>
+              <p className="seed-clinical-card-desc">
+                Comment notre algorithme surpasse les questionnaires standards de l'industrie pour personnaliser vos cures.
+              </p>
+              <a href="#" className="seed-read-more">Lire l'étude &rarr;</a>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[250px] md:auto-rows-[300px]">
-              
-              {/* Large Image Card */}
-              <div className="md:col-span-7 row-span-2 relative rounded-3xl overflow-hidden group">
-                <Image src="/images/experience/experience_bento_botanical.png" alt="Botanical Ingredients" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                <div className="absolute bottom-0 left-0 p-10">
-                  <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-xs font-bold tracking-widest mb-4">01</span>
-                  <h3 className={`text-3xl font-bold text-white leading-tight ${inter.className}`}>{t("dots.step1")}</h3>
-                </div>
-              </div>
-
-              {/* Top Right Card */}
-              <div className="md:col-span-5 row-span-1 bg-white/5 border border-white/10 rounded-3xl p-8 flex flex-col justify-end">
-                <span className="inline-block px-3 py-1 bg-[#CBF27A]/20 text-[#CBF27A] rounded-full text-xs font-bold tracking-widest mb-4 w-fit">02</span>
-                <h3 className={`text-2xl font-bold text-white leading-tight mb-2 ${inter.className}`}>{t("dots.step2")}</h3>
-                <p className="text-white/60 text-sm">Une analyse profonde de vos biomarqueurs et habitudes.</p>
-              </div>
-
-              {/* Bottom Right Card (Data Image) */}
-              <div className="md:col-span-5 row-span-1 relative rounded-3xl overflow-hidden group">
-                <Image src="/images/experience/experience_bento_data.png" alt="Data Analysis" fill className="object-cover transition-transform duration-700 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                <div className="absolute bottom-0 left-0 p-8">
-                  <span className="inline-block px-3 py-1 bg-[#E56B2D]/20 backdrop-blur-md text-[#E56B2D] rounded-full text-xs font-bold tracking-widest mb-4">03</span>
-                  <h3 className={`text-2xl font-bold text-white leading-tight ${inter.className}`}>{t("dots.step3")}</h3>
-                </div>
-              </div>
-
-            </div>
+            <img src="/images/experience/experience_ai_phone_new.png" alt="IA" />
           </div>
-        </section>
 
-        {/* ── 4. EXPERTS (EDITORIAL STYLE) */}
-        <section className="py-24 md:py-32 bg-[#F4F3EE]">
-          <div className="max-w-[1300px] mx-auto px-6">
-            <h2 className={`text-4xl md:text-5xl lg:text-6xl font-bold text-[#0F3D3E] tracking-tight leading-[1.05] mb-20 max-w-2xl ${inter.className}`}>
-              {t("experts.title")}
-            </h2>
+        </div>
+      </section>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
-              {/* Main Panel Image */}
-              <div className="lg:col-span-7">
-                <div className="relative w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-xl">
-                  <Image src="/images/experience/experience_doctors_panel_new.png" alt="Experts Panel" fill className="object-cover" />
-                </div>
-              </div>
-
-              {/* Experts List */}
-              <div className="lg:col-span-5 flex flex-col justify-center gap-12">
-                {doctors.slice(1, 4).map((doc, i) => (
-                  <div key={i} className="border-l-[3px] border-[#0F3D3E]/10 pl-6 relative">
-                    <p className="text-[10px] font-bold text-[#E56B2D] uppercase tracking-[0.15em] mb-2">{doc.role}</p>
-                    <h4 className={`text-2xl font-bold text-[#0F3D3E] mb-3 ${inter.className}`}>{doc.name}</h4>
-                    <p className="text-gray-500 font-light italic leading-relaxed text-sm md:text-base max-w-sm">&ldquo;{doc.quote}&rdquo;</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── 5. SCIENCE & FAQ */}
-        <section className="py-24 md:py-32 bg-white">
-          <div className="max-w-[1300px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
-            
-            {/* Science Image */}
-            <div className="relative w-full aspect-[3/4] md:aspect-square lg:aspect-[4/5] rounded-3xl overflow-hidden group">
-              <Image src="/images/experience/experience_clinical_lab.png" alt="Clinical Research" fill className="object-cover transition-transform duration-1000 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-700" />
-              <div className="absolute inset-0 flex flex-col justify-end p-12">
-                <p className="text-[11px] font-bold text-white uppercase tracking-[0.2em] mb-4">Recherche</p>
-                <h2 className={`text-3xl md:text-4xl font-bold text-white leading-tight mb-6 ${inter.className}`}>
-                  {t("clinical.title")}
-                </h2>
-                <Link href="/mission" className="inline-flex items-center gap-2 text-white font-semibold text-sm hover:underline underline-offset-4">
-                  {t("clinical.cta")} <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-
-            {/* FAQ */}
-            <div className="flex flex-col justify-center">
-              <p className="text-[11px] font-bold text-[#CBF27A] uppercase tracking-[0.2em] mb-4">Transparence</p>
-              <h2 className={`text-4xl md:text-5xl font-bold text-[#0F3D3E] mb-12 ${inter.className}`}>
-                {t("faq.title")}
-              </h2>
-              
-              <div className="flex flex-col divide-y divide-[#0F3D3E]/10 border-t border-[#0F3D3E]/10">
-                {faqItems.slice(0, 5).map((faq, i) => (
-                  <div key={i} className="py-6">
-                    <button 
-                      onClick={() => setOpenFaq(openFaq === i ? null : i)} 
-                      className="w-full flex items-start justify-between text-left group"
-                    >
-                      <span className={`font-semibold text-[#0F3D3E] text-lg pr-8 transition-colors group-hover:text-[#E56B2D] ${inter.className}`}>
-                        {faq.q}
-                      </span>
-                      <span className={`text-xl font-light text-[#0F3D3E] shrink-0 transition-transform duration-300 ${openFaq === i ? "rotate-45" : ""}`}>
-                        +
-                      </span>
-                    </button>
-                    <motion.div 
-                      initial={false}
-                      animate={{ height: openFaq === i ? "auto" : 0, opacity: openFaq === i ? 1 : 0 }}
-                      className="overflow-hidden"
-                    >
-                      <p className="text-gray-500 font-light leading-relaxed pt-4 pb-2">
-                        {faq.a}
-                      </p>
-                    </motion.div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-      </main>
       <Footer />
-    </>
+    </div>
   );
 }
