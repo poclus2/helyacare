@@ -13,6 +13,7 @@
     "@swc/helpers": "^0.5.21",
     "jose": "^6.2.2",
     "lucide-react": "^1.8.0",
+    "motion": "^12.40.0",
     "next": "16.2.3",
     "next-auth": "^5.0.0-beta.31",
     "next-intl": "^4.9.1",
