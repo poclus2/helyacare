@@ -18,6 +18,7 @@ export async function POST(request: Request) {
       amount,
       currency = "XOF",
       gateway,
+      payment_method,
     } = body;
 
     if (!amount || !customer?.email) {
@@ -127,10 +128,14 @@ export async function POST(request: Request) {
       console.log("[payment/initiate] Tara Response:", JSON.stringify(taraData, null, 2));
 
       if (taraData.status?.toLowerCase() === "success" && taraData.generalLink) {
+        const paymentUrl = payment_method === "tara_card" && taraData.cardLink 
+          ? taraData.cardLink 
+          : taraData.generalLink;
+          
         return NextResponse.json({
           success: true,
           tx_ref,
-          paymentUrl: taraData.generalLink,
+          paymentUrl,
           gateway: "tara"
         });
       } else {

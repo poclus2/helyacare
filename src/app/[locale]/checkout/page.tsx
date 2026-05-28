@@ -163,6 +163,7 @@ export default function CheckoutPage() {
           amount: total,
           currency: "XOF",
           gateway: "tara", // Always Tara now
+          payment_method: paymentMethod,
         }),
       });
       const data = await res.json();
