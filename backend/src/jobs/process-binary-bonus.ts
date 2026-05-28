@@ -2,8 +2,8 @@ import { MedusaContainer } from "@medusajs/framework/types";
 import { Modules } from "@medusajs/framework/utils";
 
 export default async function processBinaryBonusJob(container: MedusaContainer) {
-  const storeModuleService = container.resolve(Modules.STORE);
-  const mlmService = container.resolve("mlmModuleService");
+  const storeModuleService: any = container.resolve(Modules.STORE);
+  const mlmService: any = container.resolve("mlmModuleService");
 
   const [store] = await storeModuleService.listStores();
   if (!store || !store.metadata?.binary_bonus_settings) {

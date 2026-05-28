@@ -6,8 +6,8 @@ export async function POST(
   res: MedusaResponse
 ) {
   try {
-    const mlmService = req.scope.resolve("mlmModuleService");
-    const storeModuleService = req.scope.resolve(Modules.STORE);
+    const mlmService: any = req.scope.resolve("mlmModuleService");
+    const storeModuleService: any = req.scope.resolve(Modules.STORE);
 
     const [store] = await storeModuleService.listStores();
     if (!store) {
