@@ -35,13 +35,23 @@ export async function GET(request: Request) {
       whatsapp_number: store?.metadata?.whatsapp_number || "",
       ambassador_settings: store?.metadata?.ambassador_settings || { min_qty: 5, prices: {} },
       active_payment_gateway: store?.metadata?.active_payment_gateway || "tara", // tara is default now
+      binary_bonus_settings: store?.metadata?.binary_bonus_settings || {
+        percentage: 10,
+        bv_to_xof_rate: 1,
+        auto_execution: false,
+        execution_interval: "monthly",
+      },
     });
   } catch (error: any) {
     if (error.message === "Non authentifié") {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });
     }
     console.error("[admin/settings GET]", error);
-    return NextResponse.json({ whatsapp_number: "", ambassador_settings: { min_qty: 5, prices: {} } });
+    return NextResponse.json({ 
+      whatsapp_number: "", 
+      ambassador_settings: { min_qty: 5, prices: {} },
+      binary_bonus_settings: { percentage: 10, bv_to_xof_rate: 1, auto_execution: false, execution_interval: "monthly" }
+    });
   }
 }
 
@@ -49,7 +59,7 @@ export async function POST(request: Request) {
   try {
     await verifyAdmin(request);
     const body = await request.json();
-    const { whatsapp_number, ambassador_settings } = body;
+    const { whatsapp_number, ambassador_settings, binary_bonus_settings } = body;
 
     // 1. Récupérer le store actuel
     const getRes = await fetch(`${BACKEND}/admin/stores`, { headers: adminHeaders });
@@ -65,6 +75,7 @@ export async function POST(request: Request) {
     const updatedMetadata = { ...store.metadata };
     if (whatsapp_number !== undefined) updatedMetadata.whatsapp_number = whatsapp_number;
     if (ambassador_settings !== undefined) updatedMetadata.ambassador_settings = ambassador_settings;
+    if (binary_bonus_settings !== undefined) updatedMetadata.binary_bonus_settings = binary_bonus_settings;
     if (body.active_payment_gateway !== undefined) updatedMetadata.active_payment_gateway = body.active_payment_gateway;
 
     // 2. Mettre à jour le store
@@ -80,7 +91,13 @@ export async function POST(request: Request) {
       throw new Error("Erreur lors de la mise à jour du store");
     }
 
-    return NextResponse.json({ success: true, whatsapp_number, ambassador_settings, active_payment_gateway: updatedMetadata.active_payment_gateway });
+    return NextResponse.json({ 
+      success: true, 
+      whatsapp_number, 
+      ambassador_settings, 
+      binary_bonus_settings,
+      active_payment_gateway: updatedMetadata.active_payment_gateway 
+    });
   } catch (error: any) {
     if (error.message === "Non authentifié") {
       return NextResponse.json({ error: "Non authentifié" }, { status: 401 });

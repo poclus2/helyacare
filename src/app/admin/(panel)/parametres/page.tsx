@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Save, Phone, ShoppingBag, CreditCard } from "lucide-react";
+import { Save, Phone, ShoppingBag, CreditCard, DollarSign } from "lucide-react";
 
 export default function ParametresPage() {
   const [whatsapp, setWhatsapp] = useState("");
@@ -14,8 +14,16 @@ export default function ParametresPage() {
     "helya-vigor": 0,
   });
 
+  const [binarySettings, setBinarySettings] = useState({
+    percentage: 10,
+    bv_to_xof_rate: 1,
+    auto_execution: false,
+    execution_interval: "monthly",
+  });
+  
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [matching, setMatching] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
@@ -26,6 +34,9 @@ export default function ParametresPage() {
         if (data.ambassador_settings) {
           setMinQty(data.ambassador_settings.min_qty || 5);
           setPrices((prev) => ({ ...prev, ...data.ambassador_settings.prices }));
+        }
+        if (data.binary_bonus_settings) {
+          setBinarySettings(data.binary_bonus_settings);
         }
         setLoading(false);
       })
@@ -48,6 +59,7 @@ export default function ParametresPage() {
             min_qty: minQty,
             prices,
           },
+          binary_bonus_settings: binarySettings,
         }),
       });
       const data = await res.json();
@@ -61,6 +73,24 @@ export default function ParametresPage() {
       setMessage({ type: "error", text: "Erreur de connexion." });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleRunBinaryMatch = async () => {
+    if (!confirm("Êtes-vous sûr ? Cela va calculer les commissions sur la patte faible pour tous les ambassadeurs et déduire les points correspondants.")) return;
+    setMatching(true);
+    try {
+      const res = await fetch("/api/admin/mlm/binary-match", { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        alert(`Succès ! ${data.processed} ambassadeurs traités. Total payé: ${data.total_paid} XOF.`);
+      } else {
+        alert("Erreur: " + data.error);
+      }
+    } catch (err) {
+      alert("Erreur de connexion.");
+    } finally {
+      setMatching(false);
     }
   };
 
@@ -188,6 +218,83 @@ export default function ParametresPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Section MLM & Bonus Binaire */}
+      <div className="bg-white/5 border border-white/10 rounded-2xl p-6 space-y-6">
+        <div className="flex items-center gap-3 border-b border-white/5 pb-4">
+          <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+            <DollarSign className="w-5 h-5 text-purple-400" />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-white font-semibold">MLM & Bonus Binaire</h2>
+            <p className="text-white/40 text-xs">Configuration des paiements sur la patte faible</p>
+          </div>
+          <button
+            onClick={handleRunBinaryMatch}
+            disabled={matching}
+            className="flex items-center gap-2 px-4 py-2 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-lg text-sm font-medium hover:bg-purple-500/20 transition-colors disabled:opacity-50"
+          >
+            {matching ? "Calcul en cours..." : "Calculer & Payer Manuellement"}
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-white/70 block">
+              Commission Patte Faible (%)
+            </label>
+            <input
+              type="number"
+              min="0"
+              max="100"
+              value={binarySettings.percentage}
+              onChange={(e) => setBinarySettings({ ...binarySettings, percentage: parseInt(e.target.value) || 0 })}
+              className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-white/70 block">
+              Valeur d'1 BV (en XOF)
+            </label>
+            <input
+              type="number"
+              min="0"
+              value={binarySettings.bv_to_xof_rate}
+              onChange={(e) => setBinarySettings({ ...binarySettings, bv_to_xof_rate: parseInt(e.target.value) || 0 })}
+              className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+            />
+          </div>
+          
+          <div className="space-y-3 pt-2">
+            <label className="text-sm font-medium text-white/70 flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={binarySettings.auto_execution}
+                onChange={(e) => setBinarySettings({ ...binarySettings, auto_execution: e.target.checked })}
+                className="w-4 h-4 rounded bg-black/20 border-white/10 text-purple-500 focus:ring-purple-500 focus:ring-offset-0"
+              />
+              Exécution Automatique
+            </label>
+            <p className="text-xs text-white/40">Si activé, le calcul se fera automatiquement à minuit selon l'intervalle choisi.</p>
+          </div>
+
+          <div className="space-y-2 pt-2">
+            <label className="text-sm font-medium text-white/70 block">
+              Intervalle d'exécution
+            </label>
+            <select
+              value={binarySettings.execution_interval}
+              onChange={(e) => setBinarySettings({ ...binarySettings, execution_interval: e.target.value })}
+              disabled={!binarySettings.auto_execution}
+              className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-purple-500 disabled:opacity-50"
+            >
+              <option value="daily">Quotidien</option>
+              <option value="weekly">Hebdomadaire (Dimanche)</option>
+              <option value="monthly">Mensuel (Le 1er du mois)</option>
+            </select>
           </div>
         </div>
       </div>
