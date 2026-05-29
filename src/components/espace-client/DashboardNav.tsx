@@ -29,7 +29,7 @@ export default function DashboardNav({ isAmbassador = false }: { isAmbassador?: 
   };
 
   return (
-    <nav className="mb-6 md:mb-10 overflow-x-auto hide-scrollbar border-b border-[#E8E3DC]/50 pb-1">
+    <nav className="mb-6 md:mb-10 overflow-x-auto hide-scrollbar border-b border-[#E8E3DC]/50 pb-1 -mx-4 px-4 sm:mx-0 sm:px-0">
       <div className="flex items-center gap-2 md:gap-4 min-w-max pr-4 md:pr-0">
         <ul className="flex items-center gap-1 md:gap-2">
           {navLinks.map((link) => {
@@ -39,7 +39,7 @@ export default function DashboardNav({ isAmbassador = false }: { isAmbassador?: 
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className={`flex items-center gap-2 px-4 md:px-5 py-3 rounded-xl md:rounded-t-xl md:rounded-b-none text-[14px] md:text-[15px] transition-colors whitespace-nowrap ${
+                  className={`flex items-center gap-2 px-3 md:px-5 py-2.5 md:py-3 rounded-xl md:rounded-t-xl md:rounded-b-none text-[13px] md:text-[15px] transition-colors whitespace-nowrap ${
                     active
                       ? "font-semibold text-[#0F3D3E] md:border-b-2 md:border-[#0F3D3E] bg-[#0F3D3E]/5 md:bg-white/40"
                       : "font-medium text-gray-500 hover:text-[#0F3D3E] hover:bg-black/5"
@@ -52,13 +52,13 @@ export default function DashboardNav({ isAmbassador = false }: { isAmbassador?: 
             );
           })}
         </ul>
-        <div className="w-px h-6 bg-gray-200 mx-2 hidden sm:block"></div>
+        <div className="w-px h-6 bg-gray-200 mx-1 md:mx-2 hidden sm:block"></div>
         <button 
           onClick={() => signOut({ callbackUrl: '/connexion' })}
-          className="flex items-center gap-2 px-4 md:px-5 py-3 rounded-xl md:rounded-t-xl md:rounded-b-none text-[14px] md:text-[15px] transition-colors whitespace-nowrap font-medium text-red-500 hover:text-red-600 hover:bg-red-50"
+          className="flex items-center gap-2 px-3 md:px-5 py-2.5 md:py-3 rounded-xl md:rounded-t-xl md:rounded-b-none text-[13px] md:text-[15px] transition-colors whitespace-nowrap font-medium text-red-500 hover:text-red-600 hover:bg-red-50"
         >
           <LogOut className="w-4 h-4 shrink-0" />
-          Déconnexion
+          <span className="hidden sm:inline">Déconnexion</span>
         </button>
       </div>
     </nav>

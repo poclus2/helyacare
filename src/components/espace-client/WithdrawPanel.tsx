@@ -162,9 +162,9 @@ export default function WithdrawPanel({ token }: Props) {
       </div>
 
       {/* ── KPI Grid ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Solde disponible — hero card */}
-        <div className="col-span-2 lg:col-span-1 bg-gradient-to-br from-[#0F3D3E] to-[#1a6566] rounded-2xl p-6 text-white relative overflow-hidden shadow-lg">
+        <div className="sm:col-span-2 lg:col-span-1 bg-gradient-to-br from-[#0F3D3E] to-[#1a6566] rounded-2xl p-6 text-white relative overflow-hidden shadow-lg">
           <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/5 rounded-full" />
           <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-white/5 rounded-full" />
           <div className="relative z-10">
@@ -209,8 +209,8 @@ export default function WithdrawPanel({ token }: Props) {
                   <Gift className="w-4 h-4 text-[#CBF27A]" />
                   <p className="text-white/60 text-xs font-semibold uppercase tracking-widest">Votre Code de Parrainage</p>
                 </div>
-                <div className="bg-white/10 border border-white/20 rounded-xl px-5 py-4 mb-3">
-                  <p className={`text-3xl font-black text-[#CBF27A] tracking-widest font-mono ${inter.className}`}>
+                <div className="bg-white/10 border border-white/20 rounded-xl px-4 md:px-5 py-3 md:py-4 mb-3 overflow-hidden">
+                  <p className={`text-2xl sm:text-3xl font-black text-[#CBF27A] tracking-widest font-mono truncate ${inter.className}`}>
                     {referralCode}
                   </p>
                 </div>
@@ -288,7 +288,7 @@ export default function WithdrawPanel({ token }: Props) {
 
       {/* ── Historique des commissions ── */}
       <div className="bg-white border border-[#E8E3DC] rounded-2xl shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-[#E8E3DC] flex items-center gap-3">
+        <div className="px-4 md:px-6 py-4 border-b border-[#E8E3DC] flex items-center gap-3">
           <Wallet className="w-4 h-4 text-[#0F3D3E]" />
           <h2 className={`text-sm font-semibold text-[#0F3D3E] ${inter.className}`}>
             Historique des Commissions
@@ -313,23 +313,23 @@ export default function WithdrawPanel({ token }: Props) {
         ) : (
           <div className="divide-y divide-[#F2F0EB]">
             {commissions.map(c => (
-              <div key={c.id} className="px-6 py-4 flex items-center justify-between hover:bg-[#FAFAF9] transition-colors">
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+              <div key={c.id} className="px-4 md:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 hover:bg-[#FAFAF9] transition-colors">
+                <div className="flex items-center gap-3 md:gap-4">
+                  <div className={`w-10 h-10 shrink-0 rounded-full flex items-center justify-center ${
                     c.status === "paid" ? "bg-green-50" : c.status === "processing" ? "bg-blue-50" : "bg-amber-50"
                   }`}>
                     <ArrowUpRight className={`w-5 h-5 ${
                       c.status === "paid" ? "text-green-500" : c.status === "processing" ? "text-blue-500" : "text-amber-500"
                     }`} />
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-[#0F3D3E]">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-[#0F3D3E] truncate">
                       Commission Niv.{c.level} — Commande #{c.order_id?.slice(-8).toUpperCase() ?? "—"}
                     </p>
                     <p className="text-xs text-gray-400">{formatDate(c.created_at)} · Taux {(c.rate * 100).toFixed(0)}%</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto pl-13 sm:pl-0">
                   <p className={`font-black text-lg ${inter.className} ${
                     c.status === "paid" ? "text-green-600" : c.status === "processing" ? "text-blue-600" : "text-amber-600"
                   }`}>
@@ -343,8 +343,8 @@ export default function WithdrawPanel({ token }: Props) {
         )}
 
         {commissions.length > 0 && (
-          <div className="px-6 py-4 bg-[#F8FAFC] border-t border-[#E8E3DC] flex items-center justify-between">
-            <div className="flex items-center gap-6 text-sm">
+          <div className="px-4 md:px-6 py-4 bg-[#F8FAFC] border-t border-[#E8E3DC] flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
+            <div className="flex items-center justify-between sm:justify-start sm:gap-6 text-sm w-full">
               <span className="text-gray-500">Total versé : <strong className="text-blue-600">{formatXOF(stats.paid)}</strong></span>
               <span className="text-gray-500">Disponible : <strong className="text-amber-600">{formatXOF(stats.pending)}</strong></span>
             </div>

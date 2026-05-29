@@ -50,19 +50,19 @@ export default async function EspaceClientLayout({ children }: { children: React
   return (
     <div className={`flex flex-col min-h-screen bg-[#F6F4F1] ${pjs.className}`}>
       {/* HEADER DASHBOARD */}
-      <header className="sticky top-0 z-40 bg-white border-b border-gray-200 px-8 py-5 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-4">
+      <header className="sticky top-0 z-40 bg-white border-b border-gray-200 px-4 md:px-8 py-3 md:py-5 flex items-center justify-between shadow-sm">
+        <div className="flex items-center gap-2 md:gap-4">
           <HelycaLogo />
-          <div className="h-6 w-px bg-gray-300 mx-2"></div>
-          <div>
+          <div className="h-6 w-px bg-gray-300 mx-1 md:mx-2 hidden sm:block"></div>
+          <div className="hidden sm:block">
             <span className="text-gray-500 text-sm font-medium tracking-wide">
               Espace <span className="font-bold text-[#E56B2D] capitalize">{displayId}</span>
             </span>
           </div>
         </div>
-        <nav className="flex items-center gap-6">
-          <Link href="/boutique" className="text-sm font-semibold text-gray-600 hover:text-[#0F3D3E] transition-colors">Boutique</Link>
-          <Link href="/espace-client/bilan" className="text-sm font-semibold text-[#E56B2D] hover:text-[#0F3D3E] transition-colors">Mon Bilan IA</Link>
+        <nav className="flex items-center gap-4 md:gap-6">
+          <Link href="/boutique" className="text-sm font-semibold text-gray-600 hover:text-[#0F3D3E] transition-colors hidden md:block">Boutique</Link>
+          <Link href="/espace-client/bilan" className="text-sm font-semibold text-[#E56B2D] hover:text-[#0F3D3E] transition-colors hidden md:block">Mon Bilan IA</Link>
           <div className="w-10 h-10 bg-[#0F3D3E] text-white rounded-full flex items-center justify-center font-bold shadow-md cursor-pointer hover:scale-105 transition-transform">
             {displayId.charAt(0).toUpperCase()}
           </div>
@@ -70,9 +70,9 @@ export default async function EspaceClientLayout({ children }: { children: React
       </header>
 
       {/* DASHBOARD CONTENT */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-8 py-10">
-        <div className="mb-10">
-          <h1 className={`text-4xl font-extrabold text-[#0F3D3E] mb-3 ${inter.className}`}>
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6 md:py-10">
+        <div className="mb-6 md:mb-10">
+          <h1 className={`text-2xl md:text-4xl font-extrabold text-[#0F3D3E] mb-2 md:mb-3 ${inter.className}`}>
             Laboratoire Personnel
           </h1>
           <p className="text-gray-500 text-lg">
