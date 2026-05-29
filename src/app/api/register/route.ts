@@ -10,6 +10,13 @@ export async function POST(request: Request) {
     const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || "";
     console.log("[Register] Using Publishable Key of length:", publishableKey.length);
 
+    // Pré-générer le code de parrainage de cet utilisateur s'il s'inscrit comme ambassadeur
+    let generatedCode = null;
+    if (role === "ambassadeur") {
+       const randomChars = Math.random().toString(36).substring(2, 8).toUpperCase();
+       generatedCode = `HL-${randomChars}`;
+    }
+
     // 1. Register Auth Identity
     const authRes = await fetch(`${backendUrl}/auth/customer/emailpass/register`, {
       method: "POST",
@@ -44,7 +51,8 @@ export async function POST(request: Request) {
         metadata: {
           role: role || "customer",
           is_ambassador: role === "ambassadeur",
-          referral_code: referral_code || null
+          referred_by: referral_code || null, // Le code de parrainage utilisé (celui du parrain)
+          referral_code: generatedCode || null // Le propre code de cet utilisateur
         }
       }),
     });
@@ -58,11 +66,8 @@ export async function POST(request: Request) {
     const customerId = customerData.customer?.id;
 
     // 3. If registering as ambassador, create Ambassador + Wallet records in MLM module
-    if (role === "ambassadeur" && customerId) {
+    if (role === "ambassadeur" && customerId && generatedCode) {
       try {
-        // Generate referral code: HL-XXXXXX format (alphanumeric)
-        const randomChars = Math.random().toString(36).substring(2, 8).toUpperCase();
-        const generatedCode = `HL-${randomChars}`;
 
         await fetch(`${backendUrl}/store/ambassadors`, {
           method: "POST",
