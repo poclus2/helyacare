@@ -27,12 +27,12 @@ export const DepositReceivedTemplate = (
     <!-- Badge confirmé -->
     <div style="background-color:#CBF27A;border-radius:12px;padding:14px 24px;margin-bottom:28px;text-align:center;">
       <p style="margin:0;font-size:13px;font-weight:800;color:#0F3D3E;letter-spacing:0.3px;">
-        ✓ Votre dépôt a bien été reçu et validé
+        Votre dépôt a bien été reçu et validé
       </p>
     </div>
 
     <p style="margin:0 0 8px;font-size:22px;font-weight:700;color:#0F3D3E;">
-      Dépôt confirmé, ${firstName} ! 💳
+      Dépôt confirmé, ${firstName} !
     </p>
     <p style="margin:0 0 28px;font-size:15px;color:#666;line-height:1.7;">
       Bonne nouvelle ! Votre dépôt a été validé par notre équipe et votre portefeuille a été crédité.

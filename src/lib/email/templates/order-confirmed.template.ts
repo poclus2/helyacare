@@ -41,12 +41,12 @@ export const OrderConfirmedTemplate = (
     <!-- Confirmation Badge -->
     <div style="background-color:#0F3D3E;border-radius:12px;padding:16px 24px;margin-bottom:28px;text-align:center;">
       <p style="margin:0;font-size:14px;font-weight:800;color:#CBF27A;letter-spacing:0.5px;">
-        ✓ Paiement reçu · Commande en préparation
+        Paiement reçu · Commande en préparation
       </p>
     </div>
 
     <p style="margin:0 0 8px;font-size:22px;font-weight:700;color:#0F3D3E;">
-      Merci ${firstName} 🌿
+      Merci ${firstName}
     </p>
     <p style="margin:0 0 32px;font-size:15px;color:#666;line-height:1.7;">
       Votre commande est confirmée. Votre protocole HelyaCare est en cours de préparation.
@@ -76,7 +76,7 @@ export const OrderConfirmedTemplate = (
           </td>
         </tr>
         <tr>
-          <td colspan="3" style="padding-top:6px;font-size:12px;color:#22c55e;text-align:right;">+ Livraison offerte 🚚</td>
+          <td colspan="3" style="padding-top:6px;font-size:12px;color:#22c55e;text-align:right;">+ Livraison offerte</td>
         </tr>
       </tfoot>
     </table>
@@ -85,9 +85,9 @@ export const OrderConfirmedTemplate = (
     <div style="border-top:1px solid #E8E3DC;padding-top:28px;margin-top:8px;">
       <p style="margin:0 0 16px;font-size:15px;font-weight:700;color:#0F3D3E;">Les prochaines étapes</p>
       ${[
-        { icon: "📦", title: "Préparation sous 24h", desc: "Votre cure est conditionnée avec soin par notre équipe." },
-        { icon: "🚚", title: "Expédition & Suivi", desc: "Un lien de suivi vous sera transmis dès l'expédition." },
-        { icon: "💬", title: "Coaching WhatsApp IA", desc: "Votre coach HelyaCare démarre votre protocole personnalisé." },
+        { icon: "1", title: "Préparation sous 24h", desc: "Votre cure est conditionnée avec soin par notre équipe." },
+        { icon: "2", title: "Expédition & Suivi", desc: "Un lien de suivi vous sera transmis dès l'expédition." },
+        { icon: "3", title: "Coaching WhatsApp IA", desc: "Votre coach HelyaCare démarre votre protocole personnalisé." },
       ].map(s => `
         <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:14px;">
           <tr>

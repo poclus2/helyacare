@@ -25,7 +25,7 @@ export const CommissionReceivedTemplate = (
     <!-- Commission Badge -->
     <div style="background-color:#CBF27A;border-radius:12px;padding:16px 24px;margin-bottom:28px;text-align:center;">
       <p style="margin:0;font-size:13px;font-weight:800;color:#0F3D3E;letter-spacing:0.5px;">
-        💰 Nouvelle commission créditée sur votre portefeuille
+        Nouvelle commission créditée sur votre portefeuille
       </p>
     </div>
 

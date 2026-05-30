@@ -32,7 +32,7 @@ export const WithdrawalRequestedTemplate = (
         </tr>
         <tr>
           <td style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;color:#666;">Statut</td>
-          <td align="right" style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;font-weight:700;color:#f59e0b;">⏳ En traitement</td>
+          <td align="right" style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;font-weight:700;color:#f59e0b;">En traitement</td>
         </tr>
         <tr>
           <td style="padding:8px 0;font-size:14px;color:#666;">Date de demande</td>

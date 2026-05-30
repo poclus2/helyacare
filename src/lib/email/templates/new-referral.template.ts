@@ -15,7 +15,7 @@ export const NewReferralTemplate = (
 
   const content = `
     <p style="margin:0 0 8px;font-size:22px;font-weight:700;color:#0F3D3E;">
-      Votre réseau grandit, ${sponsorFirstName} ! 🎉
+      Votre réseau grandit, ${sponsorFirstName} !
     </p>
     <p style="margin:0 0 28px;font-size:15px;color:#666;line-height:1.7;">
       Bonne nouvelle : <strong style="color:#0F3D3E;">${referralFullName}</strong> vient de rejoindre
@@ -41,7 +41,7 @@ export const NewReferralTemplate = (
 
     <div style="background-color:#CBF27A;border-radius:10px;padding:16px 20px;margin-bottom:28px;">
       <p style="margin:0;font-size:14px;font-weight:700;color:#0F3D3E;">
-        💡 Vous percevrez une commission sur chacun de ses achats. Plus il commande, plus vous gagnez.
+        À noter : Vous percevrez une commission sur chacun de ses achats. Plus il commande, plus vous gagnez.
       </p>
     </div>
 
