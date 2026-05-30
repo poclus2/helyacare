@@ -31,8 +31,8 @@ export async function POST(
     if (!sponsor_referral_code) {
       try {
         const customer = await customerService.retrieveCustomer(customer_id)
-        if (customer && customer.metadata?.referral_code) {
-          sponsor_referral_code = customer.metadata.referral_code as string
+        if (customer && customer.metadata?.referred_by) {
+          sponsor_referral_code = customer.metadata.referred_by as string
         }
       } catch (err) {
         console.warn("Could not retrieve customer to check metadata sponsor:", err)
