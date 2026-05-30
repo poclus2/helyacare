@@ -21,22 +21,24 @@ export const WithdrawalRequestedTemplate = (
     </p>
 
     <div style="background-color:#F6F4F1;border-radius:12px;padding:24px;margin-bottom:28px;">
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;">
-        <span style="color:#666;">Montant demandé</span>
-        <span style="font-weight:900;font-size:16px;color:#0F3D3E;">${amount.toLocaleString("fr-FR")} ${currency}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;">
-        <span style="color:#666;">Méthode</span>
-        <span style="font-weight:700;color:#0F3D3E;">${method}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;">
-        <span style="color:#666;">Statut</span>
-        <span style="font-weight:700;color:#f59e0b;">⏳ En traitement</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;">
-        <span style="color:#666;">Date de demande</span>
-        <span style="font-weight:700;color:#0F3D3E;">${new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
-      </div>
+      <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+        <tr>
+          <td style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;color:#666;">Montant demandé</td>
+          <td align="right" style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:16px;font-weight:900;color:#0F3D3E;">${amount.toLocaleString("fr-FR")} ${currency}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;color:#666;">Méthode</td>
+          <td align="right" style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;font-weight:700;color:#0F3D3E;">${method}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;color:#666;">Statut</td>
+          <td align="right" style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;font-weight:700;color:#f59e0b;">⏳ En traitement</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#666;">Date de demande</td>
+          <td align="right" style="padding:8px 0;font-size:14px;font-weight:700;color:#0F3D3E;">${new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</td>
+        </tr>
+      </table>
     </div>
 
     <div style="background-color:#FFF7ED;border-left:4px solid #E56B2D;border-radius:0 8px 8px 0;padding:16px 20px;margin-bottom:24px;">

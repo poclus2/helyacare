@@ -23,18 +23,20 @@ export const NewReferralTemplate = (
     </p>
 
     <div style="background-color:#F6F4F1;border-radius:12px;padding:24px;margin-bottom:28px;">
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;">
-        <span style="color:#666;">Nouveau membre</span>
-        <span style="font-weight:700;color:#0F3D3E;">${referralFullName}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;">
-        <span style="color:#666;">Date d'inscription</span>
-        <span style="font-weight:700;color:#0F3D3E;">${new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;">
-        <span style="color:#666;">Votre code parrain</span>
-        <span style="font-weight:800;color:#E56B2D;font-family:monospace;letter-spacing:2px;">${referralCode}</span>
-      </div>
+      <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+        <tr>
+          <td style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;color:#666;">Filleul</td>
+          <td align="right" style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:16px;font-weight:900;color:#0F3D3E;">${referralFullName}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;color:#666;">Code utilisé</td>
+          <td align="right" style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;font-weight:700;color:#0F3D3E;">${referralCode}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#666;">Date</td>
+          <td align="right" style="padding:8px 0;font-size:14px;font-weight:700;color:#0F3D3E;">${new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</td>
+        </tr>
+      </table>
     </div>
 
     <div style="background-color:#CBF27A;border-radius:10px;padding:16px 20px;margin-bottom:28px;">

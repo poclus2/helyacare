@@ -78,10 +78,12 @@ export const CtaButton = (href: string, label: string): string =>
 /** Card info avec lignes label/value */
 export const InfoCard = (rows: { label: string; value: string; highlight?: boolean }[]): string => `
   <div style="background-color:#F6F4F1;border-radius:12px;padding:20px 24px;margin:24px 0;">
-    ${rows.map(r => `
-      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #E8E3DC;font-size:14px;">
-        <span style="color:#666;">${r.label}</span>
-        <span style="font-weight:700;color:${r.highlight ? CTA_COLOR : BRAND_COLOR};">${r.value}</span>
-      </div>
-    `).join("")}
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+      ${rows.map(r => `
+        <tr>
+          <td style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;color:#666;">${r.label}</td>
+          <td align="right" style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;font-weight:700;color:${r.highlight ? CTA_COLOR : BRAND_COLOR};">${r.value}</td>
+        </tr>
+      `).join("")}
+    </table>
   </div>`;

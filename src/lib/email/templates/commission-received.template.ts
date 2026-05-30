@@ -38,22 +38,24 @@ export const CommissionReceivedTemplate = (
 
     <!-- Détails commission -->
     <div style="background-color:#F6F4F1;border-radius:12px;padding:24px;margin-bottom:28px;">
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;">
-        <span style="color:#666;">Montant crédité</span>
-        <span style="font-weight:900;font-size:18px;color:#E56B2D;">+${amount.toLocaleString("fr-FR")} ${currency}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;">
-        <span style="color:#666;">Généré par</span>
-        <span style="font-weight:700;color:#0F3D3E;">${referralName}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;">
-        <span style="color:#666;">Niveau de commission</span>
-        <span style="font-weight:700;color:#0F3D3E;">Niveau ${level}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;font-size:14px;">
-        <span style="color:#666;">Date</span>
-        <span style="font-weight:700;color:#0F3D3E;">${new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</span>
-      </div>
+      <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+        <tr>
+          <td style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;color:#666;">Montant crédité</td>
+          <td align="right" style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:18px;font-weight:900;color:#E56B2D;">+${amount.toLocaleString("fr-FR")} ${currency}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;color:#666;">Généré par</td>
+          <td align="right" style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;font-weight:700;color:#0F3D3E;">${referralName}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;color:#666;">Niveau de commission</td>
+          <td align="right" style="padding:8px 0;border-bottom:1px solid #E8E3DC;font-size:14px;font-weight:700;color:#0F3D3E;">Niveau ${level}</td>
+        </tr>
+        <tr>
+          <td style="padding:8px 0;font-size:14px;color:#666;">Date</td>
+          <td align="right" style="padding:8px 0;font-size:14px;font-weight:700;color:#0F3D3E;">${new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</td>
+        </tr>
+      </table>
     </div>
 
     <p style="margin:0 0 24px;font-size:14px;color:#666;line-height:1.7;">

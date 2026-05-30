@@ -19,17 +19,19 @@ export const WelcomeTemplate = (firstName: string): string => {
 
     <div style="background-color:#F6F4F1;border-radius:12px;padding:24px;margin-bottom:32px;">
       <p style="margin:0 0 16px;font-size:14px;font-weight:700;color:#0F3D3E;">Ce qui vous attend :</p>
+      <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
       ${[
         { icon: "🛒", text: "Accédez à la boutique et commandez votre protocole personnalisé" },
         { icon: "💬", text: "Votre coach IA HelyaCare vous guide via WhatsApp" },
         { icon: "📊", text: "Suivez vos résultats dans votre espace client" },
         { icon: "🤝", text: "Partagez votre code ambassadeur et gagnez des commissions" },
       ].map(item => `
-        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;">
-          <span style="font-size:20px;flex-shrink:0;">${item.icon}</span>
-          <p style="margin:0;font-size:14px;color:#555;line-height:1.5;">${item.text}</p>
-        </div>
+        <tr>
+          <td valign="top" style="padding-bottom:12px;width:30px;font-size:20px;">${item.icon}</td>
+          <td valign="top" style="padding-bottom:12px;font-size:14px;color:#555;line-height:1.5;">${item.text}</td>
+        </tr>
       `).join("")}
+      </table>
     </div>
 
     <div style="text-align:center;padding-top:8px;">
