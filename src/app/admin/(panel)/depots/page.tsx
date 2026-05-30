@@ -214,7 +214,7 @@ export default function AdminDepositsPage() {
         <div className="space-y-4">
           {filtered.map((dep) => {
             const method = METHOD_META[dep.method] || METHOD_META.other;
-            const status = STATUS_META[dep.status];
+            const status = STATUS_META[dep.status] || { label: dep.status || "Inconnu", color: "text-white/50 bg-white/5 border-white/10", dot: "bg-white/50" };
             const isPending = dep.status === "pending";
 
             return (
