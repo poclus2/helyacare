@@ -63,9 +63,15 @@ class MlmModuleService extends MedusaService({
     const sponsor = await this.retrieveAmbassador(sponsorId)
     
     const preference = sponsor.placement_preference || "AUTOMATIC"
-    // TODO: For "AUTOMATIC", determine the weaker leg by comparing left_bv and right_bv
-    let targetDirection: "LEFT" | "RIGHT" = preference === "RIGHT" ? "RIGHT" : "LEFT"
     
+    let targetDirection: "LEFT" | "RIGHT"
+    if (preference === "AUTOMATIC") {
+      const leftBv = Number(sponsor.left_bv || 0)
+      const rightBv = Number(sponsor.right_bv || 0)
+      targetDirection = leftBv <= rightBv ? "LEFT" : "RIGHT"
+    } else {
+      targetDirection = preference === "RIGHT" ? "RIGHT" : "LEFT"
+    }
     let currentNodeId = sponsor.id
 
     while (true) {
