@@ -28,7 +28,7 @@ export async function GET(
     // ── 3 requêtes séquentielles pour construire l'arbre MLM ─────────────────
     // Niveau 1 : filleuls directs
     const level1 = await mlmService.listAmbassadors(
-      { sponsor_id: ambassador.id } as any
+      { sponsor: ambassador.id } as any
     )
 
     const flatDownlines: any[] = level1.map(d => ({
@@ -44,7 +44,7 @@ export async function GET(
     if (level1.length > 0) {
       const level1Ids = level1.map(d => d.id)
       const level2 = await mlmService.listAmbassadors(
-        { sponsor_id: level1Ids } as any
+        { sponsor: level1Ids } as any
       )
 
       for (const d of level2) {
@@ -62,7 +62,7 @@ export async function GET(
       if (level2.length > 0) {
         const level2Ids = level2.map(d => d.id)
         const level3 = await mlmService.listAmbassadors(
-          { sponsor_id: level2Ids } as any
+          { sponsor: level2Ids } as any
         )
 
         for (const d of level3) {
