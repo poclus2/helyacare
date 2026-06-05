@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
+import { getMedusaAdminToken } from "@/lib/medusa-admin-auth";
 
 const SECRET = new TextEncoder().encode(
   process.env.ADMIN_SECRET || "helyacare-admin-fallback-secret"
 );
 const BACKEND = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
-const API_KEY = process.env.MEDUSA_API_KEY || "";
 
 async function verifyAdmin(request: Request) {
   const cookieHeader = request.headers.get("cookie") || "";
@@ -17,14 +17,15 @@ async function verifyAdmin(request: Request) {
   await jwtVerify(token, SECRET);
 }
 
-const adminHeaders = {
-  "Content-Type": "application/json",
-  ...(API_KEY && { Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}` }),
-};
-
 export async function GET(request: Request) {
   try {
     await verifyAdmin(request);
+    
+    const medusaToken = await getMedusaAdminToken();
+    const adminHeaders = {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${medusaToken}`,
+    };
 
     const res = await fetch(`${BACKEND}/admin/stores`, { headers: adminHeaders });
     if (!res.ok) throw new Error("Erreur Medusa");
@@ -60,6 +61,12 @@ export async function POST(request: Request) {
     await verifyAdmin(request);
     const body = await request.json();
     const { whatsapp_number, ambassador_settings, binary_bonus_settings } = body;
+
+    const medusaToken = await getMedusaAdminToken();
+    const adminHeaders = {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${medusaToken}`,
+    };
 
     // 1. Récupérer le store actuel
     const getRes = await fetch(`${BACKEND}/admin/stores`, { headers: adminHeaders });
