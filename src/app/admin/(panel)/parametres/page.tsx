@@ -196,29 +196,6 @@ export default function ParametresPage() {
               C'est le nombre minimum d'unités qu'un ambassadeur doit ajouter au panier pour chaque produit.
             </p>
           </div>
-
-          <div className="space-y-3">
-            <label className="text-sm font-medium text-white/70 block border-b border-white/5 pb-2">
-              Prix unitaire pour les ambassadeurs (XOF)
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {productsList.map((prod) => (
-                <div key={prod.key} className="space-y-1">
-                  <label className="text-xs text-white/50 truncate block">{prod.label}</label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      min="0"
-                      value={prices[prod.key] || 0}
-                      onChange={(e) => handlePriceChange(prod.key, e.target.value)}
-                      className="w-full bg-black/20 border border-white/10 rounded-xl pl-4 pr-12 py-2 text-white focus:outline-none focus:border-[#E56B2D] focus:ring-1 focus:ring-[#E56B2D] transition-all"
-                    />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-white/30">FCFA</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
 
