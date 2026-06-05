@@ -1,17 +1,18 @@
 import { NextResponse } from "next/server";
+import { getMedusaAdminToken } from "@/lib/medusa-admin-auth";
 
 const BACKEND = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000";
-const API_KEY = process.env.MEDUSA_API_KEY || "";
-
-const adminHeaders = {
-  "Content-Type": "application/json",
-  ...(API_KEY && { Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString("base64")}` }),
-};
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
+    const medusaToken = await getMedusaAdminToken();
+    const adminHeaders = {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${medusaToken}`,
+    };
+
     const res = await fetch(`${BACKEND}/admin/stores`, {
       headers: adminHeaders,
       cache: 'no-store',
