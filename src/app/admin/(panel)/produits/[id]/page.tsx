@@ -6,7 +6,7 @@ import { Inter } from "next/font/google";
 import {
   Loader2, ArrowLeft, Save, AlertCircle, CheckCircle2,
   Trash2, Eye, EyeOff, Tag, Package, FileText, DollarSign,
-  ImagePlus, X, Upload, Link2, GripVertical, Star
+  ImagePlus, X, Upload, Link2, GripVertical, Star, FileJson
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -39,6 +39,11 @@ export default function ModifierProduitPage() {
   const [success, setSuccess] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  // ── Import JSON ───────────────────────────────────────────────────────────
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importJsonText, setImportJsonText] = useState("");
+  const [importError, setImportError] = useState("");
 
   // ── Images ────────────────────────────────────────────────────────────────
   const [thumbnail, setThumbnail] = useState("");       // URL image principale
@@ -218,6 +223,83 @@ export default function ModifierProduitPage() {
     }
   };
 
+  const handleImportJson = () => {
+    setImportError("");
+    try {
+      if (!importJsonText.trim()) throw new Error("Le champ JSON est vide.");
+      const parsed = JSON.parse(importJsonText);
+      const items = Array.isArray(parsed) ? parsed : [parsed];
+      
+      // Chercher le produit correspondant au handle actuel, sinon prendre le premier
+      const p = items.find((item: any) => item.informations_de_base?.identifiant_url_handle === productData?.handle) || items[0];
+      
+      if (!p) throw new Error("Aucun produit valide trouvé dans le JSON.");
+
+      if (p.informations_de_base) {
+        setForm(prev => ({
+          ...prev,
+          title: p.informations_de_base.titre_du_produit || prev.title,
+          description: p.informations_de_base.description || prev.description,
+          status: p.informations_de_base.statut_de_publication || prev.status,
+          price: p.informations_de_base.prix_public_xof ? String(p.informations_de_base.prix_public_xof) : prev.price,
+        }));
+      }
+
+      if (p.tarification_ambassadeur) {
+        setForm(prev => ({
+          ...prev,
+          is_ambassador_only: p.tarification_ambassadeur.visible_uniquement_pour_les_ambassadeurs ?? prev.is_ambassador_only,
+          ambassador_price: p.tarification_ambassadeur.prix_ambassadeur_xof ? String(p.tarification_ambassadeur.prix_ambassadeur_xof) : prev.ambassador_price,
+          ambassador_min_qty: p.tarification_ambassadeur.quantite_minimum ? String(p.tarification_ambassadeur.quantite_minimum) : prev.ambassador_min_qty,
+          ambassador_bonus_points: p.tarification_ambassadeur.points_bonus_ambassadeur_pv ? String(p.tarification_ambassadeur.points_bonus_ambassadeur_pv) : prev.ambassador_bonus_points,
+        }));
+      }
+
+      setRichData(prev => ({
+        ...prev,
+        badge: p.informations_generales_marketing?.badge || prev.badge,
+        sku_label: p.informations_generales_marketing?.label_sku || prev.sku_label,
+        rating: p.informations_generales_marketing?.note ? String(p.informations_generales_marketing.note) : prev.rating,
+        reviews_count: p.informations_generales_marketing?.nombre_d_avis ? String(p.informations_generales_marketing.nombre_d_avis) : prev.reviews_count,
+        benefits: p.bienfaits_accordeon || prev.benefits,
+        ingredients: p.ingredients ? p.ingredients.map((ing: any) => ({
+          icon: ing.icone_suggeree === "ADN" ? "Dna" : ing.icone_suggeree === "Pilule" ? "Pill" : ing.icone_suggeree === "Microscope" ? "Microscope" : "Flower2",
+          title: ing.titre,
+          description: ing.description
+        })) : prev.ingredients,
+        cross_sell_handle: p.pack_complementaire_cross_sell?.identifiant_produit_handle || prev.cross_sell_handle,
+        cross_sell_text: p.pack_complementaire_cross_sell?.texte_d_accroche || prev.cross_sell_text,
+        faqs: p.foire_aux_questions_faq ? p.foire_aux_questions_faq.map((f: any) => ({ question: f.question, answer: f.reponse })) : prev.faqs,
+      }));
+
+      if (p.section_evolution_timeline) {
+        setTimelineSection(prev => ({
+          ...prev,
+          title: p.section_evolution_timeline.titre_principal || prev.title,
+          subtitle: p.section_evolution_timeline.sous_titre || prev.subtitle,
+          linkText: p.section_evolution_timeline.texte_lien_clinique || prev.linkText,
+          linkUrl: p.section_evolution_timeline.url_lien_clinique || prev.linkUrl,
+          steps: p.section_evolution_timeline.etapes_temporelles ? p.section_evolution_timeline.etapes_temporelles.map((step: any) => ({
+            duration: step.duree,
+            title: step.titre,
+            bullets: step.puces_bullets || [],
+            is_faded: false
+          })) : prev.steps,
+          usage: {
+            ...prev.usage,
+            title: p.section_evolution_timeline.conseil_d_utilisation_usage?.titre || prev.usage?.title,
+            instruction: p.section_evolution_timeline.conseil_d_utilisation_usage?.instruction || prev.usage?.instruction
+          }
+        }));
+      }
+
+      setShowImportModal(false);
+      setImportJsonText("");
+    } catch (err: any) {
+      setImportError(err.message || "Erreur de syntaxe JSON.");
+    }
+  };
+
   const handleDelete = async () => {
     setDeleting(true);
     setError("");
@@ -336,9 +418,17 @@ export default function ModifierProduitPage() {
           <ArrowLeft className="w-5 h-5 text-white/60" />
         </Link>
         <div className="flex-1 min-w-0">
-          <h1 className="text-2xl font-extrabold text-white truncate">
-            Modifier — {productData?.title}
-          </h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-extrabold text-white truncate">
+              Modifier — {productData?.title}
+            </h1>
+            <button
+              onClick={() => setShowImportModal(true)}
+              className="flex items-center gap-2 px-3 py-1.5 bg-[#CBF27A]/10 hover:bg-[#CBF27A]/20 text-[#CBF27A] text-xs font-bold rounded-lg transition-all border border-[#CBF27A]/20"
+            >
+              <FileJson className="w-4 h-4" /> Import IA JSON
+            </button>
+          </div>
           <p className="text-white/40 text-sm mt-0.5 font-mono">{productData?.handle}</p>
         </div>
         {/* Statut badge */}
@@ -904,6 +994,56 @@ export default function ModifierProduitPage() {
               >
                 {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                 {deleting ? "Suppression..." : "Supprimer"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Import JSON */}
+      {showImportModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className={`bg-[#0c2a2b] border border-white/10 rounded-2xl p-6 max-w-2xl w-full shadow-2xl ${inter.className}`}>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <FileJson className="w-5 h-5 text-[#CBF27A]" />
+                <h3 className="text-white font-extrabold text-lg">Importer JSON de l'IA</h3>
+              </div>
+              <button onClick={() => setShowImportModal(false)} className="text-white/40 hover:text-white">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <p className="text-white/60 text-sm mb-4">
+              Collez le JSON généré par l'IA (tableau contenant tous les produits, ou objet unique). 
+              Le système trouvera automatiquement les données correspondantes au produit actuel (via l'URL Handle).
+            </p>
+            
+            {importError && (
+              <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl">
+                {importError}
+              </div>
+            )}
+
+            <textarea
+              value={importJsonText}
+              onChange={e => setImportJsonText(e.target.value)}
+              placeholder="Collez le JSON ici..."
+              rows={12}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-xs font-mono placeholder:text-white/20 focus:outline-none focus:border-[#CBF27A]/40 transition-all resize-none mb-4"
+            />
+            
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setShowImportModal(false)}
+                className="px-5 py-2.5 rounded-xl text-white/60 hover:text-white hover:bg-white/5 text-sm font-bold transition-all"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={handleImportJson}
+                className="px-6 py-2.5 bg-[#CBF27A] text-[#0F3D3E] hover:bg-[#b8e060] text-sm font-bold rounded-xl transition-all"
+              >
+                Appliquer le JSON
               </button>
             </div>
           </div>
